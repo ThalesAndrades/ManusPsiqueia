@@ -1,0 +1,333 @@
+# SwiftLint Configuration for ManusPsiqueia
+# High-quality Swift code standards for mental health platform
+
+# Paths to include/exclude
+included:
+  - ManusPsiqueia
+  - ManusPsiqueiaTests
+  - ManusPsiqueiaUITests
+
+excluded:
+  - Pods
+  - DerivedData
+  - .build
+  - Package.swift
+  - "*/Generated/*"
+  - "*/Protobuf/*"
+
+# Analyzer rules (require compilation)
+analyzer_rules:
+  - unused_import
+  - unused_declaration
+
+# Enabled rules
+opt_in_rules:
+  - array_init
+  - attributes
+  - closure_end_indentation
+  - closure_spacing
+  - collection_alignment
+  - contains_over_filter_count
+  - contains_over_filter_is_empty
+  - contains_over_first_not_nil
+  - contains_over_range_nil_comparison
+  - discouraged_object_literal
+  - empty_collection_literal
+  - empty_count
+  - empty_string
+  - enum_case_associated_values_count
+  - explicit_init
+  - extension_access_modifier
+  - fallthrough
+  - fatal_error_message
+  - file_header
+  - file_name
+  - first_where
+  - force_unwrapping
+  - function_default_parameter_at_end
+  - identical_operands
+  - implicit_return
+  - joined_default_parameter
+  - last_where
+  - legacy_random
+  - literal_expression_end_indentation
+  - lower_acl_than_parent
+  - modifier_order
+  - multiline_arguments
+  - multiline_function_chains
+  - multiline_literal_brackets
+  - multiline_parameters
+  - multiline_parameters_brackets
+  - nimble_operator
+  - nslocalizedstring_key
+  - number_separator
+  - object_literal
+  - operator_usage_whitespace
+  - overridden_super_call
+  - override_in_extension
+  - pattern_matching_keywords
+  - prefer_self_type_over_type_of_self
+  - prefer_zero_over_explicit_init
+  - prefixed_toplevel_constant
+  - prohibited_super_call
+  - quick_discouraged_call
+  - quick_discouraged_focused_test
+  - quick_discouraged_pending_test
+  - reduce_into
+  - redundant_nil_coalescing
+  - redundant_type_annotation
+  - single_test_class
+  - sorted_first_last
+  - sorted_imports
+  - static_operator
+  - strong_iboutlet
+  - switch_case_on_newline
+  - toggle_bool
+  - trailing_closure
+  - unavailable_function
+  - unneeded_parentheses_in_closure_argument
+  - unowned_variable_capture
+  - untyped_error_in_catch
+  - vertical_parameter_alignment_on_call
+  - vertical_whitespace_closing_braces
+  - vertical_whitespace_opening_braces
+  - xct_specific_matcher
+  - yoda_condition
+
+# Disabled rules
+disabled_rules:
+  - todo # We allow TODO comments with linked issues
+  - line_length # Handled by custom rule below
+
+# Custom rule configurations
+file_header:
+  required_pattern: |
+                    \/\/
+                    \/\/  .*\.swift
+                    \/\/  ManusPsiqueia
+                    \/\/
+                    \/\/  Created by .* on \d{1,2}\/\d{1,2}\/\d{4}\.
+                    \/\/  Copyright © \d{4} AiLun Tecnologia\. All rights reserved\.
+                    \/\/
+
+file_name:
+  excluded:
+    - main.swift
+    - LinuxMain.swift
+    - TestHelpers.swift
+    - shim.swift
+    - AutomaticRuleTests.generated.swift
+
+# Rule-specific configurations
+line_length:
+  warning: 120
+  error: 150
+  ignores_urls: true
+  ignores_function_declarations: true
+  ignores_comments: true
+
+function_body_length:
+  warning: 50
+  error: 100
+
+function_parameter_count:
+  warning: 6
+  error: 8
+
+type_body_length:
+  warning: 300
+  error: 500
+
+file_length:
+  warning: 500
+  error: 1000
+  ignore_comment_only_lines: true
+
+cyclomatic_complexity:
+  warning: 10
+  error: 20
+
+nesting:
+  type_level:
+    warning: 3
+    error: 6
+  statement_level:
+    warning: 5
+    error: 10
+
+identifier_name:
+  min_length:
+    warning: 2
+    error: 1
+  max_length:
+    warning: 50
+    error: 60
+  excluded:
+    - id
+    - db
+    - ai
+    - ui
+    - ux
+    - qa
+    - qa
+    - ok
+    - no
+
+type_name:
+  min_length:
+    warning: 3
+    error: 2
+  max_length:
+    warning: 50
+    error: 60
+  excluded:
+    - ID
+    - AI
+    - UI
+    - UX
+    - QA
+
+large_tuple:
+  warning: 3
+  error: 4
+
+shorthand_operator: error
+
+return_arrow_whitespace: error
+
+opening_brace: error
+
+comma: error
+
+colon:
+  flexible_right_spacing: false
+  apply_to_dictionaries: true
+
+closing_brace: error
+
+closure_parameter_position: error
+
+control_statement: error
+
+empty_parentheses_with_trailing_closure: error
+
+force_cast: warning
+
+force_try: warning
+
+leading_whitespace: error
+
+legacy_cggeometry_functions: error
+
+legacy_constant: error
+
+legacy_constructor: error
+
+legacy_nsgeometry_functions: error
+
+operator_whitespace: error
+
+redundant_string_enum_value: error
+
+redundant_void_return: error
+
+statement_position: error
+
+trailing_newline: error
+
+trailing_semicolon: error
+
+trailing_whitespace:
+  ignores_empty_lines: false
+  ignores_comments: true
+
+valid_ibinspectable: error
+
+vertical_whitespace:
+  max_empty_lines: 2
+
+void_return: error
+
+weak_delegate: warning
+
+# Custom rules for ManusPsiqueia
+custom_rules:
+  # Ensure proper error handling for Stripe operations
+  stripe_error_handling:
+    name: "Stripe Error Handling"
+    regex: 'StripeAPI\.[^}]*(?!.*catch)'
+    message: "Stripe API calls must include proper error handling"
+    severity: warning
+
+  # Ensure sensitive data is not logged
+  no_sensitive_logging:
+    name: "No Sensitive Data in Logs"
+    regex: 'print.*(?:password|token|key|secret|credential)'
+    message: "Avoid logging sensitive information"
+    severity: error
+
+  # Ensure proper authentication checks
+  auth_guard_required:
+    name: "Authentication Guard Required"
+    regex: 'func.*(?:payment|subscription|withdraw).*\{(?!.*guard.*isAuthenticated)'
+    message: "Financial operations must include authentication guards"
+    severity: warning
+
+  # Ensure proper input validation
+  input_validation:
+    name: "Input Validation Required"
+    regex: 'func.*(?:create|update|delete).*\{(?!.*guard.*validate)'
+    message: "CRUD operations should include input validation"
+    severity: warning
+
+  # Ensure proper memory management for large objects
+  memory_management:
+    name: "Memory Management"
+    regex: 'class.*(?:Manager|Service|Controller).*\{(?!.*weak|unowned)'
+    message: "Consider using weak references to prevent retain cycles"
+    severity: warning
+
+  # Ensure proper accessibility labels
+  accessibility_required:
+    name: "Accessibility Required"
+    regex: 'Button\(.*\{(?!.*accessibilityLabel)'
+    message: "Interactive elements should include accessibility labels"
+    severity: warning
+
+  # Ensure proper error messages for users
+  user_friendly_errors:
+    name: "User Friendly Error Messages"
+    regex: 'throw.*Error\(.*"[^"]*(?:nil|null|undefined|error)"'
+    message: "Error messages should be user-friendly"
+    severity: warning
+
+  # Ensure proper documentation for public APIs
+  public_documentation:
+    name: "Public API Documentation"
+    regex: 'public.*(?:func|var|class|struct|enum)(?!.*\/\/\/)'
+    message: "Public APIs should include documentation comments"
+    severity: warning
+
+  # Ensure proper naming for mental health context
+  mental_health_terminology:
+    name: "Appropriate Mental Health Terminology"
+    regex: '(?:crazy|insane|psycho|mental|nuts)(?!.*Health)'
+    message: "Use appropriate and respectful mental health terminology"
+    severity: error
+
+  # Ensure HIPAA compliance considerations
+  hipaa_compliance:
+    name: "HIPAA Compliance Consideration"
+    regex: 'struct.*Patient.*\{(?!.*\/\/.*HIPAA)'
+    message: "Patient data structures should include HIPAA compliance comments"
+    severity: warning
+
+# Reporter configuration
+reporter: "xcode"
+
+# Severity levels
+warning_threshold: 10
+error_threshold: 5
+
+# Compilation database
+compilation_database_path: "compile_commands.json"

@@ -1,0 +1,220 @@
+name: 🐛 Bug Report
+description: Report a bug to help us improve ManusPsiqueia
+title: "[BUG] "
+labels: ["bug", "needs-triage"]
+assignees: []
+
+body:
+  - type: markdown
+    attributes:
+      value: |
+        ## 🐛 Bug Report
+        
+        Thank you for taking the time to report a bug! Please fill out the information below to help us understand and reproduce the issue.
+
+  - type: checkboxes
+    id: checklist
+    attributes:
+      label: Pre-submission Checklist
+      description: Please verify these items before submitting
+      options:
+        - label: I have searched existing issues to ensure this is not a duplicate
+          required: true
+        - label: I have tested this on the latest version
+          required: true
+        - label: I have included all relevant information below
+          required: true
+
+  - type: dropdown
+    id: severity
+    attributes:
+      label: Bug Severity
+      description: How severe is this bug?
+      options:
+        - Critical (App crashes, data loss, security issue)
+        - High (Major feature broken, significant UX impact)
+        - Medium (Minor feature issue, workaround available)
+        - Low (Cosmetic issue, minimal impact)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: category
+    attributes:
+      label: Bug Category
+      description: Which area of the app is affected?
+      options:
+        - Authentication & Login
+        - Payment & Subscriptions
+        - Dashboard & Analytics
+        - Invitation System
+        - User Interface
+        - Performance
+        - Security
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Bug Description
+      description: A clear and concise description of what the bug is
+      placeholder: Describe the bug...
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: Detailed steps to reproduce the behavior
+      placeholder: |
+        1. Go to '...'
+        2. Click on '...'
+        3. Scroll down to '...'
+        4. See error
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behavior
+      description: What you expected to happen
+      placeholder: Describe what should happen...
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behavior
+      description: What actually happened
+      placeholder: Describe what actually happened...
+    validations:
+      required: true
+
+  - type: dropdown
+    id: device
+    attributes:
+      label: Device Type
+      description: What device are you using?
+      options:
+        - iPhone 15 Pro Max
+        - iPhone 15 Pro
+        - iPhone 15 Plus
+        - iPhone 15
+        - iPhone 14 Pro Max
+        - iPhone 14 Pro
+        - iPhone 14 Plus
+        - iPhone 14
+        - iPhone 13 Pro Max
+        - iPhone 13 Pro
+        - iPhone 13
+        - iPhone 12 Pro Max
+        - iPhone 12 Pro
+        - iPhone 12
+        - iPad Pro 12.9"
+        - iPad Pro 11"
+        - iPad Air
+        - iPad
+        - Other (specify in additional context)
+    validations:
+      required: true
+
+  - type: dropdown
+    id: ios_version
+    attributes:
+      label: iOS Version
+      description: What version of iOS are you running?
+      options:
+        - iOS 17.2
+        - iOS 17.1
+        - iOS 17.0
+        - iOS 16.7
+        - iOS 16.6
+        - iOS 16.5
+        - iOS 16.4
+        - iOS 16.3
+        - iOS 16.2
+        - iOS 16.1
+        - iOS 16.0
+        - Other (specify in additional context)
+    validations:
+      required: true
+
+  - type: input
+    id: app_version
+    attributes:
+      label: App Version
+      description: What version of ManusPsiqueia are you using?
+      placeholder: "1.0.0 (Build 123)"
+    validations:
+      required: true
+
+  - type: dropdown
+    id: user_type
+    attributes:
+      label: User Type
+      description: Are you a psychologist or patient?
+      options:
+        - Psychologist
+        - Patient
+        - Both (testing)
+        - Other
+    validations:
+      required: true
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error Logs
+      description: If applicable, paste any error messages or logs
+      placeholder: Paste error logs here...
+      render: text
+
+  - type: textarea
+    id: screenshots
+    attributes:
+      label: Screenshots/Videos
+      description: If applicable, add screenshots or videos to help explain the problem
+      placeholder: Drag and drop images/videos here or paste URLs...
+
+  - type: textarea
+    id: additional_context
+    attributes:
+      label: Additional Context
+      description: Add any other context about the problem here
+      placeholder: |
+        - Network conditions (WiFi, cellular, offline)
+        - Account status (subscription active/inactive)
+        - Recent actions before bug occurred
+        - Frequency of occurrence
+        - Any workarounds discovered
+
+  - type: checkboxes
+    id: impact
+    attributes:
+      label: Impact Assessment
+      description: How does this bug affect you?
+      options:
+        - label: Prevents me from using the app
+        - label: Affects core functionality
+        - label: Causes data loss or corruption
+        - label: Security concern
+        - label: Affects multiple users
+        - label: Workaround available
+
+  - type: markdown
+    attributes:
+      value: |
+        ## 🔍 Next Steps
+        
+        After submitting this bug report:
+        1. Our team will review and triage the issue
+        2. We may ask for additional information
+        3. You'll receive updates on the progress
+        4. We'll notify you when the fix is available
+        
+        Thank you for helping us improve ManusPsiqueia! 🙏
