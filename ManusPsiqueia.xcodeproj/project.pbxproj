@@ -7,47 +7,73 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		A1234567890ABCDEF001 /* ManusPsiqueiaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF002 /* ManusPsiqueiaApp.swift */; };
-		A1234567890ABCDEF003 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF004 /* ContentView.swift */; };
-		A1234567890ABCDEF005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF006 /* Assets.xcassets */; };
-		A1234567890ABCDEF007 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF008 /* Preview Assets.xcassets */; };
-		A1234567890ABCDEF009 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF00A /* User.swift */; };
-		A1234567890ABCDEF00B /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF00C /* Subscription.swift */; };
-		A1234567890ABCDEF00D /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF00E /* Payment.swift */; };
-		A1234567890ABCDEF00F /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF010 /* AuthenticationManager.swift */; };
-		A1234567890ABCDEF011 /* SubscriptionManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF012 /* SubscriptionManager.swift */; };
-		A1234567890ABCDEF013 /* StripeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF014 /* StripeManager.swift */; };
-		A1234567890ABCDEF015 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF016 /* NetworkManager.swift */; };
-		A1234567890ABCDEF017 /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF018 /* OnboardingView.swift */; };
-		A1234567890ABCDEF019 /* PsychologistDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF01A /* PsychologistDashboardView.swift */; };
-		A1234567890ABCDEF01B /* PatientDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF01C /* PatientDashboardView.swift */; };
-		A1234567890ABCDEF01D /* SubscriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF01E /* SubscriptionView.swift */; };
-		A1234567890ABCDEF01F /* FinancialDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1234567890ABCDEF020 /* FinancialDashboardView.swift */; };
+		1A001001 /* ManusPsiqueiaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001000 /* ManusPsiqueiaApp.swift */; };
+		1A001003 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001002 /* ContentView.swift */; };
+		1A001005 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A001004 /* Assets.xcassets */; };
+		1A001008 /* Preview Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 1A001007 /* Preview Assets.xcassets */; };
+		1A001010 /* User.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00100F /* User.swift */; };
+		1A001012 /* Subscription.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001011 /* Subscription.swift */; };
+		1A001014 /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001013 /* Payment.swift */; };
+		1A001016 /* Invitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001015 /* Invitation.swift */; };
+		1A001018 /* Financial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001017 /* Financial.swift */; };
+		1A00101A /* StripeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001019 /* StripeManager.swift */; };
+		1A00101C /* InvitationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00101B /* InvitationManager.swift */; };
+		1A00101E /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00101D /* OnboardingView.swift */; };
+		1A001020 /* UserTypeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00101F /* UserTypeSelectionView.swift */; };
+		1A001022 /* SubscriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001021 /* SubscriptionView.swift */; };
+		1A001024 /* InvitePsychologistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001023 /* InvitePsychologistView.swift */; };
+		1A001026 /* FinancialDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001025 /* FinancialDashboardView.swift */; };
+		1A001028 /* WithdrawFundsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001027 /* WithdrawFundsView.swift */; };
+		1A00102A /* AdvancedScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001029 /* AdvancedScrollView.swift */; };
+		1A00102C /* AdvancedButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00102B /* AdvancedButtons.swift */; };
+		1A00102E /* AdvancedInputFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00102D /* AdvancedInputFields.swift */; };
+		1A001030 /* DiaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00102F /* DiaryEntry.swift */; };
+		1A001032 /* DiaryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001031 /* DiaryManager.swift */; };
+		1A001034 /* DiaryPrivacyInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001033 /* DiaryPrivacyInfoView.swift */; };
+		1A001036 /* IntegratedDiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001035 /* IntegratedDiaryView.swift */; };
+		1A001038 /* NewDiaryEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001037 /* NewDiaryEntryView.swift */; };
+		1A00103A /* PatientDiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001039 /* PatientDiaryView.swift */; };
+		1A00103C /* DiarySecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00103B /* DiarySecurityManager.swift */; };
+		1A00103E /* DiaryAIInsightsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00103D /* DiaryAIInsightsManager.swift */; };
+		1A001040 /* DiaryAIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00103F /* DiaryAIModels.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		A1234567890ABCDEF001 /* ManusPsiqueia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ManusPsiqueia.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		A1234567890ABCDEF002 /* ManusPsiqueiaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManusPsiqueiaApp.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF004 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF006 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		A1234567890ABCDEF008 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
-		A1234567890ABCDEF00A /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF00C /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF00E /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF010 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF012 /* SubscriptionManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionManager.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF014 /* StripeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeManager.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF016 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF018 /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF01A /* PsychologistDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PsychologistDashboardView.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF01C /* PatientDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientDashboardView.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF01E /* SubscriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionView.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF020 /* FinancialDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialDashboardView.swift; sourceTree = "<group>"; };
-		A1234567890ABCDEF022 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1A000FFD /* ManusPsiqueia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ManusPsiqueia.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		1A001000 /* ManusPsiqueiaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManusPsiqueiaApp.swift; sourceTree = "<group>"; };
+		1A001002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
+		1A001004 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		1A001007 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
+		1A00100F /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		1A001011 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Subscription.swift; sourceTree = "<group>"; };
+		1A001013 /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
+		1A001015 /* Invitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Invitation.swift; sourceTree = "<group>"; };
+		1A001017 /* Financial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Financial.swift; sourceTree = "<group>"; };
+		1A001019 /* StripeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeManager.swift; sourceTree = "<group>"; };
+		1A00101B /* InvitationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationManager.swift; sourceTree = "<group>"; };
+		1A00101D /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
+		1A00101F /* UserTypeSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTypeSelectionView.swift; sourceTree = "<group>"; };
+		1A001021 /* SubscriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SubscriptionView.swift; sourceTree = "<group>"; };
+		1A001023 /* InvitePsychologistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitePsychologistView.swift; sourceTree = "<group>"; };
+		1A001025 /* FinancialDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialDashboardView.swift; sourceTree = "<group>"; };
+		1A001027 /* WithdrawFundsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawFundsView.swift; sourceTree = "<group>"; };
+		1A001029 /* AdvancedScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedScrollView.swift; sourceTree = "<group>"; };
+		1A00102B /* AdvancedButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedButtons.swift; sourceTree = "<group>"; };
+		1A00102D /* AdvancedInputFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedInputFields.swift; sourceTree = "<group>"; };
+		1A00102F /* DiaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryEntry.swift; sourceTree = "<group>"; };
+		1A001031 /* DiaryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryManager.swift; sourceTree = "<group>"; };
+		1A001033 /* DiaryPrivacyInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryPrivacyInfoView.swift; sourceTree = "<group>"; };
+		1A001035 /* IntegratedDiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = IntegratedDiaryView.swift; sourceTree = "<group>"; };
+		1A001037 /* NewDiaryEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDiaryEntryView.swift; sourceTree = "<group>"; };
+		1A001039 /* PatientDiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PatientDiaryView.swift; sourceTree = "<group>"; };
+		1A00103B /* DiarySecurityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarySecurityManager.swift; sourceTree = "<group>"; };
+		1A00103D /* DiaryAIInsightsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAIInsightsManager.swift; sourceTree = "<group>"; };
+		1A00103F /* DiaryAIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAIModels.swift; sourceTree = "<group>"; };
+		1A001041 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
-		A1234567890ABCDEF023 /* Frameworks */ = {
+		1A000FFA /* Frameworks */ = {
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
@@ -57,214 +83,260 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		A1234567890ABCDEF024 = {
+		1A000FF4 = {
 			isa = PBXGroup;
 			children = (
-				A1234567890ABCDEF025 /* ManusPsiqueia */,
-				A1234567890ABCDEF026 /* Products */,
+				1A000FFF /* ManusPsiqueia */,
+				1A000FFE /* Products */,
 			);
 			sourceTree = "<group>";
 		};
-		A1234567890ABCDEF025 /* ManusPsiqueia */ = {
+		1A000FFE /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				A1234567890ABCDEF002 /* ManusPsiqueiaApp.swift */,
-				A1234567890ABCDEF004 /* ContentView.swift */,
-				A1234567890ABCDEF027 /* Models */,
-				A1234567890ABCDEF028 /* Views */,
-				A1234567890ABCDEF029 /* ViewModels */,
-				A1234567890ABCDEF02A /* Managers */,
-				A1234567890ABCDEF02B /* Services */,
-				A1234567890ABCDEF02C /* Utils */,
-				A1234567890ABCDEF02D /* Resources */,
-				A1234567890ABCDEF02E /* Extensions */,
-				A1234567890ABCDEF022 /* Info.plist */,
-				A1234567890ABCDEF02F /* Preview Content */,
-			);
-			path = ManusPsiqueia;
-			sourceTree = "<group>";
-		};
-		A1234567890ABCDEF026 /* Products */ = {
-			isa = PBXGroup;
-			children = (
-				A1234567890ABCDEF001 /* ManusPsiqueia.app */,
+				1A000FFD /* ManusPsiqueia.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		A1234567890ABCDEF027 /* Models */ = {
+		1A000FFF /* ManusPsiqueia */ = {
 			isa = PBXGroup;
 			children = (
-				A1234567890ABCDEF00A /* User.swift */,
-				A1234567890ABCDEF00C /* Subscription.swift */,
-				A1234567890ABCDEF00E /* Payment.swift */,
+				1A001000 /* ManusPsiqueiaApp.swift */,
+				1A001002 /* ContentView.swift */,
+				1A001041 /* Info.plist */,
+				1A001042 /* Models */,
+				1A001043 /* Views */,
+				1A001044 /* Managers */,
+				1A001045 /* Components */,
+				1A001046 /* Features */,
+				1A001047 /* Security */,
+				1A001048 /* AI */,
+				1A001004 /* Assets.xcassets */,
+				1A001006 /* Preview Content */,
+			);
+			path = ManusPsiqueia;
+			sourceTree = "<group>";
+		};
+		1A001006 /* Preview Content */ = {
+			isa = PBXGroup;
+			children = (
+				1A001007 /* Preview Assets.xcassets */,
+			);
+			path = "Preview Content";
+			sourceTree = "<group>";
+		};
+		1A001042 /* Models */ = {
+			isa = PBXGroup;
+			children = (
+				1A00100F /* User.swift */,
+				1A001011 /* Subscription.swift */,
+				1A001013 /* Payment.swift */,
+				1A001015 /* Invitation.swift */,
+				1A001017 /* Financial.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
 		};
-		A1234567890ABCDEF028 /* Views */ = {
+		1A001043 /* Views */ = {
 			isa = PBXGroup;
 			children = (
-				A1234567890ABCDEF018 /* OnboardingView.swift */,
-				A1234567890ABCDEF01A /* PsychologistDashboardView.swift */,
-				A1234567890ABCDEF01C /* PatientDashboardView.swift */,
-				A1234567890ABCDEF01E /* SubscriptionView.swift */,
-				A1234567890ABCDEF020 /* FinancialDashboardView.swift */,
+				1A00101D /* OnboardingView.swift */,
+				1A00101F /* UserTypeSelectionView.swift */,
+				1A001021 /* SubscriptionView.swift */,
+				1A001023 /* InvitePsychologistView.swift */,
+				1A001025 /* FinancialDashboardView.swift */,
+				1A001027 /* WithdrawFundsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
 		};
-		A1234567890ABCDEF029 /* ViewModels */ = {
+		1A001044 /* Managers */ = {
 			isa = PBXGroup;
 			children = (
-			);
-			path = ViewModels;
-			sourceTree = "<group>";
-		};
-		A1234567890ABCDEF02A /* Managers */ = {
-			isa = PBXGroup;
-			children = (
-				A1234567890ABCDEF010 /* AuthenticationManager.swift */,
-				A1234567890ABCDEF012 /* SubscriptionManager.swift */,
-				A1234567890ABCDEF014 /* StripeManager.swift */,
-				A1234567890ABCDEF016 /* NetworkManager.swift */,
+				1A001019 /* StripeManager.swift */,
+				1A00101B /* InvitationManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
 		};
-		A1234567890ABCDEF02B /* Services */ = {
+		1A001045 /* Components */ = {
 			isa = PBXGroup;
 			children = (
+				1A001049 /* Advanced */,
 			);
-			path = Services;
+			path = Components;
 			sourceTree = "<group>";
 		};
-		A1234567890ABCDEF02C /* Utils */ = {
+		1A001046 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				1A00104A /* PatientDiary */,
 			);
-			path = Utils;
+			path = Features;
 			sourceTree = "<group>";
 		};
-		A1234567890ABCDEF02D /* Resources */ = {
+		1A001047 /* Security */ = {
 			isa = PBXGroup;
 			children = (
-				A1234567890ABCDEF006 /* Assets.xcassets */,
+				1A00104B /* DiaryProtection */,
 			);
-			path = Resources;
+			path = Security;
 			sourceTree = "<group>";
 		};
-		A1234567890ABCDEF02E /* Extensions */ = {
+		1A001048 /* AI */ = {
 			isa = PBXGroup;
 			children = (
+				1A00104C /* DiaryInsights */,
 			);
-			path = Extensions;
+			path = AI;
 			sourceTree = "<group>";
 		};
-		A1234567890ABCDEF02F /* Preview Content */ = {
+		1A001049 /* Advanced */ = {
 			isa = PBXGroup;
 			children = (
-				A1234567890ABCDEF008 /* Preview Assets.xcassets */,
+				1A001029 /* AdvancedScrollView.swift */,
+				1A00102B /* AdvancedButtons.swift */,
+				1A00102D /* AdvancedInputFields.swift */,
 			);
-			path = "Preview Content";
+			path = Advanced;
+			sourceTree = "<group>";
+		};
+		1A00104A /* PatientDiary */ = {
+			isa = PBXGroup;
+			children = (
+				1A00102F /* DiaryEntry.swift */,
+				1A001031 /* DiaryManager.swift */,
+				1A001033 /* DiaryPrivacyInfoView.swift */,
+				1A001035 /* IntegratedDiaryView.swift */,
+				1A001037 /* NewDiaryEntryView.swift */,
+				1A001039 /* PatientDiaryView.swift */,
+			);
+			path = PatientDiary;
+			sourceTree = "<group>";
+		};
+		1A00104B /* DiaryProtection */ = {
+			isa = PBXGroup;
+			children = (
+				1A00103B /* DiarySecurityManager.swift */,
+			);
+			path = DiaryProtection;
+			sourceTree = "<group>";
+		};
+		1A00104C /* DiaryInsights */ = {
+			isa = PBXGroup;
+			children = (
+				1A00103D /* DiaryAIInsightsManager.swift */,
+				1A00103F /* DiaryAIModels.swift */,
+			);
+			path = DiaryInsights;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		A1234567890ABCDEF030 /* ManusPsiqueia */ = {
+		1A000FFC /* ManusPsiqueia */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = A1234567890ABCDEF031 /* Build configuration list for PBXNativeTarget "ManusPsiqueia" */;
+			buildConfigurationList = 1A00100B /* Build configuration list for PBXNativeTarget "ManusPsiqueia" */;
 			buildPhases = (
-				A1234567890ABCDEF032 /* Sources */,
-				A1234567890ABCDEF023 /* Frameworks */,
-				A1234567890ABCDEF033 /* Resources */,
+				1A000FF9 /* Sources */,
+				1A000FFA /* Frameworks */,
+				1A000FFB /* Resources */,
 			);
 			buildRules = (
 			);
 			dependencies = (
 			);
 			name = ManusPsiqueia;
-			packageProductDependencies = (
-			);
 			productName = ManusPsiqueia;
-			productReference = A1234567890ABCDEF001 /* ManusPsiqueia.app */;
+			productReference = 1A000FFD /* ManusPsiqueia.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
 
 /* Begin PBXProject section */
-		A1234567890ABCDEF034 /* Project object */ = {
+		1A000FF5 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
 				BuildIndependentTargetsInParallel = 1;
 				LastSwiftUpdateCheck = 1500;
 				LastUpgradeCheck = 1500;
 				TargetAttributes = {
-					A1234567890ABCDEF030 = {
+					1A000FFC = {
 						CreatedOnToolsVersion = 15.0;
 					};
 				};
 			};
-			buildConfigurationList = A1234567890ABCDEF035 /* Build configuration list for PBXProject "ManusPsiqueia" */;
+			buildConfigurationList = 1A000FF8 /* Build configuration list for PBXProject "ManusPsiqueia" */;
 			compatibilityVersion = "Xcode 14.0";
-			developmentRegion = "pt-BR";
+			developmentRegion = en;
 			hasScannedForEncodings = 0;
 			knownRegions = (
-				"pt-BR",
 				en,
 				Base,
+				"pt-BR",
 			);
-			mainGroup = A1234567890ABCDEF024;
-			packageReferences = (
-			);
-			productRefGroup = A1234567890ABCDEF026 /* Products */;
+			mainGroup = 1A000FF4;
+			productRefGroup = 1A000FFE /* Products */;
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				A1234567890ABCDEF030 /* ManusPsiqueia */,
+				1A000FFC /* ManusPsiqueia */,
 			);
 		};
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		A1234567890ABCDEF033 /* Resources */ = {
+		1A000FFB /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1234567890ABCDEF007 /* Preview Assets.xcassets in Resources */,
-				A1234567890ABCDEF005 /* Assets.xcassets in Resources */,
+				1A001008 /* Preview Assets.xcassets in Resources */,
+				1A001005 /* Assets.xcassets in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
-		A1234567890ABCDEF032 /* Sources */ = {
+		1A000FF9 /* Sources */ = {
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				A1234567890ABCDEF003 /* ContentView.swift in Sources */,
-				A1234567890ABCDEF009 /* User.swift in Sources */,
-				A1234567890ABCDEF00B /* Subscription.swift in Sources */,
-				A1234567890ABCDEF00D /* Payment.swift in Sources */,
-				A1234567890ABCDEF00F /* AuthenticationManager.swift in Sources */,
-				A1234567890ABCDEF011 /* SubscriptionManager.swift in Sources */,
-				A1234567890ABCDEF013 /* StripeManager.swift in Sources */,
-				A1234567890ABCDEF015 /* NetworkManager.swift in Sources */,
-				A1234567890ABCDEF017 /* OnboardingView.swift in Sources */,
-				A1234567890ABCDEF019 /* PsychologistDashboardView.swift in Sources */,
-				A1234567890ABCDEF01B /* PatientDashboardView.swift in Sources */,
-				A1234567890ABCDEF01D /* SubscriptionView.swift in Sources */,
-				A1234567890ABCDEF01F /* FinancialDashboardView.swift in Sources */,
-				A1234567890ABCDEF001 /* ManusPsiqueiaApp.swift in Sources */,
+				1A001003 /* ContentView.swift in Sources */,
+				1A001010 /* User.swift in Sources */,
+				1A001012 /* Subscription.swift in Sources */,
+				1A001014 /* Payment.swift in Sources */,
+				1A001016 /* Invitation.swift in Sources */,
+				1A001018 /* Financial.swift in Sources */,
+				1A00101A /* StripeManager.swift in Sources */,
+				1A00101C /* InvitationManager.swift in Sources */,
+				1A00101E /* OnboardingView.swift in Sources */,
+				1A001020 /* UserTypeSelectionView.swift in Sources */,
+				1A001022 /* SubscriptionView.swift in Sources */,
+				1A001024 /* InvitePsychologistView.swift in Sources */,
+				1A001026 /* FinancialDashboardView.swift in Sources */,
+				1A001028 /* WithdrawFundsView.swift in Sources */,
+				1A00102A /* AdvancedScrollView.swift in Sources */,
+				1A00102C /* AdvancedButtons.swift in Sources */,
+				1A00102E /* AdvancedInputFields.swift in Sources */,
+				1A001030 /* DiaryEntry.swift in Sources */,
+				1A001032 /* DiaryManager.swift in Sources */,
+				1A001034 /* DiaryPrivacyInfoView.swift in Sources */,
+				1A001036 /* IntegratedDiaryView.swift in Sources */,
+				1A001038 /* NewDiaryEntryView.swift in Sources */,
+				1A00103A /* PatientDiaryView.swift in Sources */,
+				1A00103C /* DiarySecurityManager.swift in Sources */,
+				1A00103E /* DiaryAIInsightsManager.swift in Sources */,
+				1A001040 /* DiaryAIModels.swift in Sources */,
+				1A001001 /* ManusPsiqueiaApp.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXSourcesBuildPhase section */
 
 /* Begin XCBuildConfiguration section */
-		A1234567890ABCDEF036 /* Debug */ = {
+		1A001009 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -327,7 +399,7 @@
 			};
 			name = Debug;
 		};
-		A1234567890ABCDEF037 /* Release */ = {
+		1A00100A /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
@@ -383,7 +455,7 @@
 			};
 			name = Release;
 		};
-		A1234567890ABCDEF038 /* Debug */ = {
+		1A00100C /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -395,7 +467,9 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ManusPsiqueia/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Manus Psiqueia";
+				INFOPLIST_KEY_CFBundleDisplayName = "ManusPsiqueia";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "ManusPsiqueia usa Face ID para proteger seu diário privativo e dados de saúde mental.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -414,11 +488,11 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
-		A1234567890ABCDEF039 /* Release */ = {
+		1A00100D /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
@@ -430,7 +504,9 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ManusPsiqueia/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "Manus Psiqueia";
+				INFOPLIST_KEY_CFBundleDisplayName = "ManusPsiqueia";
+				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
+				INFOPLIST_KEY_NSFaceIDUsageDescription = "ManusPsiqueia usa Face ID para proteger seu diário privativo e dados de saúde mental.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
 				INFOPLIST_KEY_UIApplicationSupportsIndirectInputEvents = YES;
 				INFOPLIST_KEY_UILaunchScreen_Generation = YES;
@@ -449,32 +525,32 @@
 				SUPPORTS_MAC_DESIGNED_FOR_IPHONE_IPAD = NO;
 				SWIFT_EMIT_LOC_STRINGS = YES;
 				SWIFT_VERSION = 5.0;
-				TARGETED_DEVICE_FAMILY = 1;
+				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;
 		};
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		A1234567890ABCDEF031 /* Build configuration list for PBXNativeTarget "ManusPsiqueia" */ = {
+		1A000FF8 /* Build configuration list for PBXProject "ManusPsiqueia" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A1234567890ABCDEF038 /* Debug */,
-				A1234567890ABCDEF039 /* Release */,
+				1A001009 /* Debug */,
+				1A00100A /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		A1234567890ABCDEF035 /* Build configuration list for PBXProject "ManusPsiqueia" */ = {
+		1A00100B /* Build configuration list for PBXNativeTarget "ManusPsiqueia" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
-				A1234567890ABCDEF036 /* Debug */,
-				A1234567890ABCDEF037 /* Release */,
+				1A00100C /* Debug */,
+				1A00100D /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
-	rootObject = A1234567890ABCDEF034 /* Project object */;
+	rootObject = 1A000FF5 /* Project object */;
 }
