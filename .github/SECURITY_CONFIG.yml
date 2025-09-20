@@ -1,0 +1,81 @@
+# Configuração de Segurança - ManusPsiqueia
+# Arquivo de configuração para ferramentas de segurança automatizadas
+
+security:
+  # Configurações de análise de código
+  code_analysis:
+    enabled: true
+    tools:
+      - codeql
+      - swiftlint
+      - sonarqube
+    
+    # Regras específicas para saúde mental
+    custom_rules:
+      - no_hardcoded_secrets
+      - healthcare_data_protection
+      - encryption_required
+      - audit_logging_mandatory
+  
+  # Configurações de dependências
+  dependencies:
+    auto_update: true
+    security_only: true
+    schedule: "weekly"
+    
+    # Dependências críticas monitoradas
+    critical_packages:
+      - stripe-ios
+      - supabase-swift
+      - openai-swift
+  
+  # Configurações de vulnerabilidades
+  vulnerability_management:
+    severity_threshold: "medium"
+    auto_fix: true
+    notification_channels:
+      - email
+      - slack
+      - github_issues
+  
+  # Configurações de compliance
+  compliance:
+    standards:
+      - hipaa
+      - lgpd
+      - pci_dss
+      - iso_27001
+    
+    # Verificações automáticas
+    automated_checks:
+      - data_encryption
+      - access_controls
+      - audit_trails
+      - consent_management
+
+# Configurações de resposta a incidentes
+incident_response:
+  escalation_matrix:
+    critical: "2_hours"
+    high: "24_hours"
+    medium: "72_hours"
+    low: "1_week"
+  
+  notification_contacts:
+    security_team: "security@ailun.com.br"
+    emergency: "security-emergency@ailun.com.br"
+    compliance: "compliance@ailun.com.br"
+
+# Configurações de auditoria
+audit:
+  retention_period: "7_years"
+  log_level: "detailed"
+  real_time_monitoring: true
+  
+  # Eventos auditados
+  tracked_events:
+    - user_authentication
+    - data_access
+    - payment_processing
+    - ai_analysis_requests
+    - admin_actions
