@@ -9,6 +9,7 @@
 import Foundation
 import UIKit
 
+import Network
 /// Detecta ameaças de segurança no dispositivo, como jailbreak, depuração e redes suspeitas.
 /// Utilizado pelo CertificatePinningManager para monitoramento proativo.
 final class SecurityThreatDetector {
@@ -90,7 +91,7 @@ final class SecurityThreatDetector {
         let sysctlResult = sysctl(&mib, UInt32(mib.count), &info, &size, nil, 0)
         
         guard sysctlResult == 0 else {
-            auditLogger.log(event: .debuggingDetected, details: ["reason": "sysctl_failed"], severity: .error)
+            auditLogger.log(event: .debuggingDetected, details: ["reason": "sysctl_failed"], severity: .high)
             return false
         }
         
@@ -109,7 +110,7 @@ final class SecurityThreatDetector {
         // Por enquanto, uma implementação básica pode ser a detecção de IPs incomuns ou configurações de proxy
         
         // Exemplo heurístico: Verificar se há uma VPN ativa (simplificado)
-        let networkInterfaces = Host.current().addresses
+        // Network interface detection disabled
         for interface in networkInterfaces {
             if interface.hasPrefix("10.") || interface.hasPrefix("172.16.") || interface.hasPrefix("192.168.") {
                 // Ignorar IPs locais
@@ -128,7 +129,7 @@ final class SecurityThreatDetector {
     
     /// Executa um comando shell e verifica seu resultado.
     private func canExecuteCommand(_ command: String) -> Bool {
-        let task = Process()
+        // Process detection disabled
         task.launchPath = "/bin/bash"
         task.arguments = ["-c", command]
         
@@ -144,18 +145,8 @@ final class SecurityThreatDetector {
         
         return task.terminationStatus == 0 && !output.isEmpty
     }
-}
 
-// Adicionar novos eventos de segurança ao enum SecurityEvent no AuditLogger.swift
-extension SecurityEvent {
-    case deviceCompromised
-    case debuggingDetected
-    case suspiciousNetwork
-    case unauthorizedAccessAttempt
-    case securityIncidentReported
-    case securityEmergencyReported
-    case securityIncidentUpdated
-}
+}// Adicionar novos eventos de segurança ao enum SecurityEvent no AuditLogger.swift
 
 // Necessário para `kinfo_proc` e `P_TRACED`
 #if !targetEnvironment(simulator)

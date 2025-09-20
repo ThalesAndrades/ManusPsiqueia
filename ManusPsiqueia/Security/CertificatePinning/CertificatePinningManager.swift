@@ -409,30 +409,3 @@ struct SecurityConfiguration {
     let publicKeyBackupEnabled: Bool = true
 }
 
-enum SecurityEvent {
-    case certificateValidation
-    case certificateValidationSuccess
-    case certificateValidationFailed
-    case certificatePinAdded
-    case certificatePinRemoved
-    case certificateUpdateStarted
-    case certificateUpdateCompleted
-    case deviceCompromised
-    case debuggingDetected
-    case suspiciousNetwork
-    case emergencyBypass
-}
-
-enum SecurityIncidentType {
-    case certificatePinningFailure
-    case deviceCompromised
-    case certificatePinningBypass
-}
-
-enum SecuritySeverity {
-    case info
-    case warning
-    case medium
-    case high
-    case critical
-}

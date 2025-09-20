@@ -1,0 +1,30 @@
+{
+  "/Users/thalesandrades/Downloads/ManusPsiqueia/ManusPsiqueia/Features/PatientDiary/IntegratedDiaryView.swift" : {
+    "const-values" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/IntegratedDiaryView.swiftconstvalues",
+    "dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/IntegratedDiaryView.d",
+    "diagnostics" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/IntegratedDiaryView.dia",
+    "object" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/IntegratedDiaryView.o",
+    "swift-dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/IntegratedDiaryView.swiftdeps"
+  },
+  "/Users/thalesandrades/Downloads/ManusPsiqueia/ManusPsiqueia/Features/PatientDiary/NewDiaryEntryView.swift" : {
+    "const-values" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/NewDiaryEntryView.swiftconstvalues",
+    "dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/NewDiaryEntryView.d",
+    "diagnostics" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/NewDiaryEntryView.dia",
+    "object" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/NewDiaryEntryView.o",
+    "swift-dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/NewDiaryEntryView.swiftdeps"
+  },
+  "/Users/thalesandrades/Downloads/ManusPsiqueia/ManusPsiqueia/Features/PatientDiary/PatientDiaryView.swift" : {
+    "const-values" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/PatientDiaryView.swiftconstvalues",
+    "dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/PatientDiaryView.d",
+    "diagnostics" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/PatientDiaryView.dia",
+    "object" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/PatientDiaryView.o",
+    "swift-dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/PatientDiaryView.swiftdeps"
+  },
+  "/Users/thalesandrades/Downloads/ManusPsiqueia/ManusPsiqueia/Security/DiaryProtection/DiarySecurityManager.swift" : {
+    "const-values" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/DiarySecurityManager.swiftconstvalues",
+    "dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/DiarySecurityManager.d",
+    "diagnostics" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/DiarySecurityManager.dia",
+    "object" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/DiarySecurityManager.o",
+    "swift-dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/DiarySecurityManager.swiftdeps"
+  }
+}

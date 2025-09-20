@@ -108,6 +108,8 @@ enum SecurityEvent {
     case emergencyBypass
     case securityPolicyViolation
     case systemError
+    case logout
+    case profileUpdate
     case configurationChange
     case userConsentGranted
     case userConsentRevoked

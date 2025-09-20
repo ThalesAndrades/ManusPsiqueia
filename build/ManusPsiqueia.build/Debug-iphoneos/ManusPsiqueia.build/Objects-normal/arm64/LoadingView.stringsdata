@@ -1,0 +1,16 @@
+{
+  "source": "/Users/thalesandrades/Downloads/ManusPsiqueia/ManusPsiqueia/Views/LoadingView.swift",
+  "tables": {
+    "Localizable": [
+      {
+        "comment": "",
+        "key": "Carregando...",
+        "location": {
+          "startingColumn": 18,
+          "startingLine": 37
+        }
+      }
+    ]
+  },
+  "version": 1
+}

@@ -9,23 +9,6 @@
 import Foundation
 import Combine
 
-enum UserType: String, Codable {
-    case psychologist
-    case patient
-}
-
-struct User: Identifiable, Codable {
-    let id: UUID
-    let email: String
-    let userType: UserType
-    var name: String?
-    var profilePictureURL: URL?
-    var isActive: Bool = true
-    var isPremium: Bool = false
-    var stripeCustomerId: String?
-    var currentSubscriptionId: String?
-    var authToken: String? // Adicionado para armazenar o token de autenticação
-}
 
 final class AuthenticationManager: ObservableObject {
     @Published var isAuthenticated: Bool = false
@@ -118,18 +101,5 @@ final class AuthenticationManager: ObservableObject {
         }
         auditLogger.log(event: .profileUpdate, details: ["user_id": user.id.uuidString], severity: .info)
     }
-}
-
-extension AuditLogger {
-    func logAuthenticationFailure(email: String, reason: String) {
-        log(event: .authenticationFailure, details: ["email": email, "reason": reason], severity: .warning)
-    }
-}
-
-extension SecurityEvent {
-    case authenticationSuccess
-    case authenticationFailure
-    case logout
-    case profileUpdate
 }
 

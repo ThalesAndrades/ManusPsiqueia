@@ -1,4 +1,12 @@
 //
+
+enum SecurityIncidentType {
+    case certificatePinningFailure
+    case deviceCompromised
+    case certificatePinningBypass
+    case unauthorizedAccess
+    case dataIntegrityViolation
+}
 //  SecurityIncidentManager.swift
 //  ManusPsiqueia
 //
@@ -97,8 +105,3 @@ final class SecurityIncidentManager {
     }
 }
 
-extension SecurityEvent {
-    case securityIncidentReported
-    case securityEmergencyReported
-    case securityIncidentUpdated
-}

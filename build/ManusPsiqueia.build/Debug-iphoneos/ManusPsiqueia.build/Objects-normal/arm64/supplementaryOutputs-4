@@ -1,0 +1,30 @@
+{
+  "/Users/thalesandrades/Downloads/ManusPsiqueia/ManusPsiqueia/Components/Advanced/AdvancedButtons.swift" : {
+    "const-values" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/AdvancedButtons.swiftconstvalues",
+    "dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/AdvancedButtons.d",
+    "diagnostics" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/AdvancedButtons.dia",
+    "object" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/AdvancedButtons.o",
+    "swift-dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/AdvancedButtons.swiftdeps"
+  },
+  "/Users/thalesandrades/Downloads/ManusPsiqueia/ManusPsiqueia/Components/Advanced/AdvancedScrollView.swift" : {
+    "const-values" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/AdvancedScrollView.swiftconstvalues",
+    "dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/AdvancedScrollView.d",
+    "diagnostics" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/AdvancedScrollView.dia",
+    "object" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/AdvancedScrollView.o",
+    "swift-dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/AdvancedScrollView.swiftdeps"
+  },
+  "/Users/thalesandrades/Downloads/ManusPsiqueia/ManusPsiqueia/Views/FinancialDashboardView.swift" : {
+    "const-values" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/FinancialDashboardView.swiftconstvalues",
+    "dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/FinancialDashboardView.d",
+    "diagnostics" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/FinancialDashboardView.dia",
+    "object" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/FinancialDashboardView.o",
+    "swift-dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/FinancialDashboardView.swiftdeps"
+  },
+  "/Users/thalesandrades/Downloads/ManusPsiqueia/ManusPsiqueia/Views/WithdrawFundsView.swift" : {
+    "const-values" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/WithdrawFundsView.swiftconstvalues",
+    "dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/WithdrawFundsView.d",
+    "diagnostics" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/WithdrawFundsView.dia",
+    "object" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/WithdrawFundsView.o",
+    "swift-dependencies" : "/Users/thalesandrades/Downloads/ManusPsiqueia/build/ManusPsiqueia.build/Debug-iphoneos/ManusPsiqueia.build/Objects-normal/arm64/WithdrawFundsView.swiftdeps"
+  }
+}

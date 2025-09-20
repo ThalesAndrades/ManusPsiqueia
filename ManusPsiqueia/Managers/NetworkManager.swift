@@ -114,9 +114,3 @@ enum NetworkError: Error, LocalizedError {
     }
 }
 
-extension SecurityEvent {
-    case networkRequest
-    case networkRequestSuccess
-    case networkRequestFailed
-}
-

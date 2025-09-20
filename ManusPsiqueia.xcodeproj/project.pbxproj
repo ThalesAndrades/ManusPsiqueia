@@ -39,7 +39,7 @@
 		1A00104D /* CertificatePinningManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00104E /* CertificatePinningManager.swift */; };
 		1A00104F /* AuditLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001050 /* AuditLogger.swift */; };
 		1A001051 /* SecurityIncidentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001052 /* SecurityIncidentManager.swift */; };
-		1A001053 /* SecurityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001054 /* SecurityConfiguration.swift */; };
+
 		1A001055 /* SecurityThreatDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001056 /* SecurityThreatDetector.swift */; };
 		1A001065 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001066 /* AuthenticationManager.swift */; };
 		1A001067 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001068 /* NetworkManager.swift */; };
@@ -47,7 +47,7 @@
 		1A001059 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001058 /* SplashScreenView.swift */; };
 		1A001061 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001060 /* LoadingView.swift */; };
 		1A001063 /* ParticlesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001062 /* ParticlesView.swift */; };
-		1A001065 /* Particle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001064 /* Particle.swift */; };
+		1A001071 /* Particle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001064 /* Particle.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -82,10 +82,10 @@
 		1A00103D /* DiaryAIInsightsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAIInsightsManager.swift; sourceTree = "<group>"; };
 		1A00103F /* DiaryAIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAIModels.swift; sourceTree = "<group>"; };
 		1A001041 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		1A00104E /* CertificatePinningManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificatePinningManager.swift; sourceTree = "<group>"; };
+		1A00104E /* CertificatePinningManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "CertificatePinning/CertificatePinningManager.swift"; sourceTree = "<group>"; };
 		1A001050 /* AuditLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditLogger.swift; sourceTree = "<group>"; };
 		1A001052 /* SecurityIncidentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityIncidentManager.swift; sourceTree = "<group>"; };
-		1A001054 /* SecurityConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityConfiguration.swift; sourceTree = "<group>"; };
+
 		1A001056 /* SecurityThreatDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityThreatDetector.swift; sourceTree = "<group>"; };
 		1A001058 /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
 		1A001060 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
@@ -214,7 +214,7 @@
 				1A00104E /* CertificatePinningManager.swift */,
 				1A001050 /* AuditLogger.swift */,
 				1A001052 /* SecurityIncidentManager.swift */,
-				1A001054 /* SecurityConfiguration.swift */,
+
 				1A001056 /* SecurityThreatDetector.swift */,
 			);
 			path = Security;
@@ -369,7 +369,7 @@
 				1A00104D /* CertificatePinningManager.swift in Sources */,
 				1A00104F /* AuditLogger.swift in Sources */,
 				1A001051 /* SecurityIncidentManager.swift in Sources */,
-				1A001053 /* SecurityConfiguration.swift in Sources */,
+
 				1A001055 /* SecurityThreatDetector.swift in Sources */,
 				1A001065 /* AuthenticationManager.swift in Sources */,
 				1A001067 /* NetworkManager.swift in Sources */,
@@ -377,7 +377,7 @@
 				1A001059 /* SplashScreenView.swift in Sources */,
 				1A001061 /* LoadingView.swift in Sources */,
 				1A001063 /* ParticlesView.swift in Sources */,
-				1A001065 /* Particle.swift in Sources */,
+				1A001071 /* Particle.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -513,6 +513,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME = AccentColor;
 				CODE_SIGN_STYLE = Automatic;
+				CODE_SIGN_IDENTITY = "";
 				CURRENT_PROJECT_VERSION = 1;
 				DEVELOPMENT_ASSET_PATHS = "\"ManusPsiqueia/Preview Content\"";
 				DEVELOPMENT_TEAM = "";
