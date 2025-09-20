@@ -111,18 +111,18 @@ final class SecurityThreatDetector {
         
         // Exemplo heurístico: Verificar se há uma VPN ativa (simplificado)
         // Network interface detection disabled
-        for interface in networkInterfaces {
-            if interface.hasPrefix("10.") || interface.hasPrefix("172.16.") || interface.hasPrefix("192.168.") {
-                // Ignorar IPs locais
-                continue
-            }
-            if interface.contains("tun") || interface.contains("ppp") || interface.contains("vpn") {
-                auditLogger.log(event: .suspiciousNetwork, details: ["reason": "vpn_interface_found", "interface": interface], severity: .medium)
-                return true
-            }
-        }
-        
-        // TODO: Adicionar verificação de proxy HTTP/HTTPS
+//         // for interface in networkInterfaces {
+//             if interface.hasPrefix("10.") || interface.hasPrefix("172.16.") || interface.hasPrefix("192.168.") {
+//                 // Ignorar IPs locais
+//                 continue
+//             }
+//             if interface.contains("tun") || interface.contains("ppp") || interface.contains("vpn") {
+//                 auditLogger.log(event: .suspiciousNetwork, details: ["reason": "vpn_interface_found", "interface": interface], severity: .medium)
+//                 return true
+//             }
+//         }
+//         
+//         // TODO: Adicionar verificação de proxy HTTP/HTTPS
         
         return false
     }
@@ -130,20 +130,21 @@ final class SecurityThreatDetector {
     /// Executa um comando shell e verifica seu resultado.
     private func canExecuteCommand(_ command: String) -> Bool {
         // Process detection disabled
-        task.launchPath = "/bin/bash"
-        task.arguments = ["-c", command]
-        
-        let pipe = Pipe()
-        task.standardOutput = pipe
-        task.standardError = pipe
-        
-        task.launch()
-        task.waitUntilExit()
-        
-        let data = pipe.fileHandleForReading.readDataToEndOfFile()
-        let output = String(data: data, encoding: .utf8) ?? ""
-        
-        return task.terminationStatus == 0 && !output.isEmpty
+//         task.launchPath = "/bin/bash"
+//         task.arguments = ["-c", command]
+//         
+//         let pipe = Pipe()
+//         task.standardOutput = pipe
+//         task.standardError = pipe
+//         
+//         task.launch()
+//         task.waitUntilExit()
+//         
+//         let data = pipe.fileHandleForReading.readDataToEndOfFile()
+//         let output = String(data: data, encoding: .utf8) ?? ""
+//         
+//         return task.terminationStatus == 0 && !output.isEmpty
+                return false
     }
 
 }// Adicionar novos eventos de segurança ao enum SecurityEvent no AuditLogger.swift

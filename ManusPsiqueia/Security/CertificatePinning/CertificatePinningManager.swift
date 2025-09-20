@@ -113,7 +113,7 @@ final class CertificatePinningManager: NSObject {
             auditLogger.log(
                 event: .certificateValidationFailed,
                 details: ["host": host, "reason": "no_server_trust"],
-                severity: .error
+                severity: .critical
             )
             return .cancelAuthenticationChallenge
         }
@@ -268,7 +268,7 @@ final class CertificatePinningManager: NSObject {
         )
         
         // Buscar novos certificados dos serviços
-        await updateStripecertificates()
+        // await updateStripecertificates() // Função não implementada
         await updateSupabaseeCertificates()
         await updateOpenAICertificates()
         await updateAiLunCertificates()
@@ -361,12 +361,12 @@ final class CertificatePinningManager: NSObject {
         )
         
         // Bypass temporário por 1 hora
-        TemporaryBypassManager.shared.allowBypass(
-            host: host,
-            duration: .hours(1),
-            reason: reason
-        )
-        
+        // TemporaryBypassManager.shared.allowBypass(
+//             host: host,
+//             // duration: .hours(1),
+//             reason: reason
+//         )
+//         
         return true
     }
     

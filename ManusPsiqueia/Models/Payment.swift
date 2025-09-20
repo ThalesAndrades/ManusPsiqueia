@@ -9,21 +9,128 @@
 import Foundation
 import SwiftUI
 
+// MARK: - Payment Status
+enum PaymentStatus: String, CaseIterable, Codable {
+    case pending = "pending"
+    case processing = "processing"
+    case succeeded = "succeeded"
+    case failed = "failed"
+    case canceled = "canceled"
+    case refunded = "refunded"
+    case partiallyRefunded = "partially_refunded"
+    
+    var displayName: String {
+        switch self {
+        case .pending: return "Pendente"
+        case .processing: return "Processando"
+        case .succeeded: return "Pago"
+        case .failed: return "Falhou"
+        case .canceled: return "Cancelado"
+        case .refunded: return "Reembolsado"
+        case .partiallyRefunded: return "Parcialmente Reembolsado"
+        }
+    }
+    
+    var color: Color {
+        switch self {
+        case .pending: return .orange
+        case .processing: return .blue
+        case .succeeded: return .green
+        case .failed, .canceled: return .red
+        case .refunded, .partiallyRefunded: return .purple
+        }
+    }
+}
+
+// MARK: - Payment Method Type
+enum PaymentMethodType: String, CaseIterable, Codable {
+    case card = "card"
+    case pix = "pix"
+    case boleto = "boleto"
+    case applePay = "apple_pay"
+    case googlePay = "google_pay"
+    
+    var displayName: String {
+        switch self {
+        case .card: return "Cartão"
+        case .pix: return "PIX"
+        case .boleto: return "Boleto"
+        case .applePay: return "Apple Pay"
+        case .googlePay: return "Google Pay"
+        }
+    }
+    
+    var icon: String {
+        switch self {
+        case .card: return "creditcard"
+        case .pix: return "qrcode"
+        case .boleto: return "doc.text"
+        case .applePay: return "applelogo"
+        case .googlePay: return "g.circle"
+        }
+    }
+}
+
+// MARK: - Billing Period
+enum BillingPeriod: String, CaseIterable, Codable {
+    case monthly = "monthly"
+    case quarterly = "quarterly"
+    case semiannual = "semiannual"
+    case annual = "annual"
+    case oneTime = "one_time"
+    
+    var displayName: String {
+        switch self {
+        case .monthly: return "Mensal"
+        case .quarterly: return "Trimestral"
+        case .semiannual: return "Semestral"
+        case .annual: return "Anual"
+        case .oneTime: return "Pagamento Único"
+        }
+    }
+    
+    var months: Int {
+        switch self {
+        case .monthly: return 1
+        case .quarterly: return 3
+        case .semiannual: return 6
+        case .annual: return 12
+        case .oneTime: return 0
+        }
+    }
+}
+
 // MARK: - Patient Payment Model
 struct PatientPayment: Identifiable, Codable, Hashable {
     let id: UUID
     let patientId: UUID
     let psychologistId: UUID
     let amount: Decimal
+    let currency: String
     let status: PaymentStatus
-    let paymentMethod: PaymentMethod
+    let paymentMethodType: PaymentMethodType
     let billingPeriod: BillingPeriod
     let dueDate: Date
     let paidDate: Date?
+    let description: String
+    
+    // Stripe Integration
     let stripePaymentIntentId: String?
     let stripeChargeId: String?
+    let stripeCustomerId: String?
+    let stripeSubscriptionId: String?
+    
+    // Invoice & Receipt
+    let invoiceNumber: String
     let invoiceURL: String?
+    let receiptURL: String?
+    
+    // Failure Information
     let failureReason: String?
+    let failureCode: String?
+    
+    // Metadata
+    let metadata: [String: String]
     let createdAt: Date
     let updatedAt: Date
     
@@ -32,15 +139,23 @@ struct PatientPayment: Identifiable, Codable, Hashable {
         patientId: UUID,
         psychologistId: UUID,
         amount: Decimal,
+        currency: String = "BRL",
         status: PaymentStatus = .pending,
-        paymentMethod: PaymentMethod,
+        paymentMethodType: PaymentMethodType,
         billingPeriod: BillingPeriod,
         dueDate: Date,
         paidDate: Date? = nil,
+        description: String,
         stripePaymentIntentId: String? = nil,
         stripeChargeId: String? = nil,
+        stripeCustomerId: String? = nil,
+        stripeSubscriptionId: String? = nil,
+        invoiceNumber: String? = nil,
         invoiceURL: String? = nil,
+        receiptURL: String? = nil,
         failureReason: String? = nil,
+        failureCode: String? = nil,
+        metadata: [String: String] = [:],
         createdAt: Date = Date(),
         updatedAt: Date = Date()
     ) {
@@ -48,530 +163,302 @@ struct PatientPayment: Identifiable, Codable, Hashable {
         self.patientId = patientId
         self.psychologistId = psychologistId
         self.amount = amount
+        self.currency = currency
         self.status = status
-        self.paymentMethod = paymentMethod
+        self.paymentMethodType = paymentMethodType
         self.billingPeriod = billingPeriod
         self.dueDate = dueDate
         self.paidDate = paidDate
+        self.description = description
         self.stripePaymentIntentId = stripePaymentIntentId
         self.stripeChargeId = stripeChargeId
+        self.stripeCustomerId = stripeCustomerId
+        self.stripeSubscriptionId = stripeSubscriptionId
+        self.invoiceNumber = invoiceNumber ?? "INV-\(Date().timeIntervalSince1970)"
         self.invoiceURL = invoiceURL
+        self.receiptURL = receiptURL
         self.failureReason = failureReason
+        self.failureCode = failureCode
+        self.metadata = metadata
         self.createdAt = createdAt
         self.updatedAt = updatedAt
     }
+}
+
+// MARK: - Payment Method Model
+struct StripePaymentMethod: Identifiable, Codable, Hashable {
+    let id: String
+    let type: PaymentMethodType
+    let customerId: String
+    let isDefault: Bool
+    let card: CardDetails?
+    let pix: PixDetails?
+    let createdAt: Date
+    let lastUsed: Date?
     
+    struct CardDetails: Codable, Hashable {
+        let brand: String
+        let last4: String
+        let expMonth: Int
+        let expYear: Int
+        let country: String?
+        let funding: String?
+        
+        var displayBrand: String {
+            switch brand.lowercased() {
+            case "visa": return "Visa"
+            case "mastercard": return "Mastercard"
+            case "amex": return "American Express"
+            case "elo": return "Elo"
+            case "hipercard": return "Hipercard"
+            default: return brand.capitalized
+            }
+        }
+        
+        var isExpired: Bool {
+            let now = Date()
+            let calendar = Calendar.current
+            let currentYear = calendar.component(.year, from: now)
+            let currentMonth = calendar.component(.month, from: now)
+            
+            if expYear < currentYear {
+                return true
+            } else if expYear == currentYear && expMonth < currentMonth {
+                return true
+            }
+            return false
+        }
+    }
+    
+    struct PixDetails: Codable, Hashable {
+        let bankName: String?
+        let keyType: String?
+    }
+}
+
+// MARK: - Payment Intent Model
+struct PaymentIntent: Identifiable, Codable {
+    let id: String
+    let clientSecret: String
+    let amount: Int
+    let currency: String
+    let status: PaymentStatus
+    let customerId: String
+    let paymentMethodId: String?
+    let description: String?
+    let metadata: [String: String]
+    let createdAt: Date
+    let updatedAt: Date
+}
+
+// MARK: - Subscription Model
+struct StripeSubscription: Identifiable, Codable {
+    let id: String
+    let customerId: String
+    let status: SubscriptionStatus
+    let currentPeriodStart: Date
+    let currentPeriodEnd: Date
+    let cancelAtPeriodEnd: Bool
+    let canceledAt: Date?
+    let priceId: String
+    let quantity: Int
+    let metadata: [String: String]
+    let createdAt: Date
+    let updatedAt: Date
+    
+    enum SubscriptionStatus: String, Codable, CaseIterable {
+        case incomplete = "incomplete"
+        case incompleteExpired = "incomplete_expired"
+        case trialing = "trialing"
+        case active = "active"
+        case pastDue = "past_due"
+        case canceled = "canceled"
+        case unpaid = "unpaid"
+        
+        var displayName: String {
+            switch self {
+            case .incomplete: return "Incompleta"
+            case .incompleteExpired: return "Incompleta Expirada"
+            case .trialing: return "Período de Teste"
+            case .active: return "Ativa"
+            case .pastDue: return "Em Atraso"
+            case .canceled: return "Cancelada"
+            case .unpaid: return "Não Paga"
+            }
+        }
+        
+        var color: Color {
+            switch self {
+            case .incomplete, .incompleteExpired: return .orange
+            case .trialing: return .blue
+            case .active: return .green
+            case .pastDue, .unpaid: return .red
+            case .canceled: return .gray
+            }
+        }
+    }
+}
+
+// MARK: - Invoice Model
+struct Invoice: Identifiable, Codable {
+    let id: String
+    let number: String
+    let customerId: String
+    let subscriptionId: String?
+    let status: InvoiceStatus
+    let amountDue: Int
+    let amountPaid: Int
+    let currency: String
+    let dueDate: Date?
+    let paidAt: Date?
+    let hostedInvoiceUrl: String?
+    let invoicePdf: String?
+    let metadata: [String: String]
+    let createdAt: Date
+    
+    enum InvoiceStatus: String, Codable, CaseIterable {
+        case draft = "draft"
+        case open = "open"
+        case paid = "paid"
+        case uncollectible = "uncollectible"
+        case void = "void"
+        
+        var displayName: String {
+            switch self {
+            case .draft: return "Rascunho"
+            case .open: return "Em Aberto"
+            case .paid: return "Paga"
+            case .uncollectible: return "Incobrável"
+            case .void: return "Anulada"
+            }
+        }
+        
+        var color: Color {
+            switch self {
+            case .draft: return .gray
+            case .open: return .orange
+            case .paid: return .green
+            case .uncollectible, .void: return .red
+            }
+        }
+    }
+}
+
+// MARK: - Payment Analytics Model
+struct PaymentAnalytics: Codable {
+    let totalRevenue: Decimal
+    let monthlyRevenue: Decimal
+    let totalTransactions: Int
+    let successfulTransactions: Int
+    let failedTransactions: Int
+    let averageTransactionValue: Decimal
+    let topPaymentMethods: [PaymentMethodAnalytics]
+    let revenueByMonth: [MonthlyRevenue]
+    let churnRate: Double
+    let mrr: Decimal // Monthly Recurring Revenue
+    let arr: Decimal // Annual Recurring Revenue
+    
+    struct PaymentMethodAnalytics: Codable, Identifiable {
+        let id = UUID()
+        let type: PaymentMethodType
+        let count: Int
+        let percentage: Double
+        let totalAmount: Decimal
+    }
+    
+    struct MonthlyRevenue: Codable, Identifiable {
+        let id = UUID()
+        let month: String
+        let year: Int
+        let revenue: Decimal
+        let transactionCount: Int
+    }
+    
+    var successRate: Double {
+        guard totalTransactions > 0 else { return 0 }
+        return Double(successfulTransactions) / Double(totalTransactions) * 100
+    }
+    
+    var failureRate: Double {
+        guard totalTransactions > 0 else { return 0 }
+        return Double(failedTransactions) / Double(totalTransactions) * 100
+    }
+}
+
+// MARK: - Payment Configuration
+struct PaymentConfiguration: Codable {
+    let merchantName: String
+    let supportedPaymentMethods: [PaymentMethodType]
+    let defaultCurrency: String
+    let minimumAmount: Int
+    let maximumAmount: Int
+    let allowSavePaymentMethods: Bool
+    let requireBillingAddress: Bool
+    let requireShippingAddress: Bool
+    let automaticTax: Bool
+    let webhookEndpoint: String?
+    
+    static let `default` = PaymentConfiguration(
+        merchantName: "ManusPsiqueia",
+        supportedPaymentMethods: [.card, .pix, .applePay],
+        defaultCurrency: "BRL",
+        minimumAmount: 1000, // R$ 10,00 em centavos
+        maximumAmount: 100000000, // R$ 1.000.000,00 em centavos
+        allowSavePaymentMethods: true,
+        requireBillingAddress: false,
+        requireShippingAddress: false,
+        automaticTax: false,
+        webhookEndpoint: nil
+    )
+}
+
+// MARK: - Payment Extensions
+extension PatientPayment {
     var formattedAmount: String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .currency
+        formatter.currencyCode = currency
         formatter.locale = Locale(identifier: "pt_BR")
         return formatter.string(from: amount as NSDecimalNumber) ?? "R$ 0,00"
     }
     
-    var formattedDueDate: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: dueDate)
-    }
-    
-    var formattedPaidDate: String? {
-        guard let paidDate = paidDate else { return nil }
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: paidDate)
-    }
-    
     var isOverdue: Bool {
-        return status != .succeeded && dueDate < Date()
+        return status == .pending && Date() > dueDate
     }
     
-    var daysPastDue: Int {
+    var daysSinceDue: Int {
         guard isOverdue else { return 0 }
         return Calendar.current.dateComponents([.day], from: dueDate, to: Date()).day ?? 0
     }
     
-    var daysUntilDue: Int {
-        guard !isOverdue else { return 0 }
-        return Calendar.current.dateComponents([.day], from: Date(), to: dueDate).day ?? 0
-    }
-    
-    var statusMessage: String {
+    var statusIcon: String {
         switch status {
-        case .pending:
-            if isOverdue {
-                return "Vencido há \(daysPastDue) dia\(daysPastDue == 1 ? "" : "s")"
-            } else if daysUntilDue <= 3 {
-                return "Vence em \(daysUntilDue) dia\(daysUntilDue == 1 ? "" : "s")"
-            } else {
-                return "Pendente"
+        case .pending: return "clock"
+        case .processing: return "arrow.clockwise"
+        case .succeeded: return "checkmark.circle.fill"
+        case .failed: return "xmark.circle.fill"
+        case .canceled: return "minus.circle.fill"
+        case .refunded, .partiallyRefunded: return "arrow.uturn.left.circle.fill"
+        }
+    }
+}
+
+extension StripePaymentMethod {
+    var displayName: String {
+        switch type {
+        case .card:
+            if let card = card {
+                return "\(card.displayBrand) •••• \(card.last4)"
             }
-        case .processing:
-            return "Processando pagamento"
-        case .succeeded:
-            return "Pago em \(formattedPaidDate ?? "")"
-        case .failed:
-            return "Pagamento falhou"
-        case .canceled:
-            return "Cancelado"
-        case .refunded:
-            return "Reembolsado"
+            return "Cartão"
+        case .pix:
+            return "PIX"
+        case .boleto:
+            return "Boleto Bancário"
+        case .applePay:
+            return "Apple Pay"
+        case .googlePay:
+            return "Google Pay"
         }
-    }
-}
-
-// MARK: - Billing Period
-struct BillingPeriod: Codable, Hashable {
-    let startDate: Date
-    let endDate: Date
-    let month: Int
-    let year: Int
-    
-    init(startDate: Date, endDate: Date) {
-        self.startDate = startDate
-        self.endDate = endDate
-        
-        let calendar = Calendar.current
-        let components = calendar.dateComponents([.month, .year], from: startDate)
-        self.month = components.month ?? 1
-        self.year = components.year ?? 2024
-    }
-    
-    var displayName: String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pt_BR")
-        formatter.dateFormat = "MMMM 'de' yyyy"
-        return formatter.string(from: startDate).capitalized
-    }
-    
-    var shortDisplayName: String {
-        let formatter = DateFormatter()
-        formatter.locale = Locale(identifier: "pt_BR")
-        formatter.dateFormat = "MMM/yyyy"
-        return formatter.string(from: startDate)
-    }
-}
-
-// MARK: - Psychologist Earnings
-struct PsychologistEarnings: Identifiable, Codable {
-    let id: UUID
-    let psychologistId: UUID
-    let totalEarnings: Decimal
-    let availableForWithdrawal: Decimal
-    let pendingEarnings: Decimal
-    let totalWithdrawn: Decimal
-    let platformFee: Decimal
-    let netEarnings: Decimal
-    let lastUpdated: Date
-    
-    init(
-        id: UUID = UUID(),
-        psychologistId: UUID,
-        totalEarnings: Decimal = 0,
-        availableForWithdrawal: Decimal = 0,
-        pendingEarnings: Decimal = 0,
-        totalWithdrawn: Decimal = 0,
-        platformFee: Decimal = 0,
-        netEarnings: Decimal = 0,
-        lastUpdated: Date = Date()
-    ) {
-        self.id = id
-        self.psychologistId = psychologistId
-        self.totalEarnings = totalEarnings
-        self.availableForWithdrawal = availableForWithdrawal
-        self.pendingEarnings = pendingEarnings
-        self.totalWithdrawn = totalWithdrawn
-        self.platformFee = platformFee
-        self.netEarnings = netEarnings
-        self.lastUpdated = lastUpdated
-    }
-    
-    var formattedTotalEarnings: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: totalEarnings as NSDecimalNumber) ?? "R$ 0,00"
-    }
-    
-    var formattedAvailableForWithdrawal: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: availableForWithdrawal as NSDecimalNumber) ?? "R$ 0,00"
-    }
-    
-    var formattedPendingEarnings: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: pendingEarnings as NSDecimalNumber) ?? "R$ 0,00"
-    }
-    
-    var formattedPlatformFee: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: platformFee as NSDecimalNumber) ?? "R$ 0,00"
-    }
-    
-    var platformFeePercentage: Decimal {
-        guard totalEarnings > 0 else { return 0 }
-        return (platformFee / totalEarnings) * 100
-    }
-}
-
-// MARK: - Withdrawal Request
-struct WithdrawalRequest: Identifiable, Codable {
-    let id: UUID
-    let psychologistId: UUID
-    let amount: Decimal
-    let status: WithdrawalStatus
-    let bankAccount: BankAccount
-    let requestedAt: Date
-    let processedAt: Date?
-    let stripeTransferId: String?
-    let failureReason: String?
-    let createdAt: Date
-    
-    init(
-        id: UUID = UUID(),
-        psychologistId: UUID,
-        amount: Decimal,
-        status: WithdrawalStatus = .pending,
-        bankAccount: BankAccount,
-        requestedAt: Date = Date(),
-        processedAt: Date? = nil,
-        stripeTransferId: String? = nil,
-        failureReason: String? = nil,
-        createdAt: Date = Date()
-    ) {
-        self.id = id
-        self.psychologistId = psychologistId
-        self.amount = amount
-        self.status = status
-        self.bankAccount = bankAccount
-        self.requestedAt = requestedAt
-        self.processedAt = processedAt
-        self.stripeTransferId = stripeTransferId
-        self.failureReason = failureReason
-        self.createdAt = createdAt
-    }
-    
-    var formattedAmount: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: amount as NSDecimalNumber) ?? "R$ 0,00"
-    }
-    
-    var formattedRequestedDate: String {
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.timeStyle = .short
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: requestedAt)
-    }
-    
-    var estimatedArrival: String {
-        let businessDays = Calendar.current.date(byAdding: .day, value: 2, to: requestedAt) ?? requestedAt
-        let formatter = DateFormatter()
-        formatter.dateStyle = .medium
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: businessDays)
-    }
-}
-
-enum WithdrawalStatus: String, CaseIterable, Codable {
-    case pending = "pending"
-    case processing = "processing"
-    case completed = "completed"
-    case failed = "failed"
-    case canceled = "canceled"
-    
-    var displayName: String {
-        switch self {
-        case .pending:
-            return "Pendente"
-        case .processing:
-            return "Processando"
-        case .completed:
-            return "Concluído"
-        case .failed:
-            return "Falhou"
-        case .canceled:
-            return "Cancelado"
-        }
-    }
-    
-    var color: Color {
-        switch self {
-        case .pending:
-            return .orange
-        case .processing:
-            return .blue
-        case .completed:
-            return .green
-        case .failed:
-            return .red
-        case .canceled:
-            return .gray
-        }
-    }
-    
-    var icon: String {
-        switch self {
-        case .pending:
-            return "clock.fill"
-        case .processing:
-            return "arrow.clockwise"
-        case .completed:
-            return "checkmark.circle.fill"
-        case .failed:
-            return "xmark.circle.fill"
-        case .canceled:
-            return "minus.circle.fill"
-        }
-    }
-}
-
-// MARK: - Bank Account
-struct BankAccount: Identifiable, Codable, Hashable {
-    let id: UUID
-    let psychologistId: UUID
-    let bankCode: String
-    let bankName: String
-    let accountType: AccountType
-    let accountNumber: String
-    let routingNumber: String // Agência
-    let accountHolderName: String
-    let accountHolderDocument: String // CPF/CNPJ
-    let isDefault: Bool
-    let isVerified: Bool
-    let createdAt: Date
-    
-    init(
-        id: UUID = UUID(),
-        psychologistId: UUID,
-        bankCode: String,
-        bankName: String,
-        accountType: AccountType,
-        accountNumber: String,
-        routingNumber: String,
-        accountHolderName: String,
-        accountHolderDocument: String,
-        isDefault: Bool = false,
-        isVerified: Bool = false,
-        createdAt: Date = Date()
-    ) {
-        self.id = id
-        self.psychologistId = psychologistId
-        self.bankCode = bankCode
-        self.bankName = bankName
-        self.accountType = accountType
-        self.accountNumber = accountNumber
-        self.routingNumber = routingNumber
-        self.accountHolderName = accountHolderName
-        self.accountHolderDocument = accountHolderDocument
-        self.isDefault = isDefault
-        self.isVerified = isVerified
-        self.createdAt = createdAt
-    }
-    
-    var displayName: String {
-        return "\(bankName) - \(accountType.displayName) \(maskedAccountNumber)"
-    }
-    
-    var maskedAccountNumber: String {
-        guard accountNumber.count > 4 else { return accountNumber }
-        let lastFour = String(accountNumber.suffix(4))
-        let masked = String(repeating: "•", count: accountNumber.count - 4)
-        return "\(masked)\(lastFour)"
-    }
-    
-    var formattedDocument: String {
-        let digits = accountHolderDocument.replacingOccurrences(of: "[^0-9]", with: "", options: .regularExpression)
-        
-        if digits.count == 11 {
-            // CPF: 000.000.000-00
-            return String(format: "%@.%@.%@-%@",
-                         String(digits.prefix(3)),
-                         String(digits.dropFirst(3).prefix(3)),
-                         String(digits.dropFirst(6).prefix(3)),
-                         String(digits.suffix(2)))
-        } else if digits.count == 14 {
-            // CNPJ: 00.000.000/0000-00
-            return String(format: "%@.%@.%@/%@-%@",
-                         String(digits.prefix(2)),
-                         String(digits.dropFirst(2).prefix(3)),
-                         String(digits.dropFirst(5).prefix(3)),
-                         String(digits.dropFirst(8).prefix(4)),
-                         String(digits.suffix(2)))
-        }
-        
-        return accountHolderDocument
-    }
-}
-
-enum AccountType: String, CaseIterable, Codable {
-    case checking = "checking"
-    case savings = "savings"
-    
-    var displayName: String {
-        switch self {
-        case .checking:
-            return "Conta Corrente"
-        case .savings:
-            return "Conta Poupança"
-        }
-    }
-    
-    var shortName: String {
-        switch self {
-        case .checking:
-            return "CC"
-        case .savings:
-            return "CP"
-        }
-    }
-}
-
-// MARK: - Payment Analytics
-struct PaymentAnalytics: Codable {
-    let totalRevenue: Decimal
-    let monthlyRevenue: Decimal
-    let averagePaymentValue: Decimal
-    let paymentSuccessRate: Double
-    let totalTransactions: Int
-    let activeSubscriptions: Int
-    let churnRate: Double
-    let period: AnalyticsPeriod
-    let lastUpdated: Date
-    
-    var formattedTotalRevenue: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: totalRevenue as NSDecimalNumber) ?? "R$ 0,00"
-    }
-    
-    var formattedMonthlyRevenue: String {
-        let formatter = NumberFormatter()
-        formatter.numberStyle = .currency
-        formatter.locale = Locale(identifier: "pt_BR")
-        return formatter.string(from: monthlyRevenue as NSDecimalNumber) ?? "R$ 0,00"
-    }
-    
-    var formattedSuccessRate: String {
-        return String(format: "%.1f%%", paymentSuccessRate * 100)
-    }
-    
-    var formattedChurnRate: String {
-        return String(format: "%.1f%%", churnRate * 100)
-    }
-}
-
-enum AnalyticsPeriod: String, CaseIterable, Codable {
-    case week = "week"
-    case month = "month"
-    case quarter = "quarter"
-    case year = "year"
-    
-    var displayName: String {
-        switch self {
-        case .week:
-            return "Última Semana"
-        case .month:
-            return "Último Mês"
-        case .quarter:
-            return "Último Trimestre"
-        case .year:
-            return "Último Ano"
-        }
-    }
-}
-
-// MARK: - Mock Data Extensions
-extension PatientPayment {
-    static let mockPending = PatientPayment(
-        patientId: UUID(),
-        psychologistId: UUID(),
-        amount: 180.00,
-        status: .pending,
-        paymentMethod: .mockCard,
-        billingPeriod: BillingPeriod(
-            startDate: Calendar.current.startOfMonth(for: Date()) ?? Date(),
-            endDate: Calendar.current.endOfMonth(for: Date()) ?? Date()
-        ),
-        dueDate: Calendar.current.date(byAdding: .day, value: 5, to: Date()) ?? Date()
-    )
-    
-    static let mockOverdue = PatientPayment(
-        patientId: UUID(),
-        psychologistId: UUID(),
-        amount: 180.00,
-        status: .pending,
-        paymentMethod: .mockCard,
-        billingPeriod: BillingPeriod(
-            startDate: Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date(),
-            endDate: Calendar.current.startOfMonth(for: Date()) ?? Date()
-        ),
-        dueDate: Calendar.current.date(byAdding: .day, value: -3, to: Date()) ?? Date()
-    )
-    
-    static let mockPaid = PatientPayment(
-        patientId: UUID(),
-        psychologistId: UUID(),
-        amount: 180.00,
-        status: .succeeded,
-        paymentMethod: .mockCard,
-        billingPeriod: BillingPeriod(
-            startDate: Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date(),
-            endDate: Calendar.current.startOfMonth(for: Date()) ?? Date()
-        ),
-        dueDate: Calendar.current.date(byAdding: .month, value: -1, to: Date()) ?? Date(),
-        paidDate: Calendar.current.date(byAdding: .month, value: -1, to: Date()),
-        stripePaymentIntentId: "pi_1234567890",
-        stripeChargeId: "ch_1234567890"
-    )
-}
-
-extension PsychologistEarnings {
-    static let mock = PsychologistEarnings(
-        psychologistId: UUID(),
-        totalEarnings: 15000.00,
-        availableForWithdrawal: 2500.00,
-        pendingEarnings: 800.00,
-        totalWithdrawn: 12000.00,
-        platformFee: 1500.00,
-        netEarnings: 13500.00
-    )
-}
-
-extension BankAccount {
-    static let mock = BankAccount(
-        psychologistId: UUID(),
-        bankCode: "001",
-        bankName: "Banco do Brasil",
-        accountType: .checking,
-        accountNumber: "123456789",
-        routingNumber: "1234",
-        accountHolderName: "Ana Silva",
-        accountHolderDocument: "12345678901",
-        isDefault: true,
-        isVerified: true
-    )
-}
-
-// MARK: - Calendar Extensions
-extension Calendar {
-    func startOfMonth(for date: Date) -> Date? {
-        let components = dateComponents([.year, .month], from: date)
-        return self.date(from: components)
-    }
-    
-    func endOfMonth(for date: Date) -> Date? {
-        guard let startOfMonth = startOfMonth(for: date) else { return nil }
-        return self.date(byAdding: DateComponents(month: 1, day: -1), to: startOfMonth)
     }
 }

@@ -62,7 +62,7 @@ final class NetworkManager: NSObject, URLSessionDelegate {
                     self.auditLogger.log(
                         event: .networkRequestFailed,
                         details: ["url": url.absoluteString, "reason": "invalid_response"],
-                        severity: .error
+                        severity: .critical
                     )
                     throw NetworkError.invalidResponse
                 }
@@ -71,7 +71,7 @@ final class NetworkManager: NSObject, URLSessionDelegate {
                     self.auditLogger.log(
                         event: .networkRequestFailed,
                         details: ["url": url.absoluteString, "status_code": httpResponse.statusCode],
-                        severity: .error
+                        severity: .critical
                     )
                     throw NetworkError.httpError(statusCode: httpResponse.statusCode)
                 }
@@ -90,7 +90,7 @@ final class NetworkManager: NSObject, URLSessionDelegate {
                 self.auditLogger.log(
                     event: .networkRequestFailed,
                     details: ["url": url.absoluteString, "error": error.localizedDescription],
-                    severity: .error
+                    severity: .critical
                 )
                 return NetworkError.unknown(error)
             }
