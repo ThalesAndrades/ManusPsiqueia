@@ -1,0 +1,305 @@
+# CodeQL Configuration for ManusPsiqueia
+# Custom security analysis configuration for mental health platform
+# Developed by AiLun Tecnologia - CNPJ: 60.740.536/0001-75
+
+name: "ManusPsiqueia Security Analysis"
+
+# ==========================================
+# 📁 PATHS CONFIGURATION
+# ==========================================
+paths:
+  - "ManusPsiqueia/**"
+  - "!ManusPsiqueia/Generated/**"
+  - "!ManusPsiqueia/Pods/**"
+  - "!ManusPsiqueia/DerivedData/**"
+
+paths-ignore:
+  - "**/*.md"
+  - "**/*.txt"
+  - "**/*.json"
+  - "**/Documentation/**"
+  - "**/.git/**"
+  - "**/fastlane/**"
+  - "**/scripts/**"
+
+# ==========================================
+# 🔍 QUERIES CONFIGURATION
+# ==========================================
+queries:
+  # Standard security queries
+  - uses: security-and-quality
+  - uses: security-experimental
+  
+  # Custom queries for healthcare applications
+  - name: healthcare-security
+    uses: ./.github/codeql/queries/healthcare-security.ql
+  
+  # Financial security queries (Stripe integration)
+  - name: financial-security
+    uses: ./.github/codeql/queries/financial-security.ql
+  
+  # Mobile security queries
+  - name: mobile-security
+    uses: ./.github/codeql/queries/mobile-security.ql
+  
+  # AI/ML security queries
+  - name: ai-security
+    uses: ./.github/codeql/queries/ai-security.ql
+
+# ==========================================
+# 🎯 QUERY FILTERS
+# ==========================================
+query-filters:
+  # Exclude test files from certain security checks
+  - exclude:
+      id: swift/hardcoded-credentials
+    from:
+      - "**/*Test*.swift"
+      - "**/*Mock*.swift"
+      - "**/*Stub*.swift"
+  
+  # Include all security-related queries for production code
+  - include:
+      tags:
+        - security
+        - external/cwe
+        - external/owasp
+  
+  # Healthcare-specific filters
+  - include:
+      tags:
+        - healthcare
+        - hipaa
+        - patient-data
+  
+  # Financial security filters
+  - include:
+      tags:
+        - financial
+        - payment
+        - pci-dss
+
+# ==========================================
+# 📊 ANALYSIS CONFIGURATION
+# ==========================================
+analysis:
+  # Enable all security-related analyses
+  security:
+    enabled: true
+    level: "strict"
+  
+  # Quality analysis
+  quality:
+    enabled: true
+    level: "standard"
+  
+  # Performance analysis
+  performance:
+    enabled: false  # Focus on security for healthcare app
+  
+  # Maintainability analysis
+  maintainability:
+    enabled: true
+    level: "standard"
+
+# ==========================================
+# 🔒 SECURITY FOCUS AREAS
+# ==========================================
+security-focus:
+  # Healthcare-specific security
+  healthcare:
+    - patient-data-protection
+    - medical-record-security
+    - hipaa-compliance
+    - audit-logging
+    - access-control
+  
+  # Financial security (Stripe)
+  financial:
+    - payment-data-protection
+    - api-key-security
+    - transaction-integrity
+    - pci-compliance
+    - financial-audit-trail
+  
+  # Mobile security
+  mobile:
+    - keychain-usage
+    - biometric-authentication
+    - app-transport-security
+    - certificate-pinning
+    - secure-storage
+  
+  # AI/ML security
+  ai-ml:
+    - model-input-validation
+    - data-privacy
+    - inference-security
+    - bias-detection
+    - adversarial-protection
+
+# ==========================================
+# 🇧🇷 COMPLIANCE REQUIREMENTS
+# ==========================================
+compliance:
+  # Brazilian regulations
+  lgpd:
+    enabled: true
+    checks:
+      - personal-data-handling
+      - consent-management
+      - data-deletion-rights
+      - data-portability
+      - privacy-by-design
+  
+  # Healthcare regulations
+  hipaa:
+    enabled: true
+    checks:
+      - phi-protection
+      - access-controls
+      - audit-trails
+      - encryption-requirements
+      - breach-notification
+  
+  # Financial regulations
+  pci-dss:
+    enabled: true
+    checks:
+      - cardholder-data-protection
+      - secure-transmission
+      - access-restrictions
+      - vulnerability-management
+      - security-monitoring
+
+# ==========================================
+# 📋 CUSTOM RULES
+# ==========================================
+custom-rules:
+  # Mental health terminology
+  mental-health-terminology:
+    pattern: "(?i)(crazy|insane|psycho|nuts|mental)(?!.*health)"
+    message: "Use appropriate mental health terminology"
+    severity: "warning"
+  
+  # Hardcoded API keys
+  api-key-detection:
+    patterns:
+      - "sk_live_[a-zA-Z0-9]+"
+      - "pk_live_[a-zA-Z0-9]+"
+      - "sk_test_[a-zA-Z0-9]+"
+      - "pk_test_[a-zA-Z0-9]+"
+      - "sk-[a-zA-Z0-9]{48}"
+    message: "API keys should not be hardcoded"
+    severity: "error"
+  
+  # Insecure network communication
+  insecure-communication:
+    pattern: "http://(?!localhost|127\\.0\\.0\\.1)"
+    message: "Use HTTPS for external communication"
+    severity: "warning"
+  
+  # Patient data handling
+  patient-data-security:
+    patterns:
+      - "patient.*data"
+      - "medical.*record"
+      - "health.*information"
+    message: "Ensure proper security for patient data"
+    severity: "info"
+
+# ==========================================
+# 📊 REPORTING CONFIGURATION
+# ==========================================
+reporting:
+  # Report format
+  format: "sarif"
+  
+  # Include source code snippets
+  include-source: true
+  
+  # Severity levels to report
+  severity-levels:
+    - "error"
+    - "warning"
+    - "note"
+  
+  # Categories to include
+  categories:
+    - "security"
+    - "quality"
+    - "maintainability"
+  
+  # Custom report sections
+  sections:
+    - name: "Healthcare Security"
+      description: "Security analysis specific to healthcare applications"
+    - name: "Financial Security"
+      description: "Security analysis for payment processing"
+    - name: "Mobile Security"
+      description: "iOS-specific security analysis"
+    - name: "Compliance"
+      description: "Regulatory compliance analysis"
+
+# ==========================================
+# 🔧 PERFORMANCE TUNING
+# ==========================================
+performance:
+  # Analysis timeout (in minutes)
+  timeout: 60
+  
+  # Memory limit (in GB)
+  memory-limit: 8
+  
+  # Parallel analysis
+  parallel: true
+  
+  # Cache configuration
+  cache:
+    enabled: true
+    ttl: "7d"
+
+# ==========================================
+# 📝 METADATA
+# ==========================================
+metadata:
+  name: "ManusPsiqueia Security Analysis"
+  description: "Comprehensive security analysis for mental health platform"
+  version: "1.0.0"
+  author: "AiLun Tecnologia"
+  contact: "contato@ailun.com.br"
+  cnpj: "60.740.536/0001-75"
+  
+  # Analysis scope
+  scope:
+    - "iOS mobile application"
+    - "Swift programming language"
+    - "Healthcare data processing"
+    - "Financial transaction handling"
+    - "AI/ML integration"
+    - "Brazilian compliance (LGPD)"
+    - "Healthcare compliance (HIPAA)"
+    - "Financial compliance (PCI DSS)"
+  
+  # Security standards
+  standards:
+    - "OWASP Mobile Top 10"
+    - "NIST Cybersecurity Framework"
+    - "ISO 27001"
+    - "HIPAA Security Rule"
+    - "LGPD Technical Requirements"
+    - "PCI DSS Requirements"
+
+# ==========================================
+# 📞 SUPPORT INFORMATION
+# ==========================================
+support:
+  documentation: "https://github.com/ThalesAndrades/ManusPsiqueia/wiki"
+  issues: "https://github.com/ThalesAndrades/ManusPsiqueia/issues"
+  security: "contato@ailun.com.br"
+  
+  # Emergency contacts for critical security issues
+  emergency:
+    email: "contato@ailun.com.br"
+    priority: "immediate"
+    escalation: "24 hours"

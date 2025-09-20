@@ -1,0 +1,141 @@
+# Dependabot Configuration for ManusPsiqueia
+# Automated dependency updates for security and maintenance
+# Developed by AiLun Tecnologia - CNPJ: 60.740.536/0001-75
+
+version: 2
+
+updates:
+  # ==========================================
+  # 📦 SWIFT PACKAGE MANAGER
+  # ==========================================
+  - package-ecosystem: "swift"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "America/Sao_Paulo"
+    
+    # Security updates
+    open-pull-requests-limit: 10
+    
+    # Reviewers and assignees
+    reviewers:
+      - "ThalesAndrades"
+    
+    # Labels for PRs
+    labels:
+      - "dependencies"
+      - "swift"
+      - "security"
+    
+    # Commit message preferences
+    commit-message:
+      prefix: "📦"
+      prefix-development: "📦 dev"
+      include: "scope"
+    
+    # Ignore specific dependencies if needed
+    ignore:
+      # Ignore major version updates for stable dependencies
+      - dependency-name: "*"
+        update-types: ["version-update:semver-major"]
+    
+    # Allow specific dependencies to have major updates
+    allow:
+      - dependency-name: "stripe/stripe-ios"
+        dependency-type: "direct"
+      - dependency-name: "openai/openai-swift"
+        dependency-type: "direct"
+      - dependency-name: "supabase/supabase-swift"
+        dependency-type: "direct"
+
+  # ==========================================
+  # 🐙 GITHUB ACTIONS
+  # ==========================================
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+      day: "tuesday"
+      time: "06:00"
+      timezone: "America/Sao_Paulo"
+    
+    open-pull-requests-limit: 5
+    
+    reviewers:
+      - "ThalesAndrades"
+    
+    labels:
+      - "dependencies"
+      - "github-actions"
+      - "ci-cd"
+    
+    commit-message:
+      prefix: "🔧"
+      include: "scope"
+
+  # ==========================================
+  # 🔒 SECURITY-FOCUSED UPDATES
+  # ==========================================
+  - package-ecosystem: "swift"
+    directory: "/"
+    schedule:
+      interval: "daily"
+    
+    # Only security updates
+    open-pull-requests-limit: 20
+    
+    # High priority for security
+    reviewers:
+      - "ThalesAndrades"
+    
+    labels:
+      - "security"
+      - "critical"
+      - "dependencies"
+    
+    commit-message:
+      prefix: "🔒"
+      prefix-development: "🔒 security"
+    
+    # Target only security updates
+    allow:
+      - dependency-type: "direct"
+        update-types: ["security"]
+      - dependency-type: "indirect"
+        update-types: ["security"]
+
+# ==========================================
+# 📋 CONFIGURATION NOTES
+# ==========================================
+# 
+# This Dependabot configuration is specifically designed for ManusPsiqueia:
+# 
+# 1. **Swift Package Manager**: Weekly updates for Swift dependencies
+#    - Stripe iOS SDK for payment processing
+#    - OpenAI Swift for AI functionality
+#    - Supabase Swift for backend services
+# 
+# 2. **GitHub Actions**: Weekly updates for CI/CD workflows
+#    - Keeps automation tools current
+#    - Ensures security patches are applied
+# 
+# 3. **Security Updates**: Daily monitoring for security vulnerabilities
+#    - Critical for healthcare applications
+#    - HIPAA and LGPD compliance requirements
+#    - Financial data protection (Stripe integration)
+# 
+# 4. **Mental Health Compliance**: 
+#    - Dependencies are vetted for healthcare use
+#    - Security-first approach for patient data
+#    - Regular updates for vulnerability patches
+# 
+# 5. **Brazilian Regulations**:
+#    - LGPD compliance through updated dependencies
+#    - CFP (Conselho Federal de Psicologia) requirements
+#    - Financial regulations for payment processing
+# 
+# Developed by: AiLun Tecnologia
+# CNPJ: 60.740.536/0001-75
+# Email: contato@ailun.com.br
