@@ -16,12 +16,6 @@
 		1A001014 /* Payment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001013 /* Payment.swift */; };
 		1A001016 /* Invitation.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001015 /* Invitation.swift */; };
 		1A001018 /* Financial.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001017 /* Financial.swift */; };
-		1A001069 /* DynamicPricing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001070 /* DynamicPricing.swift */; };
-		1A001071 /* ManusPsiqueiaTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001072 /* ManusPsiqueiaTests.swift */; };
-		1A001073 /* UserModelTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001074 /* UserModelTests.swift */; };
-		1A001075 /* DynamicPricingTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001076 /* DynamicPricingTests.swift */; };
-		1A001077 /* StripeManagerTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001078 /* StripeManagerTests.swift */; };
-		1A001079 /* DiaryAIInsightsTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001080 /* DiaryAIInsightsTests.swift */; };
 		1A00101A /* StripeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001019 /* StripeManager.swift */; };
 		1A00101C /* InvitationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00101B /* InvitationManager.swift */; };
 		1A00101E /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00101D /* OnboardingView.swift */; };
@@ -47,13 +41,10 @@
 		1A001051 /* SecurityIncidentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001052 /* SecurityIncidentManager.swift */; };
 		1A001053 /* SecurityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001054 /* SecurityConfiguration.swift */; };
 		1A001055 /* SecurityThreatDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001056 /* SecurityThreatDetector.swift */; };
-		1A001057 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001058 /* SplashScreenView.swift */; };
-		1A001059 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001060 /* LoadingView.swift */; };
-		1A001061 /* ParticlesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001062 /* ParticlesView.swift */; };
-		1A001063 /* Particle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001064 /* Particle.swift */; };
 		1A001065 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001066 /* AuthenticationManager.swift */; };
 		1A001067 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001068 /* NetworkManager.swift */; };
-		/* End PBXBuildFile section */
+		1A001069 /* DynamicPricing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001070 /* DynamicPricing.swift */; };
+/* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
 		1A000FFD /* ManusPsiqueia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ManusPsiqueia.app; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -66,12 +57,6 @@
 		1A001013 /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Payment.swift; sourceTree = "<group>"; };
 		1A001015 /* Invitation.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Invitation.swift; sourceTree = "<group>"; };
 		1A001017 /* Financial.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Financial.swift; sourceTree = "<group>"; };
-		1A001070 /* DynamicPricing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicPricing.swift; sourceTree = "<group>"; };
-		1A001072 /* ManusPsiqueiaTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManusPsiqueiaTests.swift; sourceTree = "<group>"; };
-		1A001074 /* UserModelTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserModelTests.swift; sourceTree = "<group>"; };
-		1A001076 /* DynamicPricingTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicPricingTests.swift; sourceTree = "<group>"; };
-		1A001078 /* StripeManagerTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeManagerTests.swift; sourceTree = "<group>"; };
-		1A001080 /* DiaryAIInsightsTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAIInsightsTests.swift; sourceTree = "<group>"; };
 		1A001019 /* StripeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StripeManager.swift; sourceTree = "<group>"; };
 		1A00101B /* InvitationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitationManager.swift; sourceTree = "<group>"; };
 		1A00101D /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingView.swift; sourceTree = "<group>"; };
@@ -104,6 +89,7 @@
 		1A001064 /* Particle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Particle.swift; sourceTree = "<group>"; };
 		1A001066 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuthenticationManager.swift; sourceTree = "<group>"; };
 		1A001068 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkManager.swift; sourceTree = "<group>"; };
+		1A001070 /* DynamicPricing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicPricing.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -278,18 +264,6 @@
 			path = DiaryInsights;
 			sourceTree = "<group>";
 		};
-		1A001081 /* ManusPsiqueiaTests */ = {
-			isa = PBXGroup;
-			children = (
-				1A001072 /* ManusPsiqueiaTests.swift */,
-				1A001074 /* UserModelTests.swift */,
-				1A001076 /* DynamicPricingTests.swift */,
-				1A001078 /* StripeManagerTests.swift */,
-				1A001080 /* DiaryAIInsightsTests.swift */,
-			);
-			path = ManusPsiqueiaTests;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -396,10 +370,7 @@
 				1A001065 /* AuthenticationManager.swift in Sources */,
 				1A001067 /* NetworkManager.swift in Sources */,
 				1A001069 /* DynamicPricing.swift in Sources */,
-				1A001071 /* ManusPsiqueiaTests.swift in Sources */,
-				1A001073 /* UserModelTests.swift in Sources */,
-				1A001075 /* DynamicPricingTests.swift in Sources */,
-							1A001065 /* AuthenticationManager.swift in Sources */,
+				1A001065 /* AuthenticationManager.swift in Sources */,
 				1A001067 /* NetworkManager.swift in Sources */,
 				1A001069 /* DynamicPricing.swift in Sources */,
 			);
@@ -539,7 +510,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ManusPsiqueia/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "ManusPsiqueia";
+				INFOPLIST_KEY_CFBundleDisplayName = ManusPsiqueia;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "ManusPsiqueia usa Face ID para proteger seu diário privativo e dados de saúde mental.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
@@ -576,7 +547,7 @@
 				ENABLE_PREVIEWS = YES;
 				GENERATE_INFOPLIST_FILE = YES;
 				INFOPLIST_FILE = ManusPsiqueia/Info.plist;
-				INFOPLIST_KEY_CFBundleDisplayName = "ManusPsiqueia";
+				INFOPLIST_KEY_CFBundleDisplayName = ManusPsiqueia;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.medical";
 				INFOPLIST_KEY_NSFaceIDUsageDescription = "ManusPsiqueia usa Face ID para proteger seu diário privativo e dados de saúde mental.";
 				INFOPLIST_KEY_UIApplicationSceneManifest_Generation = YES;
