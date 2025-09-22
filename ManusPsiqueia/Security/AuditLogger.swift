@@ -7,6 +7,9 @@
 //
 
 import Foundation
+import UIKit
+import UserNotifications
+import Security
 
 /// Logger de auditoria para registrar eventos de segurança e compliance
 /// Garante rastreabilidade e conformidade com LGPD, HIPAA, ISO 27001
@@ -54,8 +57,142 @@ final class AuditLogger {
         // ou um sistema de log centralizado e seguro.
         print("AUDIT LOG [\(severity)] - \(event): \(logDetails)")
         
-        // TODO: Implementar persistência segura do log (e.g., Core Data criptografado, ou envio para servidor remoto)
-        // TODO: Implementar alertas em tempo real para eventos críticos
+        // Implementar persistência segura do log
+        persistLogSecurely(logEntry: logEntry)
+        
+        // Implementar alertas em tempo real para eventos críticos
+        if severity == .critical || severity == .high {
+            sendRealTimeAlert(for: logEntry)
+        }
+    }
+    
+    /// Persiste o log de forma segura usando Keychain para dados sensíveis
+    /// - Parameter logEntry: A entrada do log para persistir
+    private func persistLogSecurely(logEntry: AuditLogEntry) {
+        // Para logs críticos, armazenar no Keychain
+        if logEntry.severity == .critical {
+            let keychainKey = "audit_log_\(logEntry.timestamp.timeIntervalSince1970)"
+            do {
+                let logData = try JSONEncoder().encode(logEntry)
+                let status = SecItemAdd([
+                    kSecClass: kSecClassGenericPassword,
+                    kSecAttrAccount: keychainKey,
+                    kSecAttrService: "ManusPsiqueia.AuditLog",
+                    kSecValueData: logData,
+                    kSecAttrAccessible: kSecAttrAccessibleWhenUnlockedThisDeviceOnly
+                ] as CFDictionary, nil)
+                
+                if status != errSecSuccess {
+                    print("Falha ao salvar log crítico no Keychain: \(status)")
+                }
+            } catch {
+                print("Erro ao codificar log para Keychain: \(error)")
+            }
+        }
+        
+        // Para outros logs, armazenar em UserDefaults com limite de tamanho
+        var existingLogs = UserDefaults.standard.array(forKey: "audit_logs") as? [[String: Any]] ?? []
+        
+        // Converter entrada do log para dicionário
+        if let logData = try? JSONEncoder().encode(logEntry),
+           let logDict = try? JSONSerialization.jsonObject(with: logData) as? [String: Any] {
+            existingLogs.append(logDict)
+            
+            // Manter apenas os últimos 1000 logs para evitar uso excessivo de memória
+            if existingLogs.count > 1000 {
+                existingLogs = Array(existingLogs.suffix(1000))
+            }
+            
+            UserDefaults.standard.set(existingLogs, forKey: "audit_logs")
+        }
+    }
+    
+    /// Envia alertas em tempo real para eventos críticos
+    /// - Parameter logEntry: A entrada do log que acionou o alerta
+    private func sendRealTimeAlert(for logEntry: AuditLogEntry) {
+        // 1. Notificação local imediata
+        let content = UNMutableNotificationContent()
+        content.title = "Alerta de Segurança"
+        content.body = "Evento crítico detectado: \(logEntry.event.rawValue)"
+        content.sound = .defaultCritical
+        content.categoryIdentifier = "SECURITY_ALERT"
+        
+        let request = UNNotificationRequest(
+            identifier: "security_\(logEntry.timestamp.timeIntervalSince1970)",
+            content: content,
+            trigger: nil // Imediato
+        )
+        
+        UNUserNotificationCenter.current().add(request) { error in
+            if let error = error {
+                print("Erro ao enviar notificação de segurança: \(error)")
+            }
+        }
+        
+        // 2. Log estruturado para monitoramento externo
+        let alertPayload: [String: Any] = [
+            "app": "ManusPsiqueia",
+            "alert_type": "security_event",
+            "severity": logEntry.severity.rawValue,
+            "event": logEntry.event.rawValue,
+            "timestamp": ISO8601DateFormatter().string(from: logEntry.timestamp),
+            "details": logEntry.details,
+            "user_id": logEntry.userId?.uuidString ?? "anonymous",
+            "device_id": UIDevice.current.identifierForVendor?.uuidString ?? "unknown"
+        ]
+        
+        // Em produção, enviar para serviço de monitoramento (Datadog, New Relic, etc.)
+        print("CRITICAL_SECURITY_ALERT: \(alertPayload)")
+        
+        // 3. Para eventos extremamente críticos, notificar equipe de segurança
+        if logEntry.severity == .critical {
+            notifySecurityTeam(alert: alertPayload)
+        }
+    }
+    
+    /// Notifica a equipe de segurança sobre eventos críticos
+    /// - Parameter alert: Dados do alerta para enviar
+    private func notifySecurityTeam(alert: [String: Any]) {
+        // Em produção, integrar com:
+        // - Slack webhook para notificações imediatas
+        // - Email para a equipe de segurança
+        // - PagerDuty para incidentes críticos
+        // - Sistema de ticketing (Jira, ServiceNow)
+        
+        print("🚨 NOTIFICAÇÃO EQUIPE SEGURANÇA: \(alert)")
+        
+        // Exemplo de implementação para webhook do Slack (desabilitado para desenvolvimento)
+        /*
+        Task {
+            do {
+                guard let url = URL(string: SecurityConfiguration.slackWebhookURL) else { return }
+                
+                let slackPayload = [
+                    "text": "🚨 Alerta Crítico de Segurança - ManusPsiqueia",
+                    "attachments": [
+                        [
+                            "color": "danger",
+                            "fields": [
+                                ["title": "Evento", "value": alert["event"] ?? "N/A", "short": true],
+                                ["title": "Severidade", "value": alert["severity"] ?? "N/A", "short": true],
+                                ["title": "Timestamp", "value": alert["timestamp"] ?? "N/A", "short": false]
+                            ]
+                        ]
+                    ]
+                ]
+                
+                var request = URLRequest(url: url)
+                request.httpMethod = "POST"
+                request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+                request.httpBody = try JSONSerialization.data(withJSONObject: slackPayload)
+                
+                let (_, response) = try await URLSession.shared.data(for: request)
+                print("Slack notification sent: \(response)")
+            } catch {
+                print("Erro ao enviar notificação Slack: \(error)")
+            }
+        }
+        */
     }
     
     /// Registra uma tentativa de acesso não autorizado

@@ -56,6 +56,10 @@ class InvitationManager: ObservableObject {
     }
     
     // MARK: - Load Data
+    
+    /// Carrega todos os convites do usuário atual (enviados e recebidos)
+    /// - Note: Este método carrega convites enviados (para pacientes) e recebidos (para psicólogos)
+    /// - Throws: Não lança erros, mas atualiza `errorMessage` em caso de falha
     func loadUserInvitations() async {
         isLoading = true
         defer { isLoading = false }
@@ -71,15 +75,20 @@ class InvitationManager: ObservableObject {
                 endpoint: "/invitations/received"
             )
             
-            DispatchQueue.main.async {
-                self.sentInvitations = sentResponse.invitations
-                self.receivedInvitations = receivedResponse.invitations
+            DispatchQueue.main.async { [weak self] in
+                self?.sentInvitations = sentResponse.invitations
+                self?.receivedInvitations = receivedResponse.invitations
             }
         } catch {
-            errorMessage = "Erro ao carregar convites: \(error.localizedDescription)"
+            DispatchQueue.main.async { [weak self] in
+                self?.errorMessage = "Erro ao carregar convites: \(error.localizedDescription)"
+            }
         }
     }
     
+    /// Carrega todas as vinculações ativas entre pacientes e psicólogos
+    /// - Note: Inclui dados de pagamentos, status da vinculação e histórico
+    /// - Throws: Não lança erros, mas atualiza `errorMessage` em caso de falha
     func loadPatientLinks() async {
         isLoading = true
         defer { isLoading = false }
@@ -89,15 +98,27 @@ class InvitationManager: ObservableObject {
                 endpoint: "/patient-links"
             )
             
-            DispatchQueue.main.async {
-                self.patientLinks = response.links
+            DispatchQueue.main.async { [weak self] in
+                self?.patientLinks = response.links
             }
         } catch {
-            errorMessage = "Erro ao carregar vinculações: \(error.localizedDescription)"
+            DispatchQueue.main.async { [weak self] in
+                self?.errorMessage = "Erro ao carregar vinculações: \(error.localizedDescription)"
+            }
         }
     }
     
     // MARK: - Send Invitation
+    
+    /// Envia um convite para um psicólogo se juntar à plataforma como profissional do paciente
+    /// - Parameters:
+    ///   - toPsychologistEmail: Email do psicólogo que receberá o convite (obrigatório)
+    ///   - toPsychologistName: Nome do psicólogo (opcional, para personalização)
+    ///   - message: Mensagem personalizada do paciente (opcional, máximo 1000 caracteres)
+    ///   - fromPatient: Dados do paciente que está enviando o convite
+    /// - Returns: O convite criado com código único e data de expiração
+    /// - Throws: `InvitationError` se alguma validação falhar ou se houver erro de rede
+    /// - Note: O convite expira em 7 dias e pode ser aceito apenas uma vez
     func sendInvitation(
         toPsychologistEmail: String,
         toPsychologistName: String? = nil,
@@ -107,10 +128,13 @@ class InvitationManager: ObservableObject {
         isLoading = true
         defer { isLoading = false }
         
-        // Validar email
-        guard isValidEmail(toPsychologistEmail) else {
-            throw InvitationError.invalidEmail
-        }
+        // Validação abrangente de entrada
+        try validateInvitationInput(
+            email: toPsychologistEmail,
+            name: toPsychologistName,
+            message: message,
+            patient: fromPatient
+        )
         
         // Verificar se já existe convite pendente para este email
         if sentInvitations.contains(where: { 
@@ -122,11 +146,11 @@ class InvitationManager: ObservableObject {
         }
         
         let parameters = [
-            "to_psychologist_email": toPsychologistEmail,
-            "to_psychologist_name": toPsychologistName ?? "",
+            "to_psychologist_email": toPsychologistEmail.trimmingCharacters(in: .whitespacesAndNewlines).lowercased(),
+            "to_psychologist_name": toPsychologistName?.trimmingCharacters(in: .whitespacesAndNewlines) ?? "",
             "patient_name": fromPatient.fullName,
             "patient_email": fromPatient.email,
-            "message": message ?? ""
+            "message": message?.trimmingCharacters(in: .whitespacesAndNewlines) ?? ""
         ]
         
         do {
@@ -148,9 +172,67 @@ class InvitationManager: ObservableObject {
             
             return invitation
         } catch {
-            errorMessage = "Erro ao enviar convite: \(error.localizedDescription)"
-            throw error
+            let mappedError = mapNetworkError(error)
+            errorMessage = mappedError.localizedDescription
+            throw mappedError
         }
+    }
+    
+    // MARK: - Error Handling
+    
+    /// Mapeia erros de rede para erros específicos do domínio de convites
+    /// - Parameter error: Erro original da rede
+    /// - Returns: Erro mapeado para o contexto de convites
+    private func mapNetworkError(_ error: Error) -> Error {
+        // Se já é um InvitationError, retornar como está
+        if error is InvitationError {
+            return error
+        }
+        
+        // Mapear erros específicos baseados no código de status HTTP
+        if let networkError = error as? URLError {
+            switch networkError.code {
+            case .notConnectedToInternet, .networkConnectionLost:
+                return InvitationError.networkUnavailable
+            case .timedOut:
+                return InvitationError.requestTimeout
+            case .cannotConnectToHost, .cannotFindHost:
+                return InvitationError.serverUnavailable
+            default:
+                return InvitationError.networkError
+            }
+        }
+        
+        // Mapear erros baseados na mensagem (para APIs que retornam mensagens específicas)
+        let errorMessage = error.localizedDescription.lowercased()
+        
+        if errorMessage.contains("email") && errorMessage.contains("invalid") {
+            return InvitationError.invalidEmail
+        }
+        
+        if errorMessage.contains("already exists") || errorMessage.contains("duplicate") {
+            return InvitationError.invitationAlreadyExists
+        }
+        
+        if errorMessage.contains("expired") {
+            return InvitationError.invitationExpired
+        }
+        
+        if errorMessage.contains("not found") {
+            if errorMessage.contains("psychologist") {
+                return InvitationError.psychologistNotFound
+            } else if errorMessage.contains("patient") {
+                return InvitationError.patientNotFound
+            }
+        }
+        
+        if errorMessage.contains("unauthorized") || errorMessage.contains("permission") {
+            return InvitationError.insufficientPermissions
+        }
+        
+        // Retornar erro genérico se não conseguir mapear
+        return InvitationError.unknownError
+    }
     }
     
     // MARK: - Respond to Invitation
@@ -543,6 +625,95 @@ class InvitationManager: ObservableObject {
     func getMonthlyRecurringRevenue() -> Decimal {
         return getActivePatientLinks().reduce(0) { $0 + $1.monthlyFee }
     }
+    
+    // MARK: - Input Validation
+    
+    /// Valida os dados de entrada para criação de convite
+    /// - Parameters:
+    ///   - email: Email do psicólogo
+    ///   - name: Nome do psicólogo (opcional)
+    ///   - message: Mensagem personalizada (opcional)
+    ///   - patient: Dados do paciente
+    /// - Throws: InvitationError se alguma validação falhar
+    private func validateInvitationInput(
+        email: String,
+        name: String?,
+        message: String?,
+        patient: User
+    ) throws {
+        // Validar email do psicólogo
+        guard !email.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw InvitationError.invalidEmail
+        }
+        
+        guard isValidEmail(email) else {
+            throw InvitationError.invalidEmail
+        }
+        
+        // Validar nome do psicólogo se fornecido
+        if let name = name?.trimmingCharacters(in: .whitespacesAndNewlines), !name.isEmpty {
+            guard name.count >= 2 && name.count <= 100 else {
+                throw InvitationError.invalidPsychologistName
+            }
+            
+            // Verificar se contém apenas caracteres válidos (letras, espaços, hífens, apostrofes)
+            let nameRegex = "^[a-zA-ZÀ-ÿ\\s\\-']+$"
+            let namePredicate = NSPredicate(format: "SELF MATCHES %@", nameRegex)
+            guard namePredicate.evaluate(with: name) else {
+                throw InvitationError.invalidPsychologistName
+            }
+        }
+        
+        // Validar mensagem se fornecida
+        if let message = message?.trimmingCharacters(in: .whitespacesAndNewlines), !message.isEmpty {
+            guard message.count <= 1000 else {
+                throw InvitationError.messageTooLong
+            }
+            
+            // Verificar se a mensagem não contém conteúdo inadequado
+            guard !containsInappropriateContent(message) else {
+                throw InvitationError.inappropriateContent
+            }
+        }
+        
+        // Validar dados do paciente
+        guard !patient.fullName.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty else {
+            throw InvitationError.invalidPatientData
+        }
+        
+        guard isValidEmail(patient.email) else {
+            throw InvitationError.invalidPatientData
+        }
+        
+        // Verificar se o paciente não está tentando se convidar
+        guard patient.email.lowercased() != email.lowercased() else {
+            throw InvitationError.cannotInviteSelf
+        }
+    }
+    
+    /// Valida se um email tem formato válido
+    /// - Parameter email: Email a ser validado
+    /// - Returns: true se o email for válido
+    private func isValidEmail(_ email: String) -> Bool {
+        let emailRegex = "^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,}$"
+        let emailPredicate = NSPredicate(format: "SELF MATCHES %@", emailRegex)
+        return emailPredicate.evaluate(with: email.trimmingCharacters(in: .whitespacesAndNewlines))
+    }
+    
+    /// Verifica se o conteúdo contém termos inadequados
+    /// - Parameter content: Conteúdo a ser verificado
+    /// - Returns: true se contém conteúdo inadequado
+    private func containsInappropriateContent(_ content: String) -> Bool {
+        let inappropriateTerms = [
+            "spam", "hack", "fraude", "golpe", "bitcoin", "criptomoeda",
+            "medicamento", "droga", "remedio", "viagra", "cialis"
+        ]
+        
+        let lowercaseContent = content.lowercased()
+        return inappropriateTerms.contains { term in
+            lowercaseContent.contains(term)
+        }
+    }
 }
 
 // MARK: - Response Models
@@ -591,6 +762,16 @@ enum InvitationError: LocalizedError {
     case linkAlreadyExists
     case linkNotFound
     case insufficientPermissions
+    case invalidPsychologistName
+    case messageTooLong
+    case inappropriateContent
+    case invalidPatientData
+    case cannotInviteSelf
+    case networkUnavailable
+    case requestTimeout
+    case serverUnavailable
+    case networkError
+    case unknownError
     
     var errorDescription: String? {
         switch self {
@@ -614,6 +795,26 @@ enum InvitationError: LocalizedError {
             return "Vinculação não encontrada"
         case .insufficientPermissions:
             return "Permissões insuficientes"
+        case .invalidPsychologistName:
+            return "Nome do psicólogo inválido"
+        case .messageTooLong:
+            return "Mensagem muito longa (máximo 1000 caracteres)"
+        case .inappropriateContent:
+            return "Conteúdo inadequado detectado na mensagem"
+        case .invalidPatientData:
+            return "Dados do paciente inválidos"
+        case .cannotInviteSelf:
+            return "Não é possível enviar convite para o próprio email"
+        case .networkUnavailable:
+            return "Sem conexão com a internet. Verifique sua conexão e tente novamente."
+        case .requestTimeout:
+            return "Tempo limite excedido. Tente novamente em alguns instantes."
+        case .serverUnavailable:
+            return "Servidor temporariamente indisponível. Tente novamente mais tarde."
+        case .networkError:
+            return "Erro de conexão. Verifique sua internet e tente novamente."
+        case .unknownError:
+            return "Erro inesperado. Entre em contato com o suporte se o problema persistir."
         }
     }
 }

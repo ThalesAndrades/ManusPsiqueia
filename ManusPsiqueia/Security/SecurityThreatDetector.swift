@@ -8,8 +8,8 @@
 
 import Foundation
 import UIKit
-
 import Network
+import SystemConfiguration.CaptiveNetwork
 /// Detecta ameaças de segurança no dispositivo, como jailbreak, depuração e redes suspeitas.
 /// Utilizado pelo CertificatePinningManager para monitoramento proativo.
 final class SecurityThreatDetector {
@@ -106,25 +106,96 @@ final class SecurityThreatDetector {
     /// Esta é uma verificação heurística e pode gerar falsos positivos.
     /// - Returns: `true` se uma rede suspeita for detectada, `false` caso contrário.
     func isSuspiciousNetworkDetected() -> Bool {
-        // TODO: Implementar verificação de VPN/Proxy mais robusta
-        // Por enquanto, uma implementação básica pode ser a detecção de IPs incomuns ou configurações de proxy
+        var suspiciousDetected = false
         
-        // Exemplo heurístico: Verificar se há uma VPN ativa (simplificado)
-        // Network interface detection disabled
-//         // for interface in networkInterfaces {
-//             if interface.hasPrefix("10.") || interface.hasPrefix("172.16.") || interface.hasPrefix("192.168.") {
-//                 // Ignorar IPs locais
-//                 continue
-//             }
-//             if interface.contains("tun") || interface.contains("ppp") || interface.contains("vpn") {
-//                 auditLogger.log(event: .suspiciousNetwork, details: ["reason": "vpn_interface_found", "interface": interface], severity: .medium)
-//                 return true
-//             }
-//         }
-//         
-//         // TODO: Adicionar verificação de proxy HTTP/HTTPS
+        // 1. Verificar configurações de proxy do sistema
+        if let proxySettings = CFNetworkCopySystemProxySettings()?.takeRetainedValue() as? [String: Any] {
+            // Verificar proxy HTTP
+            if let httpProxy = proxySettings[kCFNetworkProxiesHTTPProxy as String] as? String,
+               !httpProxy.isEmpty {
+                auditLogger.log(event: .suspiciousNetwork, 
+                              details: ["reason": "http_proxy_detected", "proxy": httpProxy], 
+                              severity: .medium)
+                suspiciousDetected = true
+            }
+            
+            // Verificar proxy HTTPS
+            if let httpsProxy = proxySettings[kCFNetworkProxiesHTTPSProxy as String] as? String,
+               !httpsProxy.isEmpty {
+                auditLogger.log(event: .suspiciousNetwork, 
+                              details: ["reason": "https_proxy_detected", "proxy": httpsProxy], 
+                              severity: .medium)
+                suspiciousDetected = true
+            }
+            
+            // Verificar proxy SOCKS
+            if let socksProxy = proxySettings[kCFNetworkProxiesSOCKSProxy as String] as? String,
+               !socksProxy.isEmpty {
+                auditLogger.log(event: .suspiciousNetwork, 
+                              details: ["reason": "socks_proxy_detected", "proxy": socksProxy], 
+                              severity: .high)
+                suspiciousDetected = true
+            }
+        }
         
-        return false
+        // 2. Verificar interfaces de rede suspeitas usando Network framework
+        let monitor = NWPathMonitor()
+        let queue = DispatchQueue(label: "NetworkMonitor")
+        
+        monitor.pathUpdateHandler = { path in
+            // Verificar interfaces disponíveis
+            for interface in path.availableInterfaces {
+                let interfaceName = interface.name
+                
+                // Detectar interfaces VPN comuns
+                if interfaceName.contains("tun") || 
+                   interfaceName.contains("ppp") || 
+                   interfaceName.contains("vpn") ||
+                   interfaceName.contains("utun") ||
+                   interfaceName.contains("ipsec") {
+                    self.auditLogger.log(event: .suspiciousNetwork, 
+                                       details: ["reason": "vpn_interface_detected", "interface": interfaceName], 
+                                       severity: .medium)
+                    suspiciousDetected = true
+                }
+            }
+        }
+        
+        monitor.start(queue: queue)
+        // Dar tempo para a verificação assíncrona
+        Thread.sleep(forTimeInterval: 0.1)
+        monitor.cancel()
+        
+        // 3. Verificar se está usando DNS público conhecido (pode indicar tentativa de bypass)
+        if let dnsServers = self.getCurrentDNSServers() {
+            let suspiciousDNS = ["1.1.1.1", "8.8.8.8", "8.8.4.4", "9.9.9.9"]
+            for dns in dnsServers {
+                if suspiciousDNS.contains(dns) {
+                    auditLogger.log(event: .suspiciousNetwork, 
+                                  details: ["reason": "public_dns_detected", "dns": dns], 
+                                  severity: .low)
+                }
+            }
+        }
+        
+        return suspiciousDetected
+    }
+    
+    /// Obtém os servidores DNS atuais do sistema
+    /// - Returns: Array de endereços DNS ou nil se não conseguir obter
+    private func getCurrentDNSServers() -> [String]? {
+        var dnsServers: [String] = []
+        
+        if let interfaces = CNCopySupportedInterfaces() as? [String] {
+            for interface in interfaces {
+                if let info = CNCopyCurrentNetworkInfo(interface as CFString) as? [String: Any],
+                   let dns = info["DNS"] as? [String] {
+                    dnsServers.append(contentsOf: dns)
+                }
+            }
+        }
+        
+        return dnsServers.isEmpty ? nil : dnsServers
     }
     
     /// Executa um comando shell e verifica seu resultado.
