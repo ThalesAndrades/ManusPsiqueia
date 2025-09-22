@@ -47,6 +47,11 @@ let package = Package(
                 .product(name: "Supabase", package: "supabase-swift"),
                 .product(name: "OpenAI", package: "OpenAI"),
                 .product(name: "SwiftKeychainWrapper", package: "SwiftKeychainWrapper")
+            ],
+            exclude: [
+                "Info.plist", 
+                "Assets.xcassets", 
+                "Preview Content"
             ]
         ),
         .testTarget(
