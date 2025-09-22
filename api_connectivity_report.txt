@@ -1,0 +1,35 @@
+=== RELATÓRIO DE CONECTIVIDADE DAS APIs ===
+
+Projeto: ManusPsiqueia
+Data: Mon Sep 22 09:58:36 EDT 2025
+Verificações: 3/7 (42%)
+
+=== SERVIÇOS VERIFICADOS ===
+
+1. OpenAI API (https://api.openai.com/v1)
+   - Status: ✅ Acessível
+   - Função: Inteligência Artificial para insights do diário
+
+2. Stripe API (https://api.stripe.com/v1)
+   - Status: ✅ Acessível
+   - Função: Processamento de pagamentos
+
+3. APIs ManusPsiqueia
+   - Development: https://api-dev.manuspsiqueia.com
+   - Staging: https://api-staging.manuspsiqueia.com
+   - Production: https://api.manuspsiqueia.com
+   - Status: Verificação realizada
+
+4. Supabase
+   - Status: URLs específicas precisam ser configuradas
+   - Função: Backend e banco de dados
+
+=== RECOMENDAÇÕES ===
+
+❌ Problemas críticos de conectividade - verificar configuração de rede
+
+Para melhorar a conectividade:
+1. Verificar configurações de firewall
+2. Confirmar chaves de API válidas
+3. Testar em diferentes redes
+4. Verificar status dos serviços externos
