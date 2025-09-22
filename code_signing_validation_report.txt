@@ -1,0 +1,32 @@
+=== RELATÓRIO DE VALIDAÇÃO DE ASSINATURA DE CÓDIGO ===
+
+Projeto: ManusPsiqueia
+Data: Mon Sep 22 09:46:28 EDT 2025
+Ambiente: Local
+
+=== CONFIGURAÇÕES VERIFICADAS ===
+
+1. Arquivos de Configuração (.xcconfig)
+   - Development.xcconfig: ✅ Presente
+   - Staging.xcconfig: ✅ Presente
+   - Production.xcconfig: ✅ Presente
+
+2. Info.plist
+   - Arquivo: ✅ Presente
+   - Configurações: ✅ Válidas
+
+3. Bundle Identifiers
+   - Development: com.ailun.manuspsiqueia.dev
+   - Staging: com.ailun.manuspsiqueia.beta
+   - Production: com.ailun.manuspsiqueia
+
+=== VARIÁVEIS DE AMBIENTE ===
+
+Ambiente local - variáveis de ambiente não verificadas
+
+=== RECOMENDAÇÕES ===
+
+1. Certifique-se de que DEVELOPMENT_TEAM_ID está configurado no Xcode Cloud
+2. Verifique se os certificados de distribuição estão válidos
+3. Confirme que os provisioning profiles estão atualizados
+4. Teste o build em cada ambiente antes do deploy

@@ -7,13 +7,23 @@
 	<key>CFBundleIdentifier</key>
 	<string>com.ailun.manuspsiqueia</string>
 	<key>CFBundleVersion</key>
-	<string>1</string>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
 	<key>CFBundleShortVersionString</key>
-	<string>1.0</string>
+	<string>$(MARKETING_VERSION)</string>
 	<key>LSApplicationCategoryType</key>
 	<string>public.app-category.medical</string>
 	<key>NSFaceIDUsageDescription</key>
 	<string>ManusPsiqueia usa Face ID para proteger seu diário privativo e dados de saúde mental.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>ManusPsiqueia precisa acessar a câmera para permitir que você adicione fotos ao seu diário.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ManusPsiqueia precisa acessar sua biblioteca de fotos para permitir que você adicione imagens ao seu diário.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>ManusPsiqueia precisa acessar o microfone para gravações de áudio no diário.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>ManusPsiqueia pode integrar com o app Saúde para fornecer insights mais completos sobre seu bem-estar.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>ManusPsiqueia pode atualizar dados de saúde mental no app Saúde para acompanhar seu progresso.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>
@@ -35,6 +45,8 @@
 	<dict>
 		<key>UIColorName</key>
 		<string>AccentColor</string>
+		<key>UIImageName</key>
+		<string>LaunchImage</string>
 	</dict>
 	<key>UISupportedInterfaceOrientations</key>
 	<array>
@@ -47,5 +59,31 @@
 		<string>UIInterfaceOrientationLandscapeLeft</string>
 		<string>UIInterfaceOrientationLandscapeRight</string>
 	</array>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleDefault</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+	<!-- Configurações de Stripe -->
+	<key>StripePublishableKey</key>
+	<string>$(STRIPE_PUBLISHABLE_KEY)</string>
+	<!-- Configurações de Supabase -->
+	<key>SupabaseURL</key>
+	<string>$(SUPABASE_URL)</string>
+	<key>SupabaseAnonKey</key>
+	<string>$(SUPABASE_ANON_KEY)</string>
+	<!-- Configurações de OpenAI -->
+	<key>OpenAIAPIKey</key>
+	<string>$(OPENAI_API_KEY)</string>
+	<!-- Configurações de Build -->
+	<key>BuildEnvironment</key>
+	<string>$(BUILD_ENVIRONMENT)</string>
+	<key>IsDebugBuild</key>
+	<string>$(DEBUG_BUILD)</string>
 </dict>
 </plist>

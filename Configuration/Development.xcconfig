@@ -6,6 +6,12 @@
 //  Created by Manus AI on 2025-09-22.
 //
 
+// MARK: - Build Settings
+MARKETING_VERSION = 1.0.0
+CURRENT_PROJECT_VERSION = 1
+BUILD_ENVIRONMENT = Development
+DEBUG_BUILD = YES
+
 // MARK: - App Configuration
 APP_DISPLAY_NAME = ManusPsiqueia Dev
 BUNDLE_ID_SUFFIX = .dev
@@ -16,14 +22,15 @@ API_BASE_URL = https://api-dev.manuspsiqueia.com
 API_VERSION = v1
 
 // MARK: - Stripe Configuration
-STRIPE_PUBLISHABLE_KEY = pk_test_development_key_here
+STRIPE_PUBLISHABLE_KEY = $(STRIPE_PUBLISHABLE_KEY_DEV)
 STRIPE_WEBHOOK_ENDPOINT = https://api-dev.manuspsiqueia.com/webhooks/stripe
 
 // MARK: - Supabase Configuration
-SUPABASE_URL = https://dev-project.supabase.co
-SUPABASE_ANON_KEY = development_anon_key_here
+SUPABASE_URL = $(SUPABASE_URL_DEV)
+SUPABASE_ANON_KEY = $(SUPABASE_ANON_KEY_DEV)
 
 // MARK: - OpenAI Configuration
+OPENAI_API_KEY = $(OPENAI_API_KEY_DEV)
 OPENAI_API_ENDPOINT = https://api.openai.com/v1
 OPENAI_MODEL = gpt-4
 
@@ -40,12 +47,25 @@ NETWORK_SECURITY_LEVEL = LOW
 // MARK: - Build Configuration
 SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG DEVELOPMENT
 GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1 DEVELOPMENT=1
+SWIFT_OPTIMIZATION_LEVEL = -Onone
+GCC_OPTIMIZATION_LEVEL = 0
 
 // MARK: - Code Signing (Development)
 CODE_SIGN_STYLE = Automatic
-DEVELOPMENT_TEAM = YOUR_TEAM_ID_HERE
+DEVELOPMENT_TEAM = $(DEVELOPMENT_TEAM_ID)
 PROVISIONING_PROFILE_SPECIFIER = 
+CODE_SIGN_IDENTITY = Apple Development
 
 // MARK: - Deployment Target
 IPHONEOS_DEPLOYMENT_TARGET = 16.0
 TARGETED_DEVICE_FAMILY = 1,2
+ARCHS = $(ARCHS_STANDARD)
+VALID_ARCHS = arm64 arm64e
+
+// MARK: - Xcode Cloud Configuration
+ENABLE_BITCODE = NO
+VALIDATE_PRODUCT = NO
+SKIP_INSTALL = NO
+
+// MARK: - Other Settings
+OTHER_LDFLAGS = $(inherited) -ObjC
