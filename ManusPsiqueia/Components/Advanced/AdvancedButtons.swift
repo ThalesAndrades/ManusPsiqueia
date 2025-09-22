@@ -86,6 +86,7 @@ struct MentalHealthButton: View {
                 if let icon = icon {
                     Image(systemName: icon)
                         .font(.system(size: size.iconSize, weight: .medium))
+                        .accessibilityHidden(true) // Hide decorative icons from VoiceOver
                 }
                 
                 Text(title)
@@ -107,6 +108,74 @@ struct MentalHealthButton: View {
         .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { pressing in
             isPressed = pressing
         }, perform: {})
+        // Accessibility improvements
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibilityLabel)
+        .accessibilityHint(accessibilityHint)
+        .accessibilityRole(.button)
+        .accessibilityAddTraits(accessibilityTraits)
+        .accessibilityValue(accessibilityValue)
+    }
+    
+    // MARK: - Accessibility Support
+    
+    /// Computed accessibility label that provides context for the button's function
+    private var accessibilityLabel: String {
+        var label = title
+        
+        // Add context based on button style for mental health appropriateness
+        switch style {
+        case .therapeutic:
+            label += ", botão terapêutico"
+        case .calm:
+            label += ", ação tranquilizante"
+        case .energetic:
+            label += ", ação estimulante"
+        case .destructive:
+            label += ", ação de remoção"
+        default:
+            break
+        }
+        
+        return label
+    }
+    
+    /// Accessibility hint that explains what happens when the button is pressed
+    private var accessibilityHint: String {
+        switch style {
+        case .destructive:
+            return "Toque duas vezes para confirmar esta ação irreversível"
+        case .therapeutic:
+            return "Toque duas vezes para acessar ferramentas terapêuticas"
+        case .calm:
+            return "Toque duas vezes para ação de relaxamento"
+        case .energetic:
+            return "Toque duas vezes para ação energizante"
+        default:
+            return "Toque duas vezes para ativar"
+        }
+    }
+    
+    /// Additional accessibility traits based on button style
+    private var accessibilityTraits: AccessibilityTraits {
+        var traits: AccessibilityTraits = []
+        
+        switch style {
+        case .destructive:
+            traits.insert(.isDestructive)
+        case .primary:
+            traits.insert(.isKeyboardKey)
+        default:
+            break
+        }
+        
+        return traits
+    }
+    
+    /// Accessibility value for buttons that represent a state
+    private var accessibilityValue: String? {
+        // Can be used for toggle buttons or buttons that represent a current state
+        return nil
     }
     
     private var backgroundGradient: LinearGradient {

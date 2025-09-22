@@ -59,13 +59,19 @@ struct MentalHealthTextField: View {
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(isFocused ? .purple : .secondary)
                         .frame(width: 20)
+                        .accessibilityHidden(true) // Hide decorative icons
                 }
                 
                 Group {
                     if isSecure && !showPassword {
                         SecureField(placeholder, text: $text)
+                            .accessibilityLabel("\(title), campo de senha")
+                            .accessibilityHint("Digite sua senha. Toque duas vezes no botão de mostrar senha para revelar o texto")
                     } else {
                         TextField(placeholder, text: $text)
+                            .accessibilityLabel(title)
+                            .accessibilityHint(accessibilityHint)
+                            .accessibilityValue(text.isEmpty ? "Vazio" : text)
                     }
                 }
                 .font(.body)
@@ -74,6 +80,7 @@ struct MentalHealthTextField: View {
                 .onChange(of: text) { newValue in
                     validateInput(newValue)
                 }
+                .accessibilityIdentifier("textField_\(title.replacingOccurrences(of: " ", with: "_"))")
                 
                 if isSecure {
                     Button(action: { showPassword.toggle() }) {
@@ -81,12 +88,17 @@ struct MentalHealthTextField: View {
                             .font(.system(size: 16, weight: .medium))
                             .foregroundColor(.secondary)
                     }
+                    .accessibilityLabel(showPassword ? "Ocultar senha" : "Mostrar senha")
+                    .accessibilityHint("Toque duas vezes para \(showPassword ? "ocultar" : "mostrar") o texto da senha")
+                    .accessibilityRole(.button)
                 }
                 
                 if !isValid {
                     Image(systemName: "exclamationmark.circle")
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.red)
+                        .accessibilityLabel("Erro de validação")
+                        .accessibilityHint("O texto inserido não atende aos critérios de validação")
                 }
             }
             .padding(.horizontal, 16)
@@ -129,6 +141,39 @@ struct MentalHealthTextField: View {
         } else {
             isValid = true
         }
+    }
+    
+    // MARK: - Accessibility Support
+    
+    /// Provides contextual accessibility hints based on field type and validation
+    private var accessibilityHint: String {
+        var hint = ""
+        
+        // Base hint for text input
+        switch keyboardType {
+        case .emailAddress:
+            hint = "Digite um endereço de email válido"
+        case .numberPad, .decimalPad:
+            hint = "Digite apenas números"
+        case .phonePad:
+            hint = "Digite um número de telefone"
+        case .URL:
+            hint = "Digite um endereço web"
+        default:
+            hint = "Digite o texto solicitado"
+        }
+        
+        // Add validation context
+        if validation != nil {
+            hint += ". Este campo tem validação automática"
+        }
+        
+        // Add help text context
+        if let helpText = helpText {
+            hint += ". \(helpText)"
+        }
+        
+        return hint
     }
 }
 
