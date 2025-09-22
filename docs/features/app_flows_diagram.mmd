@@ -1,0 +1,134 @@
+graph TD
+    A[App Launch] --> B{First Time User?}
+    
+    B -->|Yes| C[Onboarding Flow]
+    B -->|No| D{Authenticated?}
+    
+    C --> C1[Welcome Screen]
+    C1 --> C2[Features Overview]
+    C2 --> C3[Privacy Explanation]
+    C3 --> C4[Permissions Request]
+    C4 --> E[Sign Up/Login]
+    
+    D -->|Yes| F[Main App]
+    D -->|No| E[Sign Up/Login]
+    
+    E --> E1{Login Method}
+    E1 -->|Email| E2[Email/Password Form]
+    E1 -->|Apple| E3[Sign in with Apple]
+    E1 -->|Google| E4[Sign in with Google]
+    
+    E2 --> F[Main App]
+    E3 --> F[Main App]
+    E4 --> F[Main App]
+    
+    F --> G[Tab Bar Navigation]
+    
+    G --> H[Diary Tab]
+    G --> I[Insights Tab]
+    G --> J[Goals Tab]
+    G --> K[Profile Tab]
+    
+    H --> H1{Has Entries?}
+    H1 -->|No| H2[Empty State]
+    H1 -->|Yes| H3[Entries List]
+    
+    H2 --> H4[Create First Entry]
+    H3 --> H5[View Entry]
+    H3 --> H6[Create New Entry]
+    
+    H4 --> L[Entry Creation Flow]
+    H6 --> L[Entry Creation Flow]
+    
+    L --> L1[Title Input]
+    L1 --> L2[Mood Selection]
+    L2 --> L3[Content Writing]
+    L3 --> L4{Premium User?}
+    
+    L4 -->|Yes| L5[AI Analysis Option]
+    L4 -->|No| L6[Save Entry]
+    
+    L5 --> L7{Use AI Analysis?}
+    L7 -->|Yes| L8[AI Processing]
+    L7 -->|No| L6[Save Entry]
+    
+    L8 --> L9[Show AI Insights]
+    L9 --> L6[Save Entry]
+    
+    L6 --> H3[Back to Entries List]
+    
+    I --> I1{Premium User?}
+    I1 -->|Yes| I2[Full Insights]
+    I1 -->|No| I3[Limited Insights + Paywall]
+    
+    I2 --> I4[Weekly Summary]
+    I2 --> I5[Mood Charts]
+    I2 --> I6[AI Insights]
+    I2 --> I7[Patterns Analysis]
+    
+    I3 --> M[Paywall Flow]
+    
+    J --> J1{Has Goals?}
+    J1 -->|No| J2[Empty Goals State]
+    J1 -->|Yes| J3[Goals List]
+    
+    J2 --> J4[Create First Goal]
+    J3 --> J5[View Goal Details]
+    J3 --> J6[Create New Goal]
+    
+    J4 --> N[Goal Creation Flow]
+    J6 --> N[Goal Creation Flow]
+    
+    N --> N1[Goal Title]
+    N1 --> N2[Category Selection]
+    N2 --> N3[Description]
+    N3 --> N4[Deadline]
+    N4 --> N5[Save Goal]
+    N5 --> J3[Back to Goals List]
+    
+    K --> K1[User Profile]
+    K1 --> K2[Account Settings]
+    K1 --> K3[Subscription Status]
+    K1 --> K4[Statistics]
+    K1 --> K5[App Settings]
+    
+    K3 --> K6{Premium User?}
+    K6 -->|No| M[Paywall Flow]
+    K6 -->|Yes| K7[Manage Subscription]
+    
+    M --> M1[Premium Features List]
+    M1 --> M2[Pricing Plans]
+    M2 --> M3{Select Plan}
+    
+    M3 -->|Monthly| M4[Monthly Subscription]
+    M3 -->|Annual| M5[Annual Subscription]
+    M3 -->|Cancel| F[Back to Main App]
+    
+    M4 --> M6[Payment Processing]
+    M5 --> M6[Payment Processing]
+    
+    M6 --> M7{Payment Success?}
+    M7 -->|Yes| M8[Welcome to Premium]
+    M7 -->|No| M9[Payment Error]
+    
+    M8 --> F[Main App - Premium]
+    M9 --> M2[Back to Pricing]
+    
+    H5 --> O[Entry Detail View]
+    O --> O1[View Content]
+    O1 --> O2[Edit Entry]
+    O1 --> O3[Delete Entry]
+    O1 --> O4{Premium + No AI Analysis?}
+    
+    O4 -->|Yes| O5[Analyze with AI]
+    O5 --> L8[AI Processing]
+    
+    O2 --> L[Edit Entry Flow]
+    O3 --> P[Confirm Delete]
+    P --> H3[Back to Entries List]
+    
+    style A fill:#e1f5fe
+    style F fill:#c8e6c9
+    style M fill:#fff3e0
+    style L fill:#f3e5f5
+    style N fill:#e8f5e8
