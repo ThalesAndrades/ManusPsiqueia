@@ -1,0 +1,24 @@
+gantt
+    title Roadmap de Implementacao
+    dateFormat  YYYY-MM-DD
+
+    section Gestao de Segredos
+    Analise e Planejamento      :done,    des1, 2025-09-22, 2d
+    Implementacao Base          :done,    des2, after des1, 3d
+    Documentacao e Guias        :done,    des3, after des2, 2d
+    Validacao e Testes          :active,  des4, after des3, 3d
+    Melhorias Futuras           :         des5, 2025-11-01, 60d
+
+    section Modularizacao
+    Fase 1: Modulos de Base     :done,    mod1, 2025-09-22, 5d
+    Fase 2: Modulo Core         :active,  mod2, after mod1, 14d
+    Fase 3: Modulos de Features :         mod3, after mod2, 30d
+    Fase 4: Refatoracao Final   :         mod4, after mod3, 14d
+    Fase 5: Documentacao Final  :         mod5, after mod4, 7d
+
+    section Automacao e CI/CD
+    Analise de Cobertura        :done,    auto1, 2025-09-23, 2d
+    Workflow de Testes          :done,    auto2, after auto1, 3d
+    Workflow de Deploy          :active,  auto3, after auto2, 4d
+    Monitoramento e Alertas     :         auto4, after auto3, 10d
+

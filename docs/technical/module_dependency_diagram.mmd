@@ -1,0 +1,56 @@
+graph TD
+    subgraph "App Principal"
+        App[ManusPsiqueia App]
+    end
+
+    subgraph "Módulos de Features"
+        direction TB
+        FeatureDiary[Diary Feature]
+        FeatureAuth[Authentication Feature]
+        FeaturePayment[Payment Feature]
+    end
+
+    subgraph "Módulos de Base"
+        direction TB
+        Core[ManusPsiqueiaCore]
+        UI[ManusPsiqueiaUI]
+        Services[ManusPsiqueiaServices]
+    end
+
+    subgraph "Dependências Externas"
+        direction TB
+        Stripe[Stripe SDK]
+        Supabase[Supabase SDK]
+        OpenAI[OpenAI SDK]
+    end
+
+    App --> FeatureDiary
+    App --> FeatureAuth
+    App --> FeaturePayment
+
+    FeatureDiary --> Core
+    FeatureAuth --> Core
+    FeaturePayment --> Core
+
+    FeatureDiary --> UI
+    FeatureAuth --> UI
+    FeaturePayment --> UI
+
+    Core --> Services
+
+    UI --> Core
+
+    Services --> Stripe
+    Services --> Supabase
+    Services --> OpenAI
+
+    style App fill:#cce5ff,stroke:#333,stroke-width:2px
+    style FeatureDiary fill:#d4edda,stroke:#333,stroke-width:2px
+    style FeatureAuth fill:#d4edda,stroke:#333,stroke-width:2px
+    style FeaturePayment fill:#d4edda,stroke:#333,stroke-width:2px
+    style Core fill:#fff0b3,stroke:#333,stroke-width:2px
+    style UI fill:#fff0b3,stroke:#333,stroke-width:2px
+    style Services fill:#fff0b3,stroke:#333,stroke-width:2px
+    style Stripe fill:#f8d7da,stroke:#333,stroke-width:2px
+    style Supabase fill:#f8d7da,stroke:#333,stroke-width:2px
+    style OpenAI fill:#f8d7da,stroke:#333,stroke-width:2px
