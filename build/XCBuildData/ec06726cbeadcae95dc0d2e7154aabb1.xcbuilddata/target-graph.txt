@@ -1,2 +1,0 @@
-Target dependency graph (1 target)
-Target 'ManusPsiqueia' in project 'ManusPsiqueia' (no dependencies)

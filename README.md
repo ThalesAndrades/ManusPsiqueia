@@ -34,6 +34,10 @@ Uma solução completa para conectar psicólogos e pacientes através de tecnolo
 - **Análise de Sentimentos**: Monitoramento do progresso dos pacientes
 - **Recomendações**: Sugestões personalizadas baseadas em dados
 
+## 📚 Documentação
+
+Toda a documentação do projeto está organizada no diretório `docs/`. Consulte o `docs/README.md` para uma visão geral da estrutura da documentação.
+
 ## 🏗️ Arquitetura Técnica
 
 ### **Frontend (iOS)**
