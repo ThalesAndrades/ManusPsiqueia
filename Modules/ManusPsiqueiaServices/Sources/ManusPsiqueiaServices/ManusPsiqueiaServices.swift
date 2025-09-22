@@ -328,8 +328,43 @@ internal class NetworkService: NetworkServiceProtocol {
     }
     
     func request<T: Codable>(_ endpoint: Endpoint) -> AnyPublisher<T, Error> {
-        // Implementação será adicionada
-        return Fail(error: ServiceError.notImplemented)
+        guard let url = URL(string: configuration.baseURL + endpoint.path) else {
+            return Fail(error: ServiceError.invalidConfiguration)
+                .eraseToAnyPublisher()
+        }
+        
+        var request = URLRequest(url: url)
+        request.httpMethod = endpoint.method.rawValue
+        
+        // Set headers
+        if let headers = endpoint.headers {
+            for (key, value) in headers {
+                request.setValue(value, forHTTPHeaderField: key)
+            }
+        }
+        
+        // Set default headers
+        request.setValue("application/json", forHTTPHeaderField: "Content-Type")
+        if !configuration.apiKey.isEmpty {
+            request.setValue("Bearer \(configuration.apiKey)", forHTTPHeaderField: "Authorization")
+        }
+        
+        // Set body for POST/PUT requests
+        if endpoint.method != .GET, let parameters = endpoint.parameters {
+            do {
+                request.httpBody = try JSONSerialization.data(withJSONObject: parameters)
+            } catch {
+                return Fail(error: ServiceError.networkError(error))
+                    .eraseToAnyPublisher()
+            }
+        }
+        
+        return URLSession.shared.dataTaskPublisher(for: request)
+            .map(\.data)
+            .decode(type: T.self, decoder: JSONDecoder())
+            .mapError { error in
+                ServiceError.networkError(error)
+            }
             .eraseToAnyPublisher()
     }
 }
@@ -342,14 +377,45 @@ internal class PaymentService: PaymentServiceProtocol {
     }
     
     func createPaymentIntent(amount: Int, currency: String) -> AnyPublisher<PaymentIntent, Error> {
-        // Implementação será adicionada
-        return Fail(error: ServiceError.notImplemented)
+        let endpoint = Endpoint(
+            path: "/payment_intents",
+            method: .POST,
+            parameters: [
+                "amount": amount,
+                "currency": currency,
+                "payment_method_types": ["card"],
+                "confirm": true
+            ]
+        )
+        
+        // For now, return a mock payment intent
+        // In production, this would make actual API calls to Stripe
+        let paymentIntent = PaymentIntent(
+            id: "pi_\(UUID().uuidString.prefix(24))",
+            clientSecret: "pi_\(UUID().uuidString)_secret_\(UUID().uuidString.prefix(10))",
+            amount: amount,
+            currency: currency,
+            status: "requires_payment_method"
+        )
+        
+        return Just(paymentIntent)
+            .setFailureType(to: Error.self)
+            .delay(for: .milliseconds(500), scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
     
     func confirmPayment(paymentIntentId: String) -> AnyPublisher<PaymentResult, Error> {
-        // Implementação será adicionada
-        return Fail(error: ServiceError.notImplemented)
+        // For now, return a mock success result
+        // In production, this would make actual API calls to Stripe
+        let result = PaymentResult(
+            success: true,
+            paymentIntentId: paymentIntentId,
+            error: nil
+        )
+        
+        return Just(result)
+            .setFailureType(to: Error.self)
+            .delay(for: .milliseconds(1000), scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 }
@@ -362,14 +428,61 @@ internal class AIService: AIServiceProtocol {
     }
     
     func generateInsight(from text: String) -> AnyPublisher<AIInsight, Error> {
-        // Implementação será adicionada
-        return Fail(error: ServiceError.notImplemented)
+        // For now, return a mock insight with basic analysis
+        // In production, this would make actual API calls to OpenAI
+        let insight = AIInsight(
+            id: UUID().uuidString,
+            content: "Esta entrada do diário reflete um estado emocional que merece atenção. Recomendo observar padrões de pensamento e buscar apoio profissional se necessário.",
+            confidence: 0.85,
+            timestamp: Date()
+        )
+        
+        return Just(insight)
+            .setFailureType(to: Error.self)
+            .delay(for: .milliseconds(800), scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
     
     func analyzeSentiment(text: String) -> AnyPublisher<SentimentAnalysis, Error> {
-        // Implementação será adicionada
-        return Fail(error: ServiceError.notImplemented)
+        // Basic sentiment analysis simulation
+        let lowercaseText = text.lowercased()
+        let positiveWords = ["feliz", "alegre", "bom", "ótimo", "excelente", "positivo", "bem"]
+        let negativeWords = ["triste", "ruim", "péssimo", "difícil", "problema", "preocupado", "ansioso"]
+        
+        let positiveCount = positiveWords.reduce(0) { count, word in
+            count + lowercaseText.components(separatedBy: word).count - 1
+        }
+        let negativeCount = negativeWords.reduce(0) { count, word in
+            count + lowercaseText.components(separatedBy: word).count - 1
+        }
+        
+        let sentiment: SentimentAnalysis.Sentiment
+        let confidence: Double
+        
+        if positiveCount > negativeCount {
+            sentiment = .positive
+            confidence = min(0.9, 0.6 + Double(positiveCount) * 0.1)
+        } else if negativeCount > positiveCount {
+            sentiment = .negative
+            confidence = min(0.9, 0.6 + Double(negativeCount) * 0.1)
+        } else {
+            sentiment = .neutral
+            confidence = 0.7
+        }
+        
+        let analysis = SentimentAnalysis(
+            sentiment: sentiment,
+            confidence: confidence,
+            emotions: [
+                "joy": sentiment == .positive ? confidence : 0.2,
+                "sadness": sentiment == .negative ? confidence : 0.2,
+                "neutral": sentiment == .neutral ? confidence : 0.3
+            ]
+        )
+        
+        return Just(analysis)
+            .setFailureType(to: Error.self)
+            .delay(for: .milliseconds(600), scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 }
@@ -382,14 +495,29 @@ internal class DatabaseService: DatabaseServiceProtocol {
     }
     
     func save<T: Codable>(_ object: T, to table: String) -> AnyPublisher<T, Error> {
-        // Implementação será adicionada
-        return Fail(error: ServiceError.notImplemented)
-            .eraseToAnyPublisher()
+        // For now, simulate saving to a local cache/UserDefaults
+        // In production, this would integrate with Supabase or Core Data
+        do {
+            let data = try JSONEncoder().encode(object)
+            let key = "\(table)_\(UUID().uuidString)"
+            UserDefaults.standard.set(data, forKey: key)
+            
+            return Just(object)
+                .setFailureType(to: Error.self)
+                .delay(for: .milliseconds(200), scheduler: DispatchQueue.main)
+                .eraseToAnyPublisher()
+        } catch {
+            return Fail(error: ServiceError.databaseError(error))
+                .eraseToAnyPublisher()
+        }
     }
     
     func fetch<T: Codable>(_ type: T.Type, from table: String) -> AnyPublisher<[T], Error> {
-        // Implementação será adicionada
-        return Fail(error: ServiceError.notImplemented)
+        // For now, return empty array as we don't have a real database
+        // In production, this would query Supabase or Core Data
+        return Just([])
+            .setFailureType(to: Error.self)
+            .delay(for: .milliseconds(300), scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
 }
@@ -402,20 +530,56 @@ internal class SecurityService: SecurityServiceProtocol {
     }
     
     func encrypt(_ data: Data) -> AnyPublisher<Data, Error> {
-        // Implementação será adicionada
-        return Fail(error: ServiceError.notImplemented)
+        // For now, implement basic encryption using iOS APIs
+        // In production, this would use more robust encryption
+        guard !data.isEmpty else {
+            return Fail(error: ServiceError.securityError("Data is empty"))
+                .eraseToAnyPublisher()
+        }
+        
+        // Simple base64 encoding for demo (not secure for production)
+        let encoded = data.base64EncodedData()
+        
+        return Just(encoded)
+            .setFailureType(to: Error.self)
+            .delay(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
     
     func decrypt(_ data: Data) -> AnyPublisher<Data, Error> {
-        // Implementação será adicionada
-        return Fail(error: ServiceError.notImplemented)
+        // For now, implement basic decryption using iOS APIs
+        // In production, this would use corresponding decryption
+        guard let decoded = Data(base64Encoded: data) else {
+            return Fail(error: ServiceError.securityError("Invalid encrypted data"))
+                .eraseToAnyPublisher()
+        }
+        
+        return Just(decoded)
+            .setFailureType(to: Error.self)
+            .delay(for: .milliseconds(100), scheduler: DispatchQueue.main)
             .eraseToAnyPublisher()
     }
     
     func validateCertificate(_ certificate: SecCertificate) -> Bool {
-        // Implementação será adicionada
-        return false
+        // Basic certificate validation
+        // In production, this would implement proper certificate pinning
+        var result: SecTrustResultType = .invalid
+        
+        // Create a basic trust policy
+        guard let policy = SecPolicyCreateSSL(true, nil) else {
+            return false
+        }
+        
+        var trust: SecTrust?
+        let status = SecTrustCreateWithCertificates(certificate, policy, &trust)
+        
+        guard status == errSecSuccess, let validTrust = trust else {
+            return false
+        }
+        
+        let evaluateStatus = SecTrustEvaluate(validTrust, &result)
+        return evaluateStatus == errSecSuccess && 
+               (result == .unspecified || result == .proceed)
     }
 }
 
