@@ -1,0 +1,51 @@
+//
+//  Development.xcconfig
+//  ManusPsiqueia
+//
+//  Configurações para ambiente de desenvolvimento
+//  Created by Manus AI on 2025-09-22.
+//
+
+// MARK: - App Configuration
+APP_DISPLAY_NAME = ManusPsiqueia Dev
+BUNDLE_ID_SUFFIX = .dev
+PRODUCT_BUNDLE_IDENTIFIER = com.ailun.manuspsiqueia$(BUNDLE_ID_SUFFIX)
+
+// MARK: - API Configuration
+API_BASE_URL = https://api-dev.manuspsiqueia.com
+API_VERSION = v1
+
+// MARK: - Stripe Configuration
+STRIPE_PUBLISHABLE_KEY = pk_test_development_key_here
+STRIPE_WEBHOOK_ENDPOINT = https://api-dev.manuspsiqueia.com/webhooks/stripe
+
+// MARK: - Supabase Configuration
+SUPABASE_URL = https://dev-project.supabase.co
+SUPABASE_ANON_KEY = development_anon_key_here
+
+// MARK: - OpenAI Configuration
+OPENAI_API_ENDPOINT = https://api.openai.com/v1
+OPENAI_MODEL = gpt-4
+
+// MARK: - Feature Flags
+ENABLE_DEBUG_MENU = YES
+ENABLE_ANALYTICS = NO
+ENABLE_CRASH_REPORTING = NO
+ENABLE_LOGGING = YES
+
+// MARK: - Security Configuration
+CERTIFICATE_PINNING_ENABLED = NO
+NETWORK_SECURITY_LEVEL = LOW
+
+// MARK: - Build Configuration
+SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG DEVELOPMENT
+GCC_PREPROCESSOR_DEFINITIONS = DEBUG=1 DEVELOPMENT=1
+
+// MARK: - Code Signing (Development)
+CODE_SIGN_STYLE = Automatic
+DEVELOPMENT_TEAM = YOUR_TEAM_ID_HERE
+PROVISIONING_PROFILE_SPECIFIER = 
+
+// MARK: - Deployment Target
+IPHONEOS_DEPLOYMENT_TARGET = 16.0
+TARGETED_DEVICE_FAMILY = 1,2

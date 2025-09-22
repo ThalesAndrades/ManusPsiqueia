@@ -1,0 +1,39 @@
+graph TD
+    subgraph "📱 App Principal (ManusPsiqueia)"
+        direction LR
+        A[Views & ViewModels] --> B(Managers)
+        B --> C{Core Logic}
+    end
+
+    subgraph "🧩 Módulos (Swift Packages)"
+        direction LR
+        D(ManusPsiqueiaUI) --> A
+        E(ManusPsiqueiaServices) --> B
+    end
+
+    subgraph "☁️ Serviços Externos"
+        direction TB
+        F[Stripe] --> E
+        G[Supabase] --> E
+        H[OpenAI] --> E
+    end
+
+    subgraph "⚙️ Configuração & CI/CD"
+        direction TB
+        I(Configuration Files) --> A
+        J(GitHub Actions) --> K{Build & Test}
+        K --> L[Deploy]
+    end
+
+    style A fill:#cce5ff,stroke:#333,stroke-width:2px
+    style B fill:#cce5ff,stroke:#333,stroke-width:2px
+    style C fill:#cce5ff,stroke:#333,stroke-width:2px
+    style D fill:#d4edda,stroke:#333,stroke-width:2px
+    style E fill:#d4edda,stroke:#333,stroke-width:2px
+    style F fill:#f8d7da,stroke:#333,stroke-width:2px
+    style G fill:#f8d7da,stroke:#333,stroke-width:2px
+    style H fill:#f8d7da,stroke:#333,stroke-width:2px
+    style I fill:#e2e3e5,stroke:#333,stroke-width:2px
+    style J fill:#e2e3e5,stroke:#333,stroke-width:2px
+    style K fill:#e2e3e5,stroke:#333,stroke-width:2px
+    style L fill:#e2e3e5,stroke:#333,stroke-width:2px
