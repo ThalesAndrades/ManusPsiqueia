@@ -6,6 +6,7 @@ enum SecurityIncidentType {
     case certificatePinningBypass
     case unauthorizedAccess
     case dataIntegrityViolation
+    case appIntegrityViolation
 }
 //  SecurityIncidentManager.swift
 //  ManusPsiqueia
