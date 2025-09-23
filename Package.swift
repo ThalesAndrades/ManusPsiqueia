@@ -8,26 +8,22 @@ let package = Package(
     platforms: [
         .iOS(.v16)
     ],
-    dependencies: [
-        // Stripe iOS SDK
-        .package(
-            url: "https://github.com/stripe/stripe-ios",
-            from: "23.0.0"
+    products: [
+        .library(
+            name: "manuspsiqueia",
+            targets: ["manuspsiqueia"]
         ),
-        // Supabase Swift SDK (for backend)
-        .package(
-            url: "https://github.com/supabase/supabase-swift",
-            from: "2.0.0"
+    ],
+    targets: [
+        .target(
+            name: "manuspsiqueia",
+            dependencies: [],
+            path: "Sources/manuspsiqueia"
         ),
-        // OpenAI Swift SDK (for AI features)
-        .package(
-            url: "https://github.com/MacPaw/OpenAI",
-            from: "0.2.0"
+        .testTarget(
+            name: "ManusPsiqueiaTests",
+            dependencies: ["manuspsiqueia"],
+            path: "Tests"
         ),
-        // Keychain wrapper for secure storage
-        .package(
-            url: "https://github.com/jrendel/SwiftKeychainWrapper",
-            from: "4.0.0"
-        )
     ]
 )
