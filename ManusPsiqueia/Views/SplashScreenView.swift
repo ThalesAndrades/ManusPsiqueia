@@ -43,7 +43,7 @@ struct SplashScreenView: View {
                             .fill(
                                 RadialGradient(
                                     gradient: Gradient(colors: [
-                                        Color(red: 0.4, green: 0.2, blue: 0.8).opacity(0.3),
+                                        Color.brandPrimary.opacity(0.3),
                                         Color.clear
                                     ]),
                                     center: .center,
@@ -53,18 +53,28 @@ struct SplashScreenView: View {
                             )
                             .frame(width: 200, height: 200)
                         
-                        Image(systemName: "brain.head.profile")
-                            .font(.system(size: 80, weight: .light))
-                            .foregroundStyle(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [
-                                        Color(red: 0.4, green: 0.2, blue: 0.8),
-                                        Color(red: 0.2, green: 0.6, blue: 0.9)
-                                    ]),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
-                            )
+                        // Custom logo with fallback to system icon
+                        Group {
+                            if let _ = UIImage(named: "ManusLogo") {
+                                Image("ManusLogo")
+                                    .resizable()
+                                    .aspectRatio(contentMode: .fit)
+                                    .frame(width: 80, height: 80)
+                            } else {
+                                // Fallback to a more sophisticated brain icon
+                                ZStack {
+                                    Image(systemName: "brain.head.profile")
+                                        .font(.system(size: 80, weight: .light))
+                                    
+                                    // Add "M" overlay for Manus branding
+                                    Text("M")
+                                        .font(.system(size: 24, weight: .bold, design: .rounded))
+                                        .foregroundColor(.white)
+                                        .offset(y: 10)
+                                }
+                            }
+                        }
+                        .foregroundStyle(Color.brandGradient)
                     }
                     .scaleEffect(logoScale)
                     .opacity(logoOpacity)
@@ -77,16 +87,7 @@ struct SplashScreenView: View {
                         
                         Text("Psiqueia")
                             .font(.system(size: 42, weight: .bold, design: .rounded))
-                            .foregroundStyle(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [
-                                        Color(red: 0.4, green: 0.2, blue: 0.8),
-                                        Color(red: 0.2, green: 0.6, blue: 0.9)
-                                    ]),
-                                    startPoint: .leading,
-                                    endPoint: .trailing
-                                )
-                            )
+                            .foregroundStyle(Color.brandTextGradient)
                     }
                     .opacity(textOpacity)
                 }
@@ -107,7 +108,7 @@ struct SplashScreenView: View {
                     HStack(spacing: 8) {
                         ForEach(0..<3) { index in
                             Circle()
-                                .fill(Color(red: 0.4, green: 0.2, blue: 0.8))
+                                .fill(Color.brandPrimary)
                                 .frame(width: 8, height: 8)
                                 .scaleEffect(logoScale)
                                 .animation(

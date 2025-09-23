@@ -53,18 +53,27 @@ struct SplashScreenView: View {
                             )
                             .frame(width: 200, height: 200)
                         
-                        Image(systemName: "brain.head.profile")
-                            .font(.system(size: 80, weight: .light))
-                            .foregroundStyle(
-                                LinearGradient(
-                                    gradient: Gradient(colors: [
-                                        Color(red: 0.4, green: 0.2, blue: 0.8),
-                                        Color(red: 0.2, green: 0.6, blue: 0.9)
-                                    ]),
-                                    startPoint: .topLeading,
-                                    endPoint: .bottomTrailing
-                                )
+                        // Custom logo with fallback to system icon with Manus branding
+                        ZStack {
+                            Image(systemName: "brain.head.profile")
+                                .font(.system(size: 80, weight: .light))
+                            
+                            // Add "M" overlay for Manus branding
+                            Text("M")
+                                .font(.system(size: 24, weight: .bold, design: .rounded))
+                                .foregroundColor(.white)
+                                .offset(y: 10)
+                        }
+                        .foregroundStyle(
+                            LinearGradient(
+                                gradient: Gradient(colors: [
+                                    Color(red: 0.4, green: 0.2, blue: 0.8),
+                                    Color(red: 0.2, green: 0.6, blue: 0.9)
+                                ]),
+                                startPoint: .topLeading,
+                                endPoint: .bottomTrailing
                             )
+                        )
                     }
                     .scaleEffect(logoScale)
                     .opacity(logoOpacity)

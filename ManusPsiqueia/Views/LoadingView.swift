@@ -19,8 +19,8 @@ struct LoadingView: View {
                 .stroke(
                     LinearGradient(
                         gradient: Gradient(colors: [
-                            Color(red: 0.4, green: 0.2, blue: 0.8),
-                            Color(red: 0.2, green: 0.6, blue: 0.9)
+                            Color.brandPrimary,
+                            Color.brandSecondary
                         ]),
                         startPoint: .topLeading,
                         endPoint: .bottomTrailing

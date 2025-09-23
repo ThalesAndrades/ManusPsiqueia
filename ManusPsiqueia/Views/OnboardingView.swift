@@ -77,16 +77,7 @@ struct OnboardingView: View {
                 
                 Image(systemName: "brain.head.profile")
                     .font(.system(size: 60, weight: .light))
-                    .foregroundStyle(
-                        LinearGradient(
-                            gradient: Gradient(colors: [
-                                Color(red: 0.4, green: 0.2, blue: 0.8),
-                                Color(red: 0.2, green: 0.6, blue: 0.9)
-                            ]),
-                            startPoint: .topLeading,
-                            endPoint: .bottomTrailing
-                        )
-                    )
+                    .foregroundStyle(Color.brandGradient)
             }
             
             // App name
@@ -162,7 +153,7 @@ struct OnboardingView: View {
                         )
                         .clipShape(RoundedRectangle(cornerRadius: 28))
                         .shadow(
-                            color: Color(red: 0.4, green: 0.2, blue: 0.8).opacity(0.4),
+                            color: Color.brandPrimary.opacity(0.4),
                             radius: 20,
                             x: 0,
                             y: 10
