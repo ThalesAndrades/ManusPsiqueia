@@ -330,6 +330,29 @@ class StripeManager: ObservableObject {
         }
     }
     
+    // MARK: - Webhook Integration
+    
+    /// Processes webhook events received from Stripe
+    func processWebhook(_ event: StripeWebhookEvent, completion: @escaping (Result<String, Error>) -> Void) {
+        Task {
+            let result = await WebhookManager.shared.processWebhookWithRetry(event)
+            
+            switch result {
+            case .success(let message):
+                completion(.success(message))
+            case .failure(let error):
+                completion(.failure(error))
+            case .ignored(let reason):
+                completion(.success("Event ignored: \(reason)"))
+            }
+        }
+    }
+    
+    /// Validates webhook signature for security
+    func validateWebhook(payload: Data, signature: String, secret: String) -> Bool {
+        return WebhookManager.shared.validateWebhook(payload: payload, signature: signature, secret: secret)
+    }
+    
     // MARK: - Security Utilities
     func clearSensitiveData() {
         currentPaymentIntent = nil

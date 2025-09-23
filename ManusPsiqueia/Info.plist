@@ -85,5 +85,17 @@
 	<string>$(BUILD_ENVIRONMENT)</string>
 	<key>IsDebugBuild</key>
 	<string>$(DEBUG_BUILD)</string>
+	<!-- Deep Link Configuration -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.ailun.manuspsiqueia.deeplink</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>manuspsiqueia</string>
+			</array>
+		</dict>
+	</array>
 </dict>
 </plist>

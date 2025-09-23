@@ -11,6 +11,7 @@ import SwiftUI
 struct ContentView: View {
     @EnvironmentObject var authManager: AuthenticationManager
     @EnvironmentObject var subscriptionManager: SubscriptionManager
+    @StateObject private var flowManager = FlowManager.shared
     @State private var showOnboarding: Bool = true
     @State private var showSplashScreen: Bool = true
 
@@ -51,6 +52,16 @@ struct ContentView: View {
         .fullScreenCover(isPresented: $showOnboarding) {
             OnboardingView(showOnboarding: $showOnboarding)
         }
+        .fullScreenCover(isPresented: $flowManager.showPaywall) {
+            PaywallView()
+        }
+        .fullScreenCover(isPresented: $flowManager.showOnboarding) {
+            OnboardingView(showOnboarding: $flowManager.showOnboarding)
+        }
+        .onOpenURL { url in
+            flowManager.handleDeepLink(url)
+        }
+        .environmentObject(flowManager)
     }
 }
 
