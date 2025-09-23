@@ -1,0 +1,42 @@
+//
+//  StripeConfiguration.xcconfig
+//  ManusPsiqueia
+//
+//  Created by Manus AI on 2025-09-23.
+//  Copyright © 2025 AiLun Tecnologia. All rights reserved.
+//
+
+// MARK: - Stripe Configuration
+// Este arquivo define as configurações do Stripe para diferentes ambientes
+// As chaves reais devem ser definidas nas variáveis de ambiente do Xcode Cloud
+
+// MARK: - Development Environment
+STRIPE_PUBLISHABLE_KEY_DEV = $(STRIPE_PUBLISHABLE_KEY_DEV)
+STRIPE_SECRET_KEY_DEV = $(STRIPE_SECRET_KEY_DEV)
+STRIPE_WEBHOOK_SECRET_DEV = $(STRIPE_WEBHOOK_SECRET_DEV)
+
+// MARK: - Staging Environment
+STRIPE_PUBLISHABLE_KEY_STAGING = $(STRIPE_PUBLISHABLE_KEY_STAGING)
+STRIPE_SECRET_KEY_STAGING = $(STRIPE_SECRET_KEY_STAGING)
+STRIPE_WEBHOOK_SECRET_STAGING = $(STRIPE_WEBHOOK_SECRET_STAGING)
+
+// MARK: - Production Environment
+STRIPE_PUBLISHABLE_KEY_PROD = $(STRIPE_PUBLISHABLE_KEY_PROD)
+STRIPE_SECRET_KEY_PROD = $(STRIPE_SECRET_KEY_PROD)
+STRIPE_WEBHOOK_SECRET_PROD = $(STRIPE_WEBHOOK_SECRET_PROD)
+
+// MARK: - Security Settings
+STRIPE_ENABLE_LOGGING = YES
+STRIPE_REQUIRE_SECURE_STORAGE = YES
+STRIPE_AUDIT_ENABLED = YES
+
+// MARK: - API Configuration
+STRIPE_API_VERSION = 2023-10-16
+STRIPE_CONNECT_PLATFORM_NAME = ManusPsiqueia
+STRIPE_WEBHOOK_TOLERANCE_SECONDS = 300
+
+// MARK: - Environment Detection
+// Estas flags são usadas para detectar o ambiente atual
+DEBUG_ENVIRONMENT = $(DEBUG)
+STAGING_ENVIRONMENT = $(STAGING)
+PRODUCTION_ENVIRONMENT = $(PRODUCTION)
