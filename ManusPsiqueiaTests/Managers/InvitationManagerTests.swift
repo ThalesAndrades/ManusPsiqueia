@@ -81,6 +81,213 @@ final class InvitationManagerTests: XCTestCase {
         }
     }
     
+    func testSendInvitation_ValidInput() async throws {
+        // Given
+        let mockPatient = User(
+            id: UUID(),
+            fullName: "João Silva",
+            email: "joao@example.com",
+            role: .patient
+        )
+        let psychologistEmail = "psicologo@example.com"
+        let psychologistName = "Dr. Maria Santos"
+        let message = "Gostaria de trabalhar com você!"
+        
+        mockNetworkManager.shouldSucceed = true
+        
+        // When & Then - should not throw
+        do {
+            let invitation = try await invitationManager.sendInvitation(
+                toPsychologistEmail: psychologistEmail,
+                toPsychologistName: psychologistName,
+                message: message,
+                fromPatient: mockPatient
+            )
+            
+            XCTAssertEqual(invitation.toPsychologistEmail, psychologistEmail.lowercased())
+            XCTAssertEqual(invitation.patientName, mockPatient.fullName)
+        } catch {
+            XCTFail("Should not throw for valid input: \(error)")
+        }
+    }
+    
+    func testSendInvitation_InvalidEmail() async throws {
+        // Given
+        let mockPatient = User(
+            id: UUID(),
+            fullName: "João Silva",
+            email: "joao@example.com",
+            role: .patient
+        )
+        let invalidEmail = "email-invalido"
+        
+        // When & Then
+        do {
+            _ = try await invitationManager.sendInvitation(
+                toPsychologistEmail: invalidEmail,
+                fromPatient: mockPatient
+            )
+            XCTFail("Should throw for invalid email")
+        } catch InvitationError.invalidEmail {
+            // Expected error
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
+    
+    func testSendInvitation_EmptyEmail() async throws {
+        // Given
+        let mockPatient = User(
+            id: UUID(),
+            fullName: "João Silva",
+            email: "joao@example.com",
+            role: .patient
+        )
+        let emptyEmail = ""
+        
+        // When & Then
+        do {
+            _ = try await invitationManager.sendInvitation(
+                toPsychologistEmail: emptyEmail,
+                fromPatient: mockPatient
+            )
+            XCTFail("Should throw for empty email")
+        } catch InvitationError.invalidEmail {
+            // Expected error
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
+    
+    func testSendInvitation_InvalidPsychologistName() async throws {
+        // Given
+        let mockPatient = User(
+            id: UUID(),
+            fullName: "João Silva",
+            email: "joao@example.com",
+            role: .patient
+        )
+        let validEmail = "psicologo@example.com"
+        let invalidName = "A" // Too short
+        
+        // When & Then
+        do {
+            _ = try await invitationManager.sendInvitation(
+                toPsychologistEmail: validEmail,
+                toPsychologistName: invalidName,
+                fromPatient: mockPatient
+            )
+            XCTFail("Should throw for invalid name")
+        } catch InvitationError.invalidPsychologistName {
+            // Expected error
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
+    
+    func testSendInvitation_MessageTooLong() async throws {
+        // Given
+        let mockPatient = User(
+            id: UUID(),
+            fullName: "João Silva",
+            email: "joao@example.com",
+            role: .patient
+        )
+        let validEmail = "psicologo@example.com"
+        let longMessage = String(repeating: "A", count: 1001) // Too long
+        
+        // When & Then
+        do {
+            _ = try await invitationManager.sendInvitation(
+                toPsychologistEmail: validEmail,
+                message: longMessage,
+                fromPatient: mockPatient
+            )
+            XCTFail("Should throw for message too long")
+        } catch InvitationError.messageTooLong {
+            // Expected error
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
+    
+    func testSendInvitation_InappropriateContent() async throws {
+        // Given
+        let mockPatient = User(
+            id: UUID(),
+            fullName: "João Silva",
+            email: "joao@example.com",
+            role: .patient
+        )
+        let validEmail = "psicologo@example.com"
+        let inappropriateMessage = "Posso te vender bitcoin com desconto!"
+        
+        // When & Then
+        do {
+            _ = try await invitationManager.sendInvitation(
+                toPsychologistEmail: validEmail,
+                message: inappropriateMessage,
+                fromPatient: mockPatient
+            )
+            XCTFail("Should throw for inappropriate content")
+        } catch InvitationError.inappropriateContent {
+            // Expected error
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
+    
+    func testSendInvitation_CannotInviteSelf() async throws {
+        // Given
+        let sameEmail = "same@example.com"
+        let mockPatient = User(
+            id: UUID(),
+            fullName: "João Silva",
+            email: sameEmail,
+            role: .patient
+        )
+        
+        // When & Then
+        do {
+            _ = try await invitationManager.sendInvitation(
+                toPsychologistEmail: sameEmail,
+                fromPatient: mockPatient
+            )
+            XCTFail("Should throw for self-invitation")
+        } catch InvitationError.cannotInviteSelf {
+            // Expected error
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
+    
+    func testErrorMapping_NetworkError() async throws {
+        // Given
+        let mockPatient = User(
+            id: UUID(),
+            fullName: "João Silva",
+            email: "joao@example.com",
+            role: .patient
+        )
+        let validEmail = "psicologo@example.com"
+        
+        mockNetworkManager.shouldSucceed = false
+        mockNetworkManager.mockError = URLError(.notConnectedToInternet)
+        
+        // When & Then
+        do {
+            _ = try await invitationManager.sendInvitation(
+                toPsychologistEmail: validEmail,
+                fromPatient: mockPatient
+            )
+            XCTFail("Should throw network error")
+        } catch InvitationError.networkUnavailable {
+            // Expected mapped error
+        } catch {
+            XCTFail("Unexpected error type: \(error)")
+        }
+    }
+    
     // MARK: - Invitation Status Tests
     
     func testAcceptInvitation_Success() async throws {
