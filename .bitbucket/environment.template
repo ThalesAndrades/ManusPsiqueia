@@ -1,0 +1,262 @@
+# Bitbucket Server Environment Configuration for ManusPsiqueia
+# Place this file in: /etc/bitbucket/environment
+# Author: AiLun Tecnologia
+
+# ========================================
+# BITBUCKET SERVER CONFIGURATION
+# ========================================
+
+# Bitbucket Server Instance Configuration
+BITBUCKET_SERVER_URL=https://your-bitbucket-server.com
+BITBUCKET_PROJECT_KEY=MANUS
+BITBUCKET_REPO_NAME=manuspsiqueia
+
+# API Access Configuration
+BITBUCKET_API_TOKEN=your_api_token_here
+BITBUCKET_ADMIN_USER=admin
+BITBUCKET_ADMIN_PASSWORD=admin_password
+
+# ========================================
+# BUILD ENVIRONMENT CONFIGURATION
+# ========================================
+
+# Xcode and iOS Build Configuration
+XCODE_VERSION=15.1
+IOS_SIMULATOR_VERSION=17.2
+MACOS_BUILD_AGENT=macos-monterey-xcode:14.1.0
+
+# Build Agent Pool Configuration
+BUILD_AGENT_POOL=ios-builds
+BUILD_AGENT_TIMEOUT=3600
+MAX_CONCURRENT_BUILDS=3
+
+# ========================================
+# SECURITY CONFIGURATION
+# ========================================
+
+# Webhook Security
+WEBHOOK_SECRET_FILE=/etc/bitbucket/webhook-secret
+WEBHOOK_SIGNATURE_TOLERANCE=300
+
+# Certificate and Key Management
+KEYCHAIN_PASSWORD=build_keychain_password_here
+CERTIFICATE_PASSWORD=ios_certificate_password_here
+
+# Audit and Compliance
+AUDIT_LOG_RETENTION_DAYS=2555  # 7 years for healthcare compliance
+SECURITY_SCAN_ENABLED=true
+COMPLIANCE_MODE=HIPAA_LGPD
+
+# ========================================
+# iOS DEVELOPMENT CONFIGURATION
+# ========================================
+
+# Apple Developer Configuration
+APPLE_TEAM_ID=your_team_id_here
+APP_BUNDLE_ID=com.ailun.manuspsiqueia
+APP_STORE_CONNECT_ISSUER_ID=your_issuer_id_here
+APP_STORE_CONNECT_KEY_ID=your_key_id_here
+
+# ========================================
+# EXTERNAL SERVICE INTEGRATIONS
+# ========================================
+
+# Stripe Payment Processing
+STRIPE_PUBLISHABLE_KEY_TEST=pk_test_your_key_here
+STRIPE_SECRET_KEY_TEST=sk_test_your_key_here
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret_here
+STRIPE_WEBHOOK_URL=https://your-app-backend.com/webhooks/stripe
+
+# OpenAI Integration
+OPENAI_API_KEY=sk-your_openai_key_here
+OPENAI_MODEL=gpt-4
+OPENAI_MAX_TOKENS=2000
+
+# Supabase Backend
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_ANON_KEY=your_supabase_anon_key_here
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_key_here
+
+# ========================================
+# NOTIFICATION CONFIGURATION
+# ========================================
+
+# Email Notifications
+SMTP_SERVER=smtp.your-domain.com
+SMTP_PORT=587
+SMTP_USERNAME=notifications@your-domain.com
+SMTP_PASSWORD=your_smtp_password_here
+NOTIFICATION_FROM_EMAIL=manuspsiqueia@ailun.com.br
+
+# Slack Integration (optional)
+SLACK_WEBHOOK_URL=https://hooks.slack.com/services/your/slack/webhook
+SLACK_CHANNEL=#manuspsiqueia-builds
+
+# ========================================
+# LOGGING AND MONITORING
+# ========================================
+
+# Log Configuration
+LOG_LEVEL=INFO
+LOG_FILE=/var/log/bitbucket-webhooks.log
+MAX_LOG_SIZE=10485760  # 10MB
+LOG_ROTATION=daily
+
+# Monitoring
+HEALTH_CHECK_URL=https://your-app-backend.com/health
+MONITORING_INTERVAL=60  # seconds
+ALERT_THRESHOLD_ERROR_RATE=5  # percentage
+
+# ========================================
+# PERFORMANCE OPTIMIZATION
+# ========================================
+
+# Cache Configuration
+CACHE_ENABLE=true
+CACHE_TTL=3600  # 1 hour
+CACHE_SIZE_MB=1024  # 1GB
+
+# Build Optimization
+PARALLEL_BUILDS=true
+BUILD_CACHE_ENABLED=true
+INCREMENTAL_BUILDS=true
+
+# ========================================
+# BACKUP AND DISASTER RECOVERY
+# ========================================
+
+# Backup Configuration
+BACKUP_ENABLED=true
+BACKUP_SCHEDULE="0 2 * * *"  # Daily at 2 AM
+BACKUP_RETENTION_DAYS=90
+BACKUP_DESTINATION=/backup/bitbucket-server
+
+# Disaster Recovery
+DR_ENABLED=true
+DR_SYNC_INTERVAL=3600  # 1 hour
+DR_BACKUP_LOCATION=s3://your-dr-bucket/bitbucket-backup
+
+# ========================================
+# DEVELOPMENT ENVIRONMENT SPECIFIC
+# ========================================
+
+# Development Overrides (remove in production)
+DEBUG_MODE=false
+VERBOSE_LOGGING=false
+SKIP_SECURITY_CHECKS=false
+ALLOW_INSECURE_CONNECTIONS=false
+
+# Test Environment Configuration
+TEST_MODE=false
+MOCK_EXTERNAL_SERVICES=false
+USE_TEST_CERTIFICATES=false
+
+# ========================================
+# COMPLIANCE AND GOVERNANCE
+# ========================================
+
+# Healthcare Compliance (HIPAA)
+HIPAA_COMPLIANCE_ENABLED=true
+ENCRYPT_LOGS=true
+AUDIT_ALL_ACCESS=true
+DATA_RETENTION_POLICY=7_YEARS
+
+# Brazilian Compliance (LGPD)
+LGPD_COMPLIANCE_ENABLED=true
+DATA_PROCESSING_CONSENT=explicit
+RIGHT_TO_ERASURE=enabled
+DATA_PORTABILITY=enabled
+
+# European Compliance (GDPR)
+GDPR_COMPLIANCE_ENABLED=true
+COOKIE_CONSENT_REQUIRED=true
+DATA_PROTECTION_OFFICER_EMAIL=dpo@ailun.com.br
+
+# ========================================
+# MOBILE APP SPECIFIC CONFIGURATION
+# ========================================
+
+# iOS App Configuration
+IOS_DEPLOYMENT_TARGET=16.0
+SWIFT_VERSION=5.9
+SWIFTUI_VERSION=4.0
+
+# App Store Configuration
+APP_STORE_CATEGORY=Medical
+CONTENT_RATING=4+
+SUPPORTS_IPAD=true
+SUPPORTS_APPLE_WATCH=false
+
+# TestFlight Configuration
+TESTFLIGHT_GROUP=internal-testers
+BETA_APP_REVIEW_INFO="Healthcare app for mental health professionals"
+BETA_BUILD_LOCALIZATION=en-US,pt-BR
+
+# ========================================
+# INTEGRATION TESTING CONFIGURATION
+# ========================================
+
+# Test Environment URLs
+TEST_STRIPE_ENDPOINT=https://api.stripe.com/v1
+TEST_OPENAI_ENDPOINT=https://api.openai.com/v1
+TEST_SUPABASE_ENDPOINT=https://your-test-project.supabase.co
+
+# Test Data Configuration
+USE_SYNTHETIC_DATA=true
+SYNTHETIC_USER_COUNT=100
+TEST_PAYMENT_AMOUNT=1000  # cents
+TEST_SUBSCRIPTION_PLAN=test_plan
+
+# ========================================
+# SECURITY POLICIES
+# ========================================
+
+# Password Policies
+MIN_PASSWORD_LENGTH=12
+REQUIRE_SPECIAL_CHARACTERS=true
+PASSWORD_EXPIRY_DAYS=90
+PASSWORD_HISTORY_COUNT=5
+
+# Access Control
+MAX_LOGIN_ATTEMPTS=3
+ACCOUNT_LOCKOUT_DURATION=1800  # 30 minutes
+SESSION_TIMEOUT=3600  # 1 hour
+REQUIRE_MFA=true
+
+# Network Security
+ALLOWED_IP_RANGES="10.0.0.0/8,172.16.0.0/12,192.168.0.0/16"
+REQUIRE_VPN=true
+SSL_ONLY=true
+HSTS_ENABLED=true
+
+# ========================================
+# FEATURE FLAGS
+# ========================================
+
+# Application Features
+ENABLE_AI_INSIGHTS=true
+ENABLE_PAYMENT_PROCESSING=true
+ENABLE_PRESCRIPTION_MANAGEMENT=false
+ENABLE_TELEMEDICINE=false
+
+# Development Features
+ENABLE_DEBUG_MENU=false
+ENABLE_PERFORMANCE_MONITORING=true
+ENABLE_CRASH_REPORTING=true
+ENABLE_ANALYTICS=true
+
+# Security Features
+ENABLE_BIOMETRIC_AUTH=true
+ENABLE_CERTIFICATE_PINNING=true
+ENABLE_THREAT_DETECTION=true
+ENABLE_AUDIT_LOGGING=true
+
+# ========================================
+# END OF CONFIGURATION
+# ========================================
+
+# Note: This file contains sensitive configuration.
+# Ensure proper file permissions: chmod 600 /etc/bitbucket/environment
+# Restrict access to authorized personnel only.
+# Regularly rotate secrets and passwords.
+# Monitor this file for unauthorized changes.
