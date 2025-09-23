@@ -28,7 +28,10 @@ let package = Package(
         .package(
             url: "https://github.com/jrendel/SwiftKeychainWrapper",
             from: "4.0.0"
-        )
+        ),
+        // Local modules
+        .package(path: "./Modules/ManusPsiqueiaServices"),
+        .package(path: "./Modules/ManusPsiqueiaUI")
     ],
     targets: [
         .target(
