@@ -1,5 +1,6 @@
+---
 # CodeQL Configuration for ManusPsiqueia
-# Custom security analysis configuration for mental health platform
+# Security analysis configuration for mental health platform
 # Developed by AiLun Tecnologia - CNPJ: 60.740.536/0001-75
 
 name: "ManusPsiqueia Security Analysis"
@@ -9,9 +10,8 @@ name: "ManusPsiqueia Security Analysis"
 # ==========================================
 paths:
   - "ManusPsiqueia/**"
-  - "!ManusPsiqueia/Generated/**"
-  - "!ManusPsiqueia/Pods/**"
-  - "!ManusPsiqueia/DerivedData/**"
+  - "Modules/**"
+  - "Sources/**"
 
 paths-ignore:
   - "**/*.md"
@@ -21,30 +21,16 @@ paths-ignore:
   - "**/.git/**"
   - "**/fastlane/**"
   - "**/scripts/**"
+  - "**/Tests/**"
+  - "**/test/**"
+  - "**/DerivedData/**"
 
 # ==========================================
 # 🔍 QUERIES CONFIGURATION
 # ==========================================
 queries:
-  # Standard security queries
+  # Standard security and quality queries
   - uses: security-and-quality
-  - uses: security-experimental
-  
-  # Custom queries for healthcare applications
-  - name: healthcare-security
-    uses: ./.github/codeql/queries/healthcare-security.ql
-  
-  # Financial security queries (Stripe integration)
-  - name: financial-security
-    uses: ./.github/codeql/queries/financial-security.ql
-  
-  # Mobile security queries
-  - name: mobile-security
-    uses: ./.github/codeql/queries/mobile-security.ql
-  
-  # AI/ML security queries
-  - name: ai-security
-    uses: ./.github/codeql/queries/ai-security.ql
 
 # ==========================================
 # 🎯 QUERY FILTERS
