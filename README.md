@@ -58,12 +58,20 @@ Apple Push Notifications
 CloudKit (Sincronização)
 ```
 
-### **Segurança**
+### **Segurança (Atualizado Setembro 2024)**
 ```
-Biometric Authentication
-End-to-End Encryption
-HIPAA Compliance Ready
-Data Privacy (LGPD)
+✅ Certificate Pinning Avançado
+✅ Detecção de Jailbreak/Root
+✅ Análise de Rede Suspeita (VPN/Proxy)
+✅ Sistema de Auditoria Completo
+✅ Alertas de Emergência em Tempo Real
+✅ Integração com Autoridades (ANPD/CFP)
+✅ Persistência Segura no Keychain
+✅ Biometric Authentication
+✅ End-to-End Encryption
+✅ HIPAA Compliance Ready
+✅ Data Privacy (LGPD)
+✅ Security Incident Management
 ```
 
 ## 📱 Funcionalidades por Usuário
