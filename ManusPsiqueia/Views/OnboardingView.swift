@@ -34,10 +34,21 @@ struct OnboardingView: View {
                     ForEach(pages.indices, id: \.self) { index in
                         OnboardingPageView(page: pages[index])
                             .tag(index)
+                            .accessibilityElement(children: .contain)
+                            .accessibilityLabel("Página \(index + 1) de \(pages.count) do tutorial")
                     }
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .animation(.easeInOut(duration: 0.6), value: currentPage)
+                .animation(
+                    AccessibilityConfiguration.shouldReduceAnimations ? .none : .easeInOut(duration: 0.6), 
+                    value: currentPage
+                )
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel("Tutorial do aplicativo")
+                .accessibilityHint("Deslize para navegar entre as páginas do tutorial")
+                .onChange(of: currentPage) { newPage in
+                    AccessibilityUtils.announceStateChange("Página \(newPage + 1) de \(pages.count)")
+                }
                 
                 // Bottom section with controls
                 bottomSection

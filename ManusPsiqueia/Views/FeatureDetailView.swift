@@ -33,12 +33,16 @@ struct FeatureDetailView: View {
                                 .font(.system(size: 36))
                                 .foregroundColor(.white)
                         }
+                        .accessibilityElement(children: .ignore)
+                        .accessibilityLabel("Ícone do recurso \(feature.name)")
+                        .decorativeAccessibility()
                         
                         VStack(spacing: 8) {
                             Text(feature.name)
                                 .font(.title)
                                 .fontWeight(.bold)
                                 .multilineTextAlignment(.center)
+                                .headerAccessibility(label: "Recurso: \(feature.name)")
                             
                             Text(feature.category.rawValue)
                                 .font(.subheadline)
@@ -47,6 +51,7 @@ struct FeatureDetailView: View {
                                 .padding(.vertical, 4)
                                 .background(Color(.systemGray5))
                                 .clipShape(Capsule())
+                                .accessibilityLabel("Categoria: \(feature.category.rawValue)")
                         }
                     }
                     
@@ -55,9 +60,13 @@ struct FeatureDetailView: View {
                         Text("Sobre este recurso")
                             .font(.headline)
                             .fontWeight(.semibold)
+                            .headerAccessibility(label: "Sobre este recurso")
                         
                         Text(feature.description)
                             .font(.body)
+                            .lineSpacing(4)
+                            .accessibilityLabel("Descrição: \(feature.description)")
+                    }
                             .foregroundColor(.secondary)
                     }
                     .frame(maxWidth: .infinity, alignment: .leading)

@@ -21,6 +21,10 @@ struct PatientDashboardView: View {
                         Image(systemName: "house.fill")
                         Text("Início")
                     }
+                    .tabAccessibility(
+                        label: AccessibilityUtils.VoiceDescriptions.homeTab,
+                        isSelected: selectedTab == 0
+                    )
                     .tag(0)
                 
                 // Sessions Tab
@@ -29,6 +33,10 @@ struct PatientDashboardView: View {
                         Image(systemName: "calendar")
                         Text("Sessões")
                     }
+                    .tabAccessibility(
+                        label: AccessibilityUtils.VoiceDescriptions.sessionsTab,
+                        isSelected: selectedTab == 1
+                    )
                     .tag(1)
                 
                 // Progress Tab
@@ -37,6 +45,10 @@ struct PatientDashboardView: View {
                         Image(systemName: "chart.line.uptrend.xyaxis")
                         Text("Progresso")
                     }
+                    .tabAccessibility(
+                        label: AccessibilityUtils.VoiceDescriptions.progressTab,
+                        isSelected: selectedTab == 2
+                    )
                     .tag(2)
                 
                 // Profile Tab
@@ -45,9 +57,21 @@ struct PatientDashboardView: View {
                         Image(systemName: "person.circle.fill")
                         Text("Perfil")
                     }
+                    .tabAccessibility(
+                        label: AccessibilityUtils.VoiceDescriptions.profileTab,
+                        isSelected: selectedTab == 3
+                    )
                     .tag(3)
             }
             .navigationTitle("Meu Espaço")
+            .navigationAccessibility(
+                label: "Dashboard do paciente",
+                hint: "Navegue entre as abas para acessar diferentes funcionalidades"
+            )
+            .onChange(of: selectedTab) { newTab in
+                let tabNames = ["Início", "Sessões", "Progresso", "Perfil"]
+                AccessibilityUtils.announceScreenChange(to: tabNames[newTab])
+            }
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {

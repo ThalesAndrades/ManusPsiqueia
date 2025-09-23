@@ -51,6 +51,7 @@ struct MentalHealthTextField: View {
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundColor(.primary)
+                .headerAccessibility(label: title)
             
             // Input field
             HStack(spacing: 12) {
