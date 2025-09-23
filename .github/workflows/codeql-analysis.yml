@@ -202,7 +202,7 @@ jobs:
         EOF
     
     - name: 📤 Upload Security Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: codeql-security-report
         path: reports/codeql-security-report.md
@@ -348,7 +348,7 @@ jobs:
         fi
     
     - name: 📤 Upload Custom Security Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: custom-security-audit
         path: reports/custom-security-audit.txt
@@ -364,7 +364,7 @@ jobs:
     
     steps:
     - name: 📥 Download Security Reports
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
     
     - name: 🚨 Check for Critical Issues
       run: |
