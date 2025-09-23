@@ -5,6 +5,7 @@
 	};
 	objectVersion = 56;
 	objects = {
+
 /* Begin PBXBuildFile section */
 		1A001001 /* ManusPsiqueiaApp.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001000 /* ManusPsiqueiaApp.swift */; };
 		1A001003 /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001002 /* ContentView.swift */; };
@@ -18,19 +19,42 @@
 		1A00101A /* StripeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001019 /* StripeManager.swift */; };
 		1A00101C /* InvitationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00101B /* InvitationManager.swift */; };
 		1A00101E /* OnboardingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00101D /* OnboardingView.swift */; };
+		1A001020 /* UserTypeSelectionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00101F /* UserTypeSelectionView.swift */; };
 		1A001022 /* SubscriptionView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001021 /* SubscriptionView.swift */; };
+		1A001024 /* InvitePsychologistView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001023 /* InvitePsychologistView.swift */; };
+		1A001026 /* FinancialDashboardView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001025 /* FinancialDashboardView.swift */; };
+		1A001028 /* WithdrawFundsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001027 /* WithdrawFundsView.swift */; };
+		1A00102A /* AdvancedScrollView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001029 /* AdvancedScrollView.swift */; };
+		1A00102C /* AdvancedButtons.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00102B /* AdvancedButtons.swift */; };
+		1A00102E /* AdvancedInputFields.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00102D /* AdvancedInputFields.swift */; };
+		1A001030 /* DiaryEntry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00102F /* DiaryEntry.swift */; };
+		1A001032 /* DiaryManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001031 /* DiaryManager.swift */; };
+		1A001034 /* DiaryPrivacyInfoView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001033 /* DiaryPrivacyInfoView.swift */; };
 		1A001036 /* IntegratedDiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001035 /* IntegratedDiaryView.swift */; };
+		1A001038 /* NewDiaryEntryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001037 /* NewDiaryEntryView.swift */; };
 		1A00103A /* PatientDiaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001039 /* PatientDiaryView.swift */; };
+		1A00103C /* DiarySecurityManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00103B /* DiarySecurityManager.swift */; };
+		1A00103E /* DiaryAIInsightsManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00103D /* DiaryAIInsightsManager.swift */; };
+		1A001040 /* DiaryAIModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00103F /* DiaryAIModels.swift */; };
+		1A00104D /* CertificatePinningManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A00104E /* CertificatePinningManager.swift */; };
+		1A00104F /* AuditLogger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001050 /* AuditLogger.swift */; };
+		1A001051 /* SecurityIncidentManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001052 /* SecurityIncidentManager.swift */; };
+		1A001053 /* SecurityConfiguration.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001054 /* SecurityConfiguration.swift */; };
 		1A001055 /* SecurityThreatDetector.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001056 /* SecurityThreatDetector.swift */; };
 		1A001065 /* AuthenticationManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001066 /* AuthenticationManager.swift */; };
 		1A001067 /* NetworkManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001068 /* NetworkManager.swift */; };
+		1A001069 /* DynamicPricing.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001070 /* DynamicPricing.swift */; };
+		1A001059 /* SplashScreenView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001058 /* SplashScreenView.swift */; };
+		1A001061 /* LoadingView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001060 /* LoadingView.swift */; };
+		1A001063 /* ParticlesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001062 /* ParticlesView.swift */; };
+		1A001065 /* Particle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 1A001064 /* Particle.swift */; };
 /* End PBXBuildFile section */
 /* Begin PBXFileReference section */
 		1A000FFD /* ManusPsiqueia.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ManusPsiqueia.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		1A001000 /* ManusPsiqueiaApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App/ManusPsiqueiaApp.swift; sourceTree = "<group>"; };
 		1A001002 /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = App/ContentView.swift; sourceTree = "<group>"; };
 		1A001004 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
-		1A001007 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Content/Preview Assets.xcassets"; sourceTree = "<group>"; };
+		1A001007 /* Preview Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = "Preview Assets.xcassets"; sourceTree = "<group>"; };
 		1A00100F /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Profile/Models/User.swift; sourceTree = "<group>"; };
 		1A001011 /* Subscription.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Subscriptions/Models/Subscription.swift; sourceTree = "<group>"; };
 		1A001013 /* Payment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Payments/Models/Payment.swift; sourceTree = "<group>"; };
@@ -39,13 +63,36 @@
 		1A001019 /* StripeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Payments/Managers/StripeManager.swift; sourceTree = "<group>"; };
 		1A00101B /* InvitationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Profile/Managers/InvitationManager.swift; sourceTree = "<group>"; };
 		1A00101D /* OnboardingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Onboarding/Views/OnboardingView.swift; sourceTree = "<group>"; };
+		1A00101F /* UserTypeSelectionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserTypeSelectionView.swift; sourceTree = "<group>"; };
 		1A001021 /* SubscriptionView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Subscriptions/Views/SubscriptionView.swift; sourceTree = "<group>"; };
+		1A001023 /* InvitePsychologistView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = InvitePsychologistView.swift; sourceTree = "<group>"; };
+		1A001025 /* FinancialDashboardView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FinancialDashboardView.swift; sourceTree = "<group>"; };
+		1A001027 /* WithdrawFundsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WithdrawFundsView.swift; sourceTree = "<group>"; };
+		1A001029 /* AdvancedScrollView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedScrollView.swift; sourceTree = "<group>"; };
+		1A00102B /* AdvancedButtons.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedButtons.swift; sourceTree = "<group>"; };
+		1A00102D /* AdvancedInputFields.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AdvancedInputFields.swift; sourceTree = "<group>"; };
+		1A00102F /* DiaryEntry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryEntry.swift; sourceTree = "<group>"; };
+		1A001031 /* DiaryManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryManager.swift; sourceTree = "<group>"; };
+		1A001033 /* DiaryPrivacyInfoView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryPrivacyInfoView.swift; sourceTree = "<group>"; };
 		1A001035 /* IntegratedDiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Journal/Views/IntegratedDiaryView.swift; sourceTree = "<group>"; };
+		1A001037 /* NewDiaryEntryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewDiaryEntryView.swift; sourceTree = "<group>"; };
 		1A001039 /* PatientDiaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Journal/Views/PatientDiaryView.swift; sourceTree = "<group>"; };
+		1A00103B /* DiarySecurityManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiarySecurityManager.swift; sourceTree = "<group>"; };
+		1A00103D /* DiaryAIInsightsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAIInsightsManager.swift; sourceTree = "<group>"; };
+		1A00103F /* DiaryAIModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DiaryAIModels.swift; sourceTree = "<group>"; };
 		1A001041 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		1A00104E /* CertificatePinningManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CertificatePinningManager.swift; sourceTree = "<group>"; };
+		1A001050 /* AuditLogger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditLogger.swift; sourceTree = "<group>"; };
+		1A001052 /* SecurityIncidentManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityIncidentManager.swift; sourceTree = "<group>"; };
+		1A001054 /* SecurityConfiguration.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SecurityConfiguration.swift; sourceTree = "<group>"; };
 		1A001056 /* SecurityThreatDetector.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Security/SecurityThreatDetector.swift; sourceTree = "<group>"; };
+		1A001058 /* SplashScreenView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SplashScreenView.swift; sourceTree = "<group>"; };
+		1A001060 /* LoadingView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingView.swift; sourceTree = "<group>"; };
+		1A001062 /* ParticlesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ParticlesView.swift; sourceTree = "<group>"; };
+		1A001064 /* Particle.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Particle.swift; sourceTree = "<group>"; };
 		1A001066 /* AuthenticationManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Features/Authentication/Managers/AuthenticationManager.swift; sourceTree = "<group>"; };
 		1A001068 /* NetworkManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Core/Managers/NetworkManager.swift; sourceTree = "<group>"; };
+		1A001070 /* DynamicPricing.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DynamicPricing.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 /* Begin PBXFrameworksBuildPhase section */
 		1A000FFA /* Frameworks */ = {
@@ -89,10 +136,19 @@
 				1A001013 /* Payment.swift */,
 				1A001015 /* Invitation.swift */,
 				1A001017 /* Financial.swift */,
+				1A001070 /* DynamicPricing.swift */,
 			path = Core/Models;
 		1A001043 /* Views */ = {
 				1A00101D /* OnboardingView.swift */,
+				1A00101F /* UserTypeSelectionView.swift */,
 				1A001021 /* SubscriptionView.swift */,
+				1A001023 /* InvitePsychologistView.swift */,
+				1A001025 /* FinancialDashboardView.swift */,
+				1A001027 /* WithdrawFundsView.swift */,
+				1A001058 /* SplashScreenView.swift */,
+				1A001060 /* LoadingView.swift */,
+				1A001062 /* ParticlesView.swift */,
+				1A001064 /* Particle.swift */,
 			path = Features;
 		1A001044 /* Managers */ = {
 				1A001019 /* StripeManager.swift */,
@@ -102,20 +158,40 @@
 			path = Core/Managers;
 		1A001045 /* Components */ = {
 				1A001049 /* Advanced */,
+			path = Components;
 		1A001046 /* Features */ = {
 				1A00104A /* PatientDiary */,
 		1A001047 /* Security */ = {
 				1A00104B /* DiaryProtection */,
+				1A00104E /* CertificatePinningManager.swift */,
+				1A001050 /* AuditLogger.swift */,
+				1A001052 /* SecurityIncidentManager.swift */,
+				1A001054 /* SecurityConfiguration.swift */,
 				1A001056 /* SecurityThreatDetector.swift */,
 			path = Core/Security;
 		1A001048 /* AI */ = {
 				1A00104C /* DiaryInsights */,
+			path = AI;
 		1A001049 /* Advanced */ = {
+				1A001029 /* AdvancedScrollView.swift */,
+				1A00102B /* AdvancedButtons.swift */,
+				1A00102D /* AdvancedInputFields.swift */,
+			path = Advanced;
 		1A00104A /* PatientDiary */ = {
+				1A00102F /* DiaryEntry.swift */,
+				1A001031 /* DiaryManager.swift */,
+				1A001033 /* DiaryPrivacyInfoView.swift */,
 				1A001035 /* IntegratedDiaryView.swift */,
+				1A001037 /* NewDiaryEntryView.swift */,
 				1A001039 /* PatientDiaryView.swift */,
+			path = PatientDiary;
 		1A00104B /* DiaryProtection */ = {
+				1A00103B /* DiarySecurityManager.swift */,
+			path = DiaryProtection;
 		1A00104C /* DiaryInsights */ = {
+				1A00103D /* DiaryAIInsightsManager.swift */,
+				1A00103F /* DiaryAIModels.swift */,
+			path = DiaryInsights;
 /* End PBXGroup section */
 /* Begin PBXNativeTarget section */
 		1A000FFC /* ManusPsiqueia */ = {
@@ -178,13 +254,36 @@
 				1A00101A /* StripeManager.swift in Sources */,
 				1A00101C /* InvitationManager.swift in Sources */,
 				1A00101E /* OnboardingView.swift in Sources */,
+				1A001020 /* UserTypeSelectionView.swift in Sources */,
 				1A001022 /* SubscriptionView.swift in Sources */,
+				1A001024 /* InvitePsychologistView.swift in Sources */,
+				1A001026 /* FinancialDashboardView.swift in Sources */,
+				1A001028 /* WithdrawFundsView.swift in Sources */,
+				1A00102A /* AdvancedScrollView.swift in Sources */,
+				1A00102C /* AdvancedButtons.swift in Sources */,
+				1A00102E /* AdvancedInputFields.swift in Sources */,
+				1A001030 /* DiaryEntry.swift in Sources */,
+				1A001032 /* DiaryManager.swift in Sources */,
+				1A001034 /* DiaryPrivacyInfoView.swift in Sources */,
 				1A001036 /* IntegratedDiaryView.swift in Sources */,
+				1A001038 /* NewDiaryEntryView.swift in Sources */,
 				1A00103A /* PatientDiaryView.swift in Sources */,
+				1A00103C /* DiarySecurityManager.swift in Sources */,
+				1A00103E /* DiaryAIInsightsManager.swift in Sources */,
+				1A001040 /* DiaryAIModels.swift in Sources */,
 				1A001001 /* ManusPsiqueiaApp.swift in Sources */,
+				1A00104D /* CertificatePinningManager.swift in Sources */,
+				1A00104F /* AuditLogger.swift in Sources */,
+				1A001051 /* SecurityIncidentManager.swift in Sources */,
+				1A001053 /* SecurityConfiguration.swift in Sources */,
 				1A001055 /* SecurityThreatDetector.swift in Sources */,
 				1A001065 /* AuthenticationManager.swift in Sources */,
 				1A001067 /* NetworkManager.swift in Sources */,
+				1A001069 /* DynamicPricing.swift in Sources */,
+				1A001059 /* SplashScreenView.swift in Sources */,
+				1A001061 /* LoadingView.swift in Sources */,
+				1A001063 /* ParticlesView.swift in Sources */,
+				1A001065 /* Particle.swift in Sources */,
 /* End PBXSourcesBuildPhase section */
 /* Begin XCBuildConfiguration section */
 		1A001009 /* Debug */ = {
