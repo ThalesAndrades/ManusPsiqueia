@@ -1,7 +1,7 @@
 === RELATÓRIO DE VALIDAÇÃO DE ASSINATURA DE CÓDIGO ===
 
 Projeto: ManusPsiqueia
-Data: Mon Sep 22 09:50:22 EDT 2025
+Data: Tue Sep 23 02:07:08 UTC 2025
 Ambiente: Local
 
 === CONFIGURAÇÕES VERIFICADAS ===
