@@ -119,21 +119,20 @@ fi
 # Verificar estrutura do projeto
 echo "📁 Verificando estrutura do projeto..."
 
-required_files=(
-    "ManusPsiqueia.xcodeproj"
-    "Package.swift"
-    "ManusPsiqueia/Info.plist"
-    "$CONFIG_FILE"
-)
-
-for file in "${required_files[@]}"; do
-    if [ -f "$file" ] || [ -d "$file" ]; then
-        echo "✅ $file encontrado"
+# Check required files individually
+check_file() {
+    if [ -f "$1" ] || [ -d "$1" ]; then
+        echo "✅ $1 encontrado"
     else
-        echo "❌ $file não encontrado"
+        echo "❌ $1 não encontrado"
         exit 1
     fi
-done
+}
+
+check_file "ManusPsiqueia.xcodeproj"
+check_file "Package.swift"
+check_file "ManusPsiqueia/Info.plist"
+check_file "$CONFIG_FILE"
 
 # Verificar módulos Swift Package
 echo "📦 Verificando módulos Swift Package..."
@@ -164,7 +163,11 @@ fi
 # Log de informações do sistema
 echo "💻 Informações do sistema:"
 echo "  - Xcode Version: $CI_XCODE_VERSION"
-echo "  - macOS Version: $(sw_vers -productVersion)"
+if command -v sw_vers >/dev/null 2>&1; then
+    echo "  - macOS Version: $(sw_vers -productVersion)"
+else
+    echo "  - OS Version: $(uname -s) $(uname -r)"
+fi
 echo "  - Build Environment: $BUILD_ENVIRONMENT"
 echo "  - Build Number: $BUILD_NUMBER"
 
