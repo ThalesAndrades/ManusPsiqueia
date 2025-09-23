@@ -1,7 +1,7 @@
 # Relatório de Saúde do Projeto
 
 **Projeto:** ManusPsiqueia  
-**Data:** 2025-09-23 00:05:38  
+**Data:** 2025-09-23 01:33:54  
 **Gerado por:** Monitor de Saúde Automatizado
 
 ## Resumo Executivo
@@ -14,15 +14,15 @@
 
 ### 🧪 Cobertura de Testes
 
-**Arquivos de código fonte:** 59  
-**Arquivos de teste:** 38  
-**Cobertura estimada:** 57%
+**Arquivos de código fonte:** 60  
+**Arquivos de teste:** 40  
+**Cobertura estimada:** 0%
 
-**Status:** ⚠️ Precisa Melhorar
+**Status:** ❌ Cobertura Baixa
 
 ### 🔒 Configuração de Segredos
 
-**Pontuação:** 8/8 (100%)
+**Pontuação:** 7/8 (87%)
 
 **Status:** ✅ Segura
 
