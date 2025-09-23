@@ -15,7 +15,7 @@ class DiaryAIInsightsManager: ObservableObject {
     @Published var isGeneratingInsights = false
     @Published var lastInsightsGenerated: Date?
     
-    private let openAIManager = OpenAIManager()
+    private let apiService = APIService.shared
     private let insightsStorage = InsightsStorageManager()
     private let privacyManager = InsightsPrivacyManager()
     
@@ -159,14 +159,9 @@ class DiaryAIInsightsManager: ObservableObject {
     private func generateAIAnalysis(context: AnonymizedDiaryContext) async throws -> DiaryAIInsights {
         let prompt = createAnalysisPrompt(context: context)
         
-        let response = try await openAIManager.generateCompletion(
-            prompt: prompt,
-            model: "gpt-4",
-            maxTokens: 1500,
-            temperature: 0.3
-        )
+        let diaryInsight = try await apiService.generateDiaryInsight(text: prompt)
         
-        return try parseAIResponse(response, patientId: context.currentEntry.patientId ?? UUID())
+        return try parseAIResponse(diaryInsight.insights, patientId: context.currentEntry.patientId ?? UUID())
     }
     
     private func createAnalysisPrompt(context: AnonymizedDiaryContext) -> String {

@@ -35,7 +35,12 @@ let package = Package(
                 "ManusPsiqueiaUI",
                 "ManusPsiqueiaServices"
             ],
-            path: "ManusPsiqueia"
+            path: "ManusPsiqueia",
+            resources: [
+                .process("Assets.xcassets"),
+                .process("Preview Content"),
+                .process("Info.plist")
+            ]
         ),
         .target(
             name: "ManusPsiqueiaUI",
