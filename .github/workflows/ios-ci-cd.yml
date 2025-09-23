@@ -344,7 +344,7 @@ jobs:
       uses: actions/checkout@v4
     
     - name: 📥 Download All Artifacts
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
     
     - name: 📊 Generate Comprehensive Report
       run: |
