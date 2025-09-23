@@ -86,6 +86,47 @@ Data Privacy (LGPD)
 - ✅ **Exercícios Terapêuticos** personalizados
 - ✅ **Histórico de Sessões** completo
 
+## 📦 Arquitetura Modular
+
+O ManusPsiqueia implementa uma arquitetura modular avançada usando Swift Package Manager, organizando o código em módulos independentes e reutilizáveis:
+
+### **🔧 Módulos Principais**
+
+#### **ManusPsiqueiaCore**
+- **Responsabilidade**: Lógica de negócios central, modelos de dados e segurança
+- **Conteúdo**: 
+  - Modelos (User, Subscription, Payment, etc.)
+  - Managers de negócio (AuthenticationManager, SecurityManager, etc.)
+  - Componentes de segurança (Certificate Pinning, Threat Detection)
+  - Utilitários e helpers
+- **Dependências**: SwiftKeychainWrapper
+
+#### **ManusPsiqueiaUI**
+- **Responsabilidade**: Componentes de interface e views SwiftUI
+- **Conteúdo**:
+  - Views e componentes reutilizáveis
+  - Sistema de temas e styling
+  - Animações e efeitos visuais
+  - Componentes avançados (Advanced Components)
+- **Dependências**: ManusPsiqueiaCore
+
+#### **ManusPsiqueiaServices**
+- **Responsabilidade**: Integrações com serviços externos
+- **Conteúdo**:
+  - Integração Stripe (pagamentos)
+  - Integração Supabase (backend)
+  - Integração OpenAI (IA)
+  - Clientes de API e network services
+- **Dependências**: ManusPsiqueiaCore, Stripe, Supabase, OpenAI
+
+### **🏗️ Benefícios da Arquitetura Modular**
+- **Separação de Responsabilidades**: Cada módulo tem função específica
+- **Reutilização**: Componentes podem ser usados em outros projetos
+- **Testabilidade**: Testes mais granulares e independentes
+- **Desenvolvimento em Equipe**: Equipes podem trabalhar em módulos paralelos
+- **Compilação Incremental**: Build mais rápido com módulos independentes
+- **Manutenibilidade**: Código mais organizado e fácil de manter
+
 ## 🚀 Instalação e Configuração
 
 ### **Pré-requisitos**
