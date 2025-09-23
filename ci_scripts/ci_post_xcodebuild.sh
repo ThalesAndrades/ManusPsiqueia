@@ -72,6 +72,13 @@ fi
 # Gerar relatório de build
 echo "📄 Gerando relatório de build..."
 
+# Verificar se CI_DERIVED_DATA_PATH está definido, caso contrário usar diretório temporário
+if [ -z "$CI_DERIVED_DATA_PATH" ]; then
+    CI_DERIVED_DATA_PATH="/tmp/xcode_cloud_fallback"
+    echo "⚠️ CI_DERIVED_DATA_PATH não definido, usando: $CI_DERIVED_DATA_PATH"
+    mkdir -p "$CI_DERIVED_DATA_PATH"
+fi
+
 build_report_file="$CI_DERIVED_DATA_PATH/build_report.txt"
 cat > "$build_report_file" << EOF
 === RELATÓRIO DE BUILD - MANUSPSIQUEIA ===

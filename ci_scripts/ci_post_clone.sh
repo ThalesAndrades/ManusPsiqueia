@@ -61,8 +61,15 @@ fi
 # Configurar variáveis de ambiente para build
 echo "🔐 Configurando variáveis de ambiente..."
 
+# Verificar se CI_DERIVED_DATA_PATH está definido, caso contrário usar diretório temporário
+if [ -z "$CI_DERIVED_DATA_PATH" ]; then
+    CI_DERIVED_DATA_PATH="/tmp/xcode_cloud_fallback"
+    echo "⚠️ CI_DERIVED_DATA_PATH não definido, usando: $CI_DERIVED_DATA_PATH"
+    mkdir -p "$CI_DERIVED_DATA_PATH"
+fi
+
 # Definir BUILD_NUMBER no ambiente
-echo "export BUILD_NUMBER=$BUILD_NUMBER" >> $CI_DERIVED_DATA_PATH/environment.sh
+echo "export BUILD_NUMBER=$BUILD_NUMBER" >> "$CI_DERIVED_DATA_PATH/environment.sh"
 
 # Verificar se as variáveis de ambiente necessárias estão definidas
 check_env_var() {
@@ -113,21 +120,29 @@ fi
 # Verificar estrutura do projeto
 echo "📁 Verificando estrutura do projeto..."
 
-required_files=(
-    "ManusPsiqueia.xcodeproj"
-    "Package.swift"
-    "ManusPsiqueia/Info.plist"
-    "$CONFIG_FILE"
-)
-
-for file in "${required_files[@]}"; do
+# Verificar arquivos obrigatórios
+check_required_file() {
+    local file="$1"
     if [ -f "$file" ] || [ -d "$file" ]; then
         echo "✅ $file encontrado"
+        return 0
     else
         echo "❌ $file não encontrado"
-        exit 1
+        return 1
     fi
-done
+}
+
+# Lista de arquivos obrigatórios
+missing_files=0
+check_required_file "ManusPsiqueia.xcodeproj" || missing_files=$((missing_files + 1))
+check_required_file "Package.swift" || missing_files=$((missing_files + 1))
+check_required_file "ManusPsiqueia/Info.plist" || missing_files=$((missing_files + 1))
+check_required_file "$CONFIG_FILE" || missing_files=$((missing_files + 1))
+
+if [ $missing_files -gt 0 ]; then
+    echo "❌ $missing_files arquivo(s) obrigatório(s) não encontrado(s)"
+    exit 1
+fi
 
 # Verificar módulos Swift Package
 echo "📦 Verificando módulos Swift Package..."
