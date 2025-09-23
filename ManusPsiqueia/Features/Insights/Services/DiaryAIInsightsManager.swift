@@ -8,6 +8,9 @@
 
 import Foundation
 import SwiftUI
+#if canImport(OpenAI)
+import OpenAI
+#endif
 
 /// AI-powered insights manager for diary entries with privacy-first approach
 @MainActor
@@ -15,7 +18,11 @@ class DiaryAIInsightsManager: ObservableObject {
     @Published var isGeneratingInsights = false
     @Published var lastInsightsGenerated: Date?
     
-    private let openAIManager = OpenAIManager()
+    private let openAIManager: OpenAIManagerProtocol
+    
+    init(openAIManager: OpenAIManagerProtocol = DefaultOpenAIManager()) {
+        self.openAIManager = openAIManager
+    }
     private let insightsStorage = InsightsStorageManager()
     private let privacyManager = InsightsPrivacyManager()
     
@@ -399,3 +406,74 @@ class InsightsPrivacyManager {
         return insights
     }
 }
+
+// MARK: - OpenAI Manager Protocol and Implementation
+
+protocol OpenAIManagerProtocol {
+    func generateCompletion(prompt: String, model: String, maxTokens: Int, temperature: Double) async throws -> String
+}
+
+#if canImport(OpenAI)
+class DefaultOpenAIManager: OpenAIManagerProtocol {
+    private let client: OpenAI
+    
+    init() {
+        // In a real implementation, this would use a secure API key
+        self.client = OpenAI(apiToken: "")
+    }
+    
+    func generateCompletion(prompt: String, model: String, maxTokens: Int, temperature: Double) async throws -> String {
+        let query = ChatQuery(
+            messages: [.user(.init(content: .string(prompt)))],
+            model: .gpt4,
+            maxTokens: maxTokens,
+            temperature: temperature
+        )
+        
+        let result = try await client.chats(query: query)
+        return result.choices.first?.message.content?.string ?? ""
+    }
+}
+#else
+class DefaultOpenAIManager: OpenAIManagerProtocol {
+    func generateCompletion(prompt: String, model: String, maxTokens: Int, temperature: Double) async throws -> String {
+        // Return mock response when OpenAI is not available
+        return """
+        {
+          "moodAnalysis": {
+            "trend": "stable",
+            "patterns": ["mock_pattern"],
+            "triggers": ["mock_trigger"]
+          },
+          "anxietyAnalysis": {
+            "currentLevel": "moderate",
+            "trends": ["mock_trend"],
+            "managementStrategies": ["mock_strategy"]
+          },
+          "riskAssessment": {
+            "urgencyLevel": "low",
+            "factors": ["mock_factor"],
+            "recommendations": ["mock_recommendation"]
+          },
+          "therapeuticRecommendations": [
+            {
+              "category": "behavioral",
+              "recommendation": "mock recommendation",
+              "priority": "medium"
+            }
+          ],
+          "patternAnalysis": {
+            "themes": ["mock_theme"],
+            "cyclicalPatterns": ["mock_pattern"],
+            "progressIndicators": ["mock_indicator"]
+          },
+          "progressTracking": {
+            "indicators": ["mock_improvement"],
+            "areasOfConcern": ["mock_concern"],
+            "goals": ["mock_goal"]
+          }
+        }
+        """
+    }
+}
+#endif

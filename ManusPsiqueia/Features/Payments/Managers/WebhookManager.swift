@@ -11,7 +11,9 @@ import Foundation
 import SwiftUI
 import Combine
 import CryptoKit
+#if canImport(SwiftKeychainWrapper)
 import SwiftKeychainWrapper
+#endif
 
 // MARK: - Webhook Event Types
 enum WebhookEventType: String, CaseIterable {
