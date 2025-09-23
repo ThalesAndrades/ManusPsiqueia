@@ -51,6 +51,7 @@ struct MentalHealthTextField: View {
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundColor(.primary)
+                .headerAccessibility(label: title)
             
             // Input field
             HStack(spacing: 12) {
@@ -64,8 +65,20 @@ struct MentalHealthTextField: View {
                 Group {
                     if isSecure && !showPassword {
                         SecureField(placeholder, text: $text)
+                            .mentalHealthAccessibility(
+                                label: "\(title). Campo de senha segura.",
+                                hint: "Insira sua senha. Suas informações são protegidas.",
+                                value: text.isEmpty ? "Vazio" : "Preenchido",
+                                traits: AccessibilityUtils.A11yTraits.secureField
+                            )
                     } else {
                         TextField(placeholder, text: $text)
+                            .mentalHealthAccessibility(
+                                label: "\(title). \(placeholder)",
+                                hint: helpText ?? "Campo de texto obrigatório",
+                                value: text.isEmpty ? "Vazio" : text,
+                                traits: AccessibilityUtils.A11yTraits.textField
+                            )
                     }
                 }
                 .font(.body)
@@ -73,20 +86,32 @@ struct MentalHealthTextField: View {
                 .focused($isFocused)
                 .onChange(of: text) { newValue in
                     validateInput(newValue)
+                    if !isValid {
+                        AccessibilityUtils.announceStateChange("Erro de validação no campo \(title)")
+                    }
                 }
                 
                 if isSecure {
-                    Button(action: { showPassword.toggle() }) {
+                    Button(action: { 
+                        showPassword.toggle() 
+                        AccessibilityUtils.announceStateChange(showPassword ? "Senha visível" : "Senha oculta")
+                    }) {
                         Image(systemName: showPassword ? "eye.slash" : "eye")
                             .font(.system(size: 16, weight: .medium))
                             .foregroundColor(.secondary)
                     }
+                    .buttonAccessibility(
+                        label: showPassword ? "Ocultar senha" : "Mostrar senha",
+                        hint: "Toque para alternar a visibilidade da senha"
+                    )
                 }
                 
                 if !isValid {
                     Image(systemName: "exclamationmark.circle")
                         .font(.system(size: 16, weight: .medium))
                         .foregroundColor(.red)
+                        .accessibilityLabel("Erro de validação")
+                        .accessibilityHint("Este campo contém um erro que precisa ser corrigido")
                 }
             }
             .padding(.horizontal, 16)
@@ -112,10 +137,14 @@ struct MentalHealthTextField: View {
                 Text(helpText)
                     .font(.caption)
                     .foregroundColor(.secondary)
+                    .accessibilityLabel("Texto de ajuda: \(helpText)")
+                    .accessibilityTraits(.staticText)
             } else if !isValid {
                 Text("Por favor, verifique o formato inserido")
                     .font(.caption)
                     .foregroundColor(.red)
+                    .accessibilityLabel("Erro de validação: Por favor, verifique o formato inserido")
+                    .accessibilityTraits(.staticText)
             }
         }
         .onAppear {
@@ -171,6 +200,7 @@ struct MentalHealthTextEditor: View {
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
+                    .headerAccessibility(label: title)
                 
                 Spacer()
                 
@@ -178,6 +208,8 @@ struct MentalHealthTextEditor: View {
                     Text("\(text.count)\(characterLimit.map { "/\($0)" } ?? "") caracteres")
                         .font(.caption)
                         .foregroundColor(.secondary)
+                        .accessibilityLabel(AccessibilityUtils.dynamicLabel(for: "text_count", value: text.count))
+                        .accessibilityTraits(.updatesFrequently)
                 }
             }
             
@@ -210,9 +242,16 @@ struct MentalHealthTextEditor: View {
                     .focused($isFocused)
                     .scrollContentBackground(.hidden)
                     .background(Color.clear)
+                    .mentalHealthAccessibility(
+                        label: "\(title). Editor de texto.",
+                        hint: AccessibilityUtils.AccessibilityHints.diaryPrivacy,
+                        value: text.isEmpty ? "Vazio" : "\(text.count) caracteres de texto",
+                        traits: AccessibilityUtils.A11yTraits.textField
+                    )
                     .onChange(of: text) { newValue in
                         if let limit = characterLimit, newValue.count > limit {
                             text = String(newValue.prefix(limit))
+                            AccessibilityUtils.announceStateChange("Limite de caracteres atingido")
                         }
                         updateTextHeight()
                     }
@@ -269,6 +308,7 @@ struct MoodScaleSlider: View {
                     .font(.subheadline)
                     .fontWeight(.medium)
                     .foregroundColor(.primary)
+                    .headerAccessibility(label: title)
                 
                 Spacer()
                 
@@ -277,6 +317,8 @@ struct MoodScaleSlider: View {
                     .fontWeight(.bold)
                     .foregroundColor(.purple)
                     .frame(width: 30)
+                    .accessibilityLabel("Valor atual: \(Int(value))")
+                    .accessibilityTraits(.updatesFrequently)
             }
             
             // Custom slider
@@ -316,16 +358,30 @@ struct MoodScaleSlider: View {
                             .offset(
                                 x: geometry.size.width * CGFloat((value - range.lowerBound) / (range.upperBound - range.lowerBound)) - 12
                             )
+                            .sliderAccessibility(
+                                label: "\(title). Escala de 1 a 10",
+                                value: value,
+                                range: range,
+                                hint: "Deslize para ajustar o valor entre \(Int(range.lowerBound)) e \(Int(range.upperBound))"
+                            )
                             .gesture(
                                 DragGesture()
                                     .onChanged { gesture in
                                         isDragging = true
                                         let percent = min(max(0, gesture.location.x / geometry.size.width), 1)
                                         let newValue = range.lowerBound + (range.upperBound - range.lowerBound) * Double(percent)
-                                        value = round(newValue / step) * step
+                                        let roundedValue = round(newValue / step) * step
+                                        if abs(roundedValue - value) >= step {
+                                            value = roundedValue
+                                            // Provide haptic feedback for accessibility
+                                            if AccessibilityConfiguration.shouldEnhanceHaptics {
+                                                UIImpactFeedbackGenerator(style: .light).impactOccurred()
+                                            }
+                                        }
                                     }
                                     .onEnded { _ in
                                         isDragging = false
+                                        AccessibilityUtils.announceStateChange("\(title) definido para \(Int(value))")
                                     }
                             )
                     }
@@ -340,8 +396,12 @@ struct MoodScaleSlider: View {
                             .font(.caption)
                             .foregroundColor(.secondary)
                             .frame(maxWidth: .infinity)
+                            .accessibilityLabel("Nível \(index + 1): \(labels[index])")
+                            .decorativeAccessibility()
                     }
                 }
+                .accessibilityElement(children: .ignore)
+                .accessibilityLabel("Escala de avaliação de \(labels.first ?? "Muito Baixo") a \(labels.last ?? "Muito Alto")")
             }
         }
     }
@@ -378,6 +438,7 @@ struct TagInputField: View {
                 .font(.subheadline)
                 .fontWeight(.medium)
                 .foregroundColor(.primary)
+                .headerAccessibility(label: title)
             
             // Current tags
             if !tags.isEmpty {
@@ -385,9 +446,12 @@ struct TagInputField: View {
                     ForEach(tags, id: \.self) { tag in
                         TagView(tag: tag) {
                             tags.removeAll { $0 == tag }
+                            AccessibilityUtils.announceStateChange("Tag \(tag) removida")
                         }
                     }
                 }
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel("\(tags.count) tags selecionadas: \(tags.joined(separator: ", "))")
             }
             
             // Input field
@@ -395,6 +459,12 @@ struct TagInputField: View {
                 TextField("Adicionar tag...", text: $currentTag)
                     .font(.body)
                     .focused($isFocused)
+                    .mentalHealthAccessibility(
+                        label: "Campo de adição de tags",
+                        hint: "Digite uma palavra-chave para categorizar esta entrada",
+                        value: currentTag.isEmpty ? "Vazio" : currentTag,
+                        traits: AccessibilityUtils.A11yTraits.textField
+                    )
                     .onSubmit {
                         addTag()
                     }
@@ -404,6 +474,10 @@ struct TagInputField: View {
                         .font(.system(size: 20))
                         .foregroundColor(.purple)
                 }
+                .buttonAccessibility(
+                    label: "Adicionar tag",
+                    hint: "Toque para adicionar a tag digitada"
+                )
                 .disabled(currentTag.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty)
             }
             .padding(.horizontal, 16)
@@ -425,11 +499,14 @@ struct TagInputField: View {
                 Text("Sugestões:")
                     .font(.caption)
                     .foregroundColor(.secondary)
+                    .accessibilityLabel("Tags sugeridas")
+                    .accessibilityTraits(.header)
                 
                 LazyVGrid(columns: [GridItem(.adaptive(minimum: 100))], spacing: 8) {
                     ForEach(suggestedTags.filter { !tags.contains($0) }, id: \.self) { tag in
                         Button(action: {
                             tags.append(tag)
+                            AccessibilityUtils.announceStateChange("Tag \(tag) adicionada")
                         }) {
                             Text(tag)
                                 .font(.caption)
@@ -439,8 +516,14 @@ struct TagInputField: View {
                                 .foregroundColor(.purple)
                                 .clipShape(Capsule())
                         }
+                        .buttonAccessibility(
+                            label: "Adicionar tag \(tag)",
+                            hint: "Toque para adicionar esta tag sugerida"
+                        )
                     }
                 }
+                .accessibilityElement(children: .contain)
+                .accessibilityLabel("Tags sugeridas disponíveis")
             }
         }
         .animation(.easeInOut(duration: 0.2), value: isFocused)
@@ -451,6 +534,9 @@ struct TagInputField: View {
         if !trimmedTag.isEmpty && !tags.contains(trimmedTag) {
             tags.append(trimmedTag)
             currentTag = ""
+            AccessibilityUtils.announceStateChange("Tag \(trimmedTag) adicionada")
+        } else if tags.contains(trimmedTag) {
+            AccessibilityUtils.announceStateChange("Tag \(trimmedTag) já existe")
         }
     }
 }
@@ -465,17 +551,25 @@ struct TagView: View {
             Text(tag)
                 .font(.caption)
                 .fontWeight(.medium)
+                .accessibilityLabel("Tag: \(tag)")
             
             Button(action: onRemove) {
                 Image(systemName: "xmark")
                     .font(.system(size: 10, weight: .bold))
             }
+            .buttonAccessibility(
+                label: "Remover tag \(tag)",
+                hint: "Toque para remover esta tag"
+            )
         }
         .padding(.horizontal, 10)
         .padding(.vertical, 6)
         .background(Color.purple.opacity(0.1))
         .foregroundColor(.purple)
         .clipShape(Capsule())
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("Tag \(tag) removível")
+        .accessibilityHint("Toque no X para remover")
     }
 }
 

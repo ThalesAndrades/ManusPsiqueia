@@ -79,13 +79,17 @@ struct MentalHealthButton: View {
     
     var body: some View {
         Button(action: {
-            hapticFeedback.impactOccurred()
+            // Enhanced haptic feedback for accessibility
+            if AccessibilityConfiguration.shouldEnhanceHaptics {
+                hapticFeedback.impactOccurred()
+            }
             action()
         }) {
             HStack(spacing: 8) {
                 if let icon = icon {
                     Image(systemName: icon)
                         .font(.system(size: size.iconSize, weight: .medium))
+                        .decorativeAccessibility()
                 }
                 
                 Text(title)
@@ -101,9 +105,17 @@ struct MentalHealthButton: View {
                     .stroke(borderColor, lineWidth: borderWidth)
             )
             .scaleEffect(isPressed ? 0.95 : 1.0)
-            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
+            .animation(
+                AccessibilityConfiguration.shouldReduceAnimations ? .none : .spring(response: 0.3, dampingFraction: 0.6), 
+                value: isPressed
+            )
         }
         .buttonStyle(PlainButtonStyle())
+        .buttonAccessibility(
+            label: accessibilityLabel,
+            hint: accessibilityHint,
+            isEnabled: true
+        )
         .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { pressing in
             isPressed = pressing
         }, perform: {})
@@ -188,6 +200,38 @@ struct MentalHealthButton: View {
         case .extraLarge: return 14
         }
     }
+    
+    private var accessibilityLabel: String {
+        switch style {
+        case .primary:
+            return "Botão principal: \(title)"
+        case .secondary:
+            return "Botão secundário: \(title)"
+        case .tertiary:
+            return "Botão terciário: \(title)"
+        case .destructive:
+            return "Botão de ação destrutiva: \(title)"
+        case .calm:
+            return "Botão calmante: \(title)"
+        case .energetic:
+            return "Botão energizante: \(title)"
+        case .therapeutic:
+            return "Botão terapêutico: \(title)"
+        }
+    }
+    
+    private var accessibilityHint: String {
+        switch style {
+        case .destructive:
+            return "Esta ação não pode ser desfeita. Toque duas vezes para confirmar."
+        case .therapeutic:
+            return "Acessa funcionalidades de bem-estar mental."
+        case .emergency:
+            return "Acessa recursos de emergência em saúde mental."
+        default:
+            return AccessibilityUtils.AccessibilityHints.buttonTap
+        }
+    }
 }
 
 /// Floating Action Button for mental health actions
@@ -228,7 +272,9 @@ struct MentalHealthFAB: View {
     
     var body: some View {
         Button(action: {
-            hapticFeedback.impactOccurred()
+            if AccessibilityConfiguration.shouldEnhanceHaptics {
+                hapticFeedback.impactOccurred()
+            }
             action()
         }) {
             Image(systemName: icon)
@@ -249,12 +295,39 @@ struct MentalHealthFAB: View {
                     x: 0,
                     y: 4
                 )
+                .scaleEffect(isPressed ? 0.9 : 1.0)
+                .animation(
+                    AccessibilityConfiguration.shouldReduceAnimations ? .none : .spring(response: 0.3, dampingFraction: 0.6),
+                    value: isPressed
+                )
         }
-        .scaleEffect(isPressed ? 0.9 : 1.0)
-        .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
+        .buttonAccessibility(
+            label: accessibilityLabel,
+            hint: accessibilityHint
+        )
         .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { pressing in
             isPressed = pressing
         }, perform: {})
+    }
+    
+    private var accessibilityLabel: String {
+        switch style {
+        case .primary:
+            return "Botão de ação flutuante principal"
+        case .secondary:
+            return "Botão de ação flutuante secundário"
+        case .emergency:
+            return "Botão de emergência em saúde mental"
+        }
+    }
+    
+    private var accessibilityHint: String {
+        switch style {
+        case .emergency:
+            return "Acesso rápido a recursos de crise e emergência"
+        default:
+            return "Toque para ação rápida"
+        }
     }
 }
 
@@ -310,6 +383,7 @@ struct MoodButton: View {
                 Text(mood.rawValue)
                     .font(.system(size: 32))
                     .scaleEffect(isSelected ? 1.2 : 1.0)
+                    .accessibilityHidden(true) // Hide emoji from VoiceOver
                 
                 Text(mood.name)
                     .font(.caption)
@@ -333,8 +407,22 @@ struct MoodButton: View {
                     )
             )
             .scaleEffect(isPressed ? 0.95 : 1.0)
-            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isPressed)
-            .animation(.spring(response: 0.3, dampingFraction: 0.6), value: isSelected)
+            .animation(
+                AccessibilityConfiguration.shouldReduceAnimations ? .none : .spring(response: 0.3, dampingFraction: 0.6), 
+                value: isPressed
+            )
+            .animation(
+                AccessibilityConfiguration.shouldReduceAnimations ? .none : .spring(response: 0.3, dampingFraction: 0.6), 
+                value: isSelected
+            )
+        }
+        .buttonAccessibility(
+            label: "Estado de humor: \(mood.name)\(isSelected ? ", selecionado" : "")",
+            hint: "Toque para definir seu humor como \(mood.name)"
+        )
+        .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { pressing in
+            isPressed = pressing
+        }, perform: {})
         }
         .onLongPressGesture(minimumDuration: 0, maximumDistance: .infinity, pressing: { pressing in
             isPressed = pressing
