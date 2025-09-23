@@ -36,6 +36,11 @@ case "$CI_WORKFLOW" in
         export BUILD_CONFIGURATION="Release"
         export XCCONFIG_FILE="Configuration/Production.xcconfig"
         ;;
+    "Psiqueia")
+        echo "🔧 Preparando build principal (Psiqueia -> Development)"
+        export BUILD_CONFIGURATION="Debug"
+        export XCCONFIG_FILE="Configuration/Development.xcconfig"
+        ;;
     *)
         echo "⚠️ Workflow não reconhecido: $CI_WORKFLOW"
         echo "🔧 Usando configuração padrão (Development)"
@@ -45,11 +50,28 @@ case "$CI_WORKFLOW" in
 esac
 
 # Verificar se o arquivo xcconfig existe
+echo "🔍 Diretório de trabalho atual: $(pwd)"
+echo "🔍 Verificando arquivo xcconfig: $XCCONFIG_FILE"
+echo "🔍 Arquivos na raiz do projeto:"
+ls -la | head -10
+
 if [ -f "$XCCONFIG_FILE" ]; then
     echo "✅ Arquivo xcconfig encontrado: $XCCONFIG_FILE"
 else
     echo "❌ Arquivo xcconfig não encontrado: $XCCONFIG_FILE"
-    exit 1
+    echo "🔍 Conteúdo do diretório Configuration:"
+    ls -la Configuration/ 2>/dev/null || echo "❌ Diretório Configuration não encontrado"
+    echo "🔍 Tentando caminhos alternativos..."
+    if [ -f "./Configuration/Development.xcconfig" ]; then
+        echo "✅ Encontrado em: ./Configuration/Development.xcconfig"
+        export XCCONFIG_FILE="./Configuration/Development.xcconfig"
+    elif [ -f "../Configuration/Development.xcconfig" ]; then
+        echo "✅ Encontrado em: ../Configuration/Development.xcconfig"
+        export XCCONFIG_FILE="../Configuration/Development.xcconfig"
+    else
+        echo "❌ Arquivo não encontrado em nenhum caminho testado"
+        exit 1
+    fi
 fi
 
 # Função para validar variável de ambiente
@@ -85,6 +107,12 @@ case "$CI_WORKFLOW" in
         ;;
     "Production")
         required_vars="STRIPE_PUBLISHABLE_KEY_PROD SUPABASE_URL_PROD SUPABASE_ANON_KEY_PROD OPENAI_API_KEY_PROD"
+        ;;
+    "Psiqueia")
+        required_vars="STRIPE_PUBLISHABLE_KEY_DEV SUPABASE_URL_DEV SUPABASE_ANON_KEY_DEV OPENAI_API_KEY_DEV"
+        ;;
+    *)
+        required_vars="STRIPE_PUBLISHABLE_KEY_DEV SUPABASE_URL_DEV SUPABASE_ANON_KEY_DEV OPENAI_API_KEY_DEV"
         ;;
 esac
 

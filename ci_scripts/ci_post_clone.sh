@@ -42,6 +42,11 @@ case "$CI_WORKFLOW" in
         export BUILD_ENVIRONMENT="Production"
         export CONFIG_FILE="Configuration/Production.xcconfig"
         ;;
+    "Psiqueia")
+        echo "🔧 Configurando ambiente principal (Psiqueia -> Development)"
+        export BUILD_ENVIRONMENT="Development"
+        export CONFIG_FILE="Configuration/Development.xcconfig"
+        ;;
     *)
         echo "⚠️ Workflow não reconhecido: $CI_WORKFLOW"
         echo "🔧 Usando configuração padrão (Development)"
@@ -51,11 +56,28 @@ case "$CI_WORKFLOW" in
 esac
 
 # Verificar se o arquivo de configuração existe
+echo "🔍 Diretório de trabalho atual: $(pwd)"
+echo "🔍 Verificando arquivo: $CONFIG_FILE"
+echo "🔍 Arquivos na raiz do projeto:"
+ls -la | head -10
+
 if [ -f "$CONFIG_FILE" ]; then
     echo "✅ Arquivo de configuração encontrado: $CONFIG_FILE"
 else
     echo "❌ Arquivo de configuração não encontrado: $CONFIG_FILE"
-    exit 1
+    echo "🔍 Conteúdo do diretório Configuration:"
+    ls -la Configuration/ 2>/dev/null || echo "❌ Diretório Configuration não encontrado"
+    echo "🔍 Tentando caminhos alternativos..."
+    if [ -f "./Configuration/Development.xcconfig" ]; then
+        echo "✅ Encontrado em: ./Configuration/Development.xcconfig"
+        export CONFIG_FILE="./Configuration/Development.xcconfig"
+    elif [ -f "../Configuration/Development.xcconfig" ]; then
+        echo "✅ Encontrado em: ../Configuration/Development.xcconfig"
+        export CONFIG_FILE="../Configuration/Development.xcconfig"
+    else
+        echo "❌ Arquivo não encontrado em nenhum caminho testado"
+        exit 1
+    fi
 fi
 
 # Configurar variáveis de ambiente para build
