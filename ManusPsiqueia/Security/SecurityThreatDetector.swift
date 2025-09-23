@@ -7,8 +7,7 @@
 //
 
 import Foundation
-import UIKit
-
+import SwiftUI
 import Network
 /// Detecta ameaças de segurança no dispositivo, como jailbreak, depuração e redes suspeitas.
 /// Utilizado pelo CertificatePinningManager para monitoramento proativo.

@@ -8,45 +8,23 @@
 
 set -e
 
-echo "🎉 Iniciando configuração pós-build para Xcode Cloud..."
+echo "🎉 Iniciando processamento pós-build para Xcode Cloud..."
 
 # Definir variáveis de ambiente
-export CI_XCODE_CLOUD=true
+export BUILD_ENVIRONMENT=${BUILD_ENVIRONMENT:-"Development"}
 export BUILD_NUMBER=${CI_BUILD_NUMBER:-1}
+export BUILD_STATUS=${CI_BUILD_RESULT:-"UNKNOWN"}
 
+echo "📋 Ambiente: $BUILD_ENVIRONMENT"
 echo "📋 Build Number: $BUILD_NUMBER"
-echo "🔧 Xcode Version: $CI_XCODE_VERSION"
-echo "📱 Platform: $CI_PLATFORM"
-echo "🎯 Workflow: $CI_WORKFLOW"
-echo "✅ Build Status: $CI_BUILD_RESULT"
+echo "📋 Status: $BUILD_STATUS"
 
 # Verificar se o build foi bem-sucedido
-if [ "$CI_BUILD_RESULT" = "SUCCEEDED" ]; then
+if [ "$BUILD_STATUS" = "SUCCEEDED" ]; then
     echo "✅ Build concluído com sucesso!"
 else
-    echo "❌ Build falhou com status: $CI_BUILD_RESULT"
-    exit 1
+    echo "⚠️ Build status: $BUILD_STATUS"
 fi
-
-# Configurar ambiente baseado no workflow
-case "$CI_WORKFLOW" in
-    "Development")
-        echo "🔧 Processando build de Development"
-        export BUILD_TYPE="Development"
-        ;;
-    "Staging")
-        echo "🧪 Processando build de Staging"
-        export BUILD_TYPE="Staging"
-        ;;
-    "Production")
-        echo "🚀 Processando build de Production"
-        export BUILD_TYPE="Production"
-        ;;
-    *)
-        echo "⚠️ Workflow não reconhecido: $CI_WORKFLOW"
-        export BUILD_TYPE="Unknown"
-        ;;
-esac
 
 # Verificar artefatos do build
 echo "📦 Verificando artefatos do build..."

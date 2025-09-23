@@ -8,7 +8,7 @@
 //
 
 import Foundation
-import UIKit
+import SwiftUI
 import Combine
 
 // MARK: - Performance Optimizer
