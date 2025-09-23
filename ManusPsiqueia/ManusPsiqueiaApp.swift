@@ -14,10 +14,13 @@ struct ManusPsiqueiaApp: App {
     @StateObject private var authManager = AuthenticationManager()
     @StateObject private var subscriptionManager = SubscriptionManager()
     @StateObject private var stripeManager = StripeManager()
+    @StateObject private var flowManager = FlowManager.shared
+    @StateObject private var webhookManager = WebhookManager.shared
     
     init() {
         setupAppearance()
         configureStoreKit()
+        configureURLScheme()
     }
     
     var body: some Scene {
@@ -26,6 +29,8 @@ struct ManusPsiqueiaApp: App {
                 .environmentObject(authManager)
                 .environmentObject(subscriptionManager)
                 .environmentObject(stripeManager)
+                .environmentObject(flowManager)
+                .environmentObject(webhookManager)
                 .preferredColorScheme(.dark)
                 .onAppear {
                     Task {
@@ -36,6 +41,9 @@ struct ManusPsiqueiaApp: App {
                 .task {
                     // Configurar listeners para transações do StoreKit
                     await subscriptionManager.listenForTransactions()
+                }
+                .onOpenURL { url in
+                    flowManager.handleDeepLink(url)
                 }
         }
     }
@@ -72,6 +80,12 @@ struct ManusPsiqueiaApp: App {
     private func configureStoreKit() {
         // Configurar StoreKit para assinaturas
         SKPaymentQueue.default().add(subscriptionManager)
+    }
+    
+    private func configureURLScheme() {
+        // Configurar URL scheme personalizado para deep links
+        // O URL scheme "manuspsiqueia" deve ser configurado no Info.plist
+        print("URL Scheme configurado: manuspsiqueia://")
     }
 }
 
@@ -112,6 +126,14 @@ struct StripeManagerKey: EnvironmentKey {
     static let defaultValue = StripeManager()
 }
 
+struct FlowManagerKey: EnvironmentKey {
+    static let defaultValue = FlowManager.shared
+}
+
+struct WebhookManagerKey: EnvironmentKey {
+    static let defaultValue = WebhookManager.shared
+}
+
 extension EnvironmentValues {
     var authManager: AuthenticationManager {
         get { self[AuthenticationManagerKey.self] }
@@ -126,5 +148,15 @@ extension EnvironmentValues {
     var stripeManager: StripeManager {
         get { self[StripeManagerKey.self] }
         set { self[StripeManagerKey.self] = newValue }
+    }
+    
+    var flowManager: FlowManager {
+        get { self[FlowManagerKey.self] }
+        set { self[FlowManagerKey.self] = newValue }
+    }
+    
+    var webhookManager: WebhookManager {
+        get { self[WebhookManagerKey.self] }
+        set { self[WebhookManagerKey.self] = newValue }
     }
 }
