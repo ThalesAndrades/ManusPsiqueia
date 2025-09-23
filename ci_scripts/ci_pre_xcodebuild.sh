@@ -101,11 +101,25 @@ else
     exit 1
 fi
 
-# Verificar se Info.plist existe
-if [ -f "ManusPsiqueia/Info.plist" ]; then
-    echo "✅ Info.plist encontrado"
-else
-    echo "❌ Info.plist não encontrado"
+# Verificar se Info.plist existe (múltiplos caminhos possíveis)
+INFO_PLIST_PATHS=(
+    "ManusPsiqueia/Info.plist"
+    "ManusPsiqueia/App/Info.plist"
+    "Info.plist"
+)
+
+INFO_PLIST_FOUND=""
+for path in "${INFO_PLIST_PATHS[@]}"; do
+    if [ -f "$path" ]; then
+        INFO_PLIST_FOUND="$path"
+        echo "✅ Info.plist encontrado em: $path"
+        break
+    fi
+done
+
+if [ -z "$INFO_PLIST_FOUND" ]; then
+    echo "❌ Info.plist não encontrado em nenhum caminho esperado"
+    echo "📋 Caminhos verificados: ${INFO_PLIST_PATHS[*]}"
     exit 1
 fi
 
