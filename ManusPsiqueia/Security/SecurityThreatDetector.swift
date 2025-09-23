@@ -8,8 +8,14 @@
 
 import Foundation
 import UIKit
-
 import Network
+import NetworkExtension
+import SystemConfiguration
+
+#if !targetEnvironment(simulator)
+import Darwin.sys.sysctl
+import Darwin.sys.proc
+#endif
 /// Detecta ameaças de segurança no dispositivo, como jailbreak, depuração e redes suspeitas.
 /// Utilizado pelo CertificatePinningManager para monitoramento proativo.
 final class SecurityThreatDetector {
@@ -106,25 +112,95 @@ final class SecurityThreatDetector {
     /// Esta é uma verificação heurística e pode gerar falsos positivos.
     /// - Returns: `true` se uma rede suspeita for detectada, `false` caso contrário.
     func isSuspiciousNetworkDetected() -> Bool {
-        // TODO: Implementar verificação de VPN/Proxy mais robusta
-        // Por enquanto, uma implementação básica pode ser a detecção de IPs incomuns ou configurações de proxy
+        var isSuspicious = false
         
-        // Exemplo heurístico: Verificar se há uma VPN ativa (simplificado)
-        // Network interface detection disabled
-//         // for interface in networkInterfaces {
-//             if interface.hasPrefix("10.") || interface.hasPrefix("172.16.") || interface.hasPrefix("192.168.") {
-//                 // Ignorar IPs locais
-//                 continue
-//             }
-//             if interface.contains("tun") || interface.contains("ppp") || interface.contains("vpn") {
-//                 auditLogger.log(event: .suspiciousNetwork, details: ["reason": "vpn_interface_found", "interface": interface], severity: .medium)
-//                 return true
-//             }
-//         }
-//         
-//         // TODO: Adicionar verificação de proxy HTTP/HTTPS
+        // 1. Verificar configurações de proxy do sistema
+        if let proxySettings = CFNetworkCopySystemProxySettings()?.takeRetainedValue() as? [String: Any] {
+            // Verificar proxy HTTP
+            if let httpProxy = proxySettings["HTTPProxy"] as? String, !httpProxy.isEmpty {
+                auditLogger.log(event: .suspiciousNetwork, details: ["reason": "http_proxy_detected", "proxy": httpProxy], severity: .medium)
+                isSuspicious = true
+            }
+            
+            // Verificar proxy HTTPS
+            if let httpsProxy = proxySettings["HTTPSProxy"] as? String, !httpsProxy.isEmpty {
+                auditLogger.log(event: .suspiciousNetwork, details: ["reason": "https_proxy_detected", "proxy": httpsProxy], severity: .medium)
+                isSuspicious = true
+            }
+            
+            // Verificar proxy SOCKS
+            if let socksProxy = proxySettings["SOCKSProxy"] as? String, !socksProxy.isEmpty {
+                auditLogger.log(event: .suspiciousNetwork, details: ["reason": "socks_proxy_detected", "proxy": socksProxy], severity: .medium)
+                isSuspicious = true
+            }
+        }
         
-        return false
+        // 2. Verificar configurações de VPN através de Network Extension
+        if let vpnManager = NEVPNManager.shared() {
+            if vpnManager.isEnabled && vpnManager.connection.status == .connected {
+                auditLogger.log(event: .suspiciousNetwork, details: ["reason": "vpn_connection_active"], severity: .medium)
+                isSuspicious = true
+            }
+        }
+        
+        // 3. Verificar interfaces de rede suspeitas
+        if let networkInterfaces = getNetworkInterfaces() {
+            for interface in networkInterfaces {
+                // Verificar interfaces VPN comuns
+                if interface.lowercased().contains("tun") || 
+                   interface.lowercased().contains("ppp") || 
+                   interface.lowercased().contains("vpn") ||
+                   interface.lowercased().contains("ipsec") {
+                    auditLogger.log(event: .suspiciousNetwork, details: ["reason": "vpn_interface_found", "interface": interface], severity: .medium)
+                    isSuspicious = true
+                }
+            }
+        }
+        
+        // 4. Verificar DNS alternativos suspeitos
+        if let dnsServers = getDNSServers() {
+            let suspiciousDNS = ["1.1.1.1", "8.8.8.8", "9.9.9.9"] // Cloudflare, Google, Quad9
+            for dns in dnsServers {
+                if suspiciousDNS.contains(dns) {
+                    auditLogger.log(event: .suspiciousNetwork, details: ["reason": "alternative_dns_detected", "dns": dns], severity: .low)
+                    // DNS alternativos são menos suspeitos, não marcam como suspeito automaticamente
+                }
+            }
+        }
+        
+        return isSuspicious
+    }
+    
+    /// Obtém lista de interfaces de rede ativas
+    private func getNetworkInterfaces() -> [String]? {
+        var addresses = [String]()
+        var ifaddr: UnsafeMutablePointer<ifaddrs>?
+        
+        guard getifaddrs(&ifaddr) == 0 else { return nil }
+        defer { freeifaddrs(ifaddr) }
+        
+        var ptr = ifaddr
+        while ptr != nil {
+            defer { ptr = ptr?.pointee.ifa_next }
+            
+            let interface = ptr?.pointee
+            let addrFamily = interface?.ifa_addr.pointee.sa_family
+            
+            if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
+                let name = String(cString: interface!.ifa_name)
+                if !addresses.contains(name) {
+                    addresses.append(name)
+                }
+            }
+        }
+        
+        return addresses
+    }
+    
+    /// Obtém lista de servidores DNS configurados
+    private func getDNSServers() -> [String]? {
+        let dnsServers = CFNetworkCopySystemProxySettings()?.takeRetainedValue() as? [String: Any]
+        return dnsServers?["DNSServers"] as? [String]
     }
     
     /// Executa um comando shell e verifica seu resultado.
@@ -147,11 +223,11 @@ final class SecurityThreatDetector {
                 return false
     }
 
-}// Adicionar novos eventos de segurança ao enum SecurityEvent no AuditLogger.swift
+}
 
-// Necessário para `kinfo_proc` e `P_TRACED`
-#if !targetEnvironment(simulator)
-import Darwin.sys.sysctl
-import Darwin.sys.proc
+// MARK: - Network Interface Structures
+
+#if canImport(Darwin)
+import Darwin
 #endif
 
