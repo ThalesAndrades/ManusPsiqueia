@@ -57,10 +57,17 @@ let package = Package(
             ],
             path: "Modules/ManusPsiqueiaServices/Sources/ManusPsiqueiaServices"
         ),
+        // Basic test target that doesn't depend on iOS-specific modules
         .testTarget(
             name: "ManusPsiqueiaTests",
             dependencies: [],
             path: "ManusPsiqueiaTests"
+        ),
+        // iOS-specific test target for full integration testing
+        .testTarget(
+            name: "ManusPsiqueiaIntegrationTests",
+            dependencies: ["ManusPsiqueia"],
+            path: "Tests/ManusPsiqueiaIntegrationTests"
         )
     ]
 )
