@@ -364,7 +364,7 @@ jobs:
     
     steps:
     - name: 📥 Download Security Reports
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
     
     - name: 🚨 Check for Critical Issues
       run: |
