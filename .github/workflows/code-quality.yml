@@ -140,7 +140,7 @@ jobs:
         EOF
     
     - name: 📤 Upload Quality Reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: code-quality-reports
         path: reports/
@@ -350,7 +350,7 @@ jobs:
         EOF
     
     - name: 📤 Upload Documentation
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: swift-documentation
         path: docs/
@@ -408,7 +408,7 @@ jobs:
         cat reports/complexity-report.txt
     
     - name: 📤 Upload Complexity Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: complexity-analysis
         path: reports/complexity-report.txt
@@ -424,7 +424,7 @@ jobs:
     
     steps:
     - name: 📥 Download All Reports
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
     
     - name: 📋 Create Master Quality Report
       run: |
@@ -498,7 +498,7 @@ jobs:
         EOF
     
     - name: 📤 Upload Master Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: master-quality-report
         path: master-quality-report.md
