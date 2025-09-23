@@ -276,6 +276,27 @@ ManusPsiqueia/
 - Backup automático seguro
 - Recuperação de desastres
 
+### **🔍 Detecção de Tokens e Secrets**
+- **Verificação automática**: Pre-commit hooks bloqueiam tokens expostos
+- **CI/CD scanning**: Detecção contínua em todas as branches
+- **Patterns avançados**: GitHub, Stripe, AWS e outros tokens
+- **Resposta rápida**: Alertas e bloqueios automáticos
+
+```bash
+# Verificar tokens manualmente
+./scripts/secrets_manager.sh scan
+
+# Configurar hooks de segurança
+./scripts/setup_security_hooks.sh
+```
+
+### **Tipos de Tokens Detectados**
+- ✅ GitHub Personal Access Tokens (github_pat_*, ghp_*)
+- ✅ Stripe Keys (sk_live_*, pk_live_*)
+- ✅ AWS Access Keys (AKIA*)
+- ✅ Private Keys (-----BEGIN * KEY-----)
+- ✅ Outros padrões sensíveis
+
 ## 🤝 Contribuição
 
 ### **Como Contribuir**

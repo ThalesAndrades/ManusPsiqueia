@@ -46,3 +46,23 @@ Carthage/Build/
 analise_estrutura_atual.md
 nova_estrutura_organizacional.md
 relatorio_reorganizacao.md
+
+# Security - Secrets and Tokens
+*.env
+*.env.*
+!*.env.example
+!*.env.template
+*.secrets
+!*.secrets.template
+*.pem
+*.p12
+*.mobileprovision
+.secrets/
+secrets/
+*.token
+*.pat
+github_pat_*
+ghp_*
+gho_*
+ghu_*
+ghs_*
