@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDisplayName</key>
+	<string>ManusPsiqueia</string>
+	<key>CFBundleIdentifier</key>
+	<string>com.ailun.manuspsiqueia</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>LSApplicationCategoryType</key>
+	<string>public.app-category.medical</string>
+	<key>NSFaceIDUsageDescription</key>
+	<string>ManusPsiqueia usa Face ID para proteger seu diário privativo e dados de saúde mental.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>ManusPsiqueia precisa acessar a câmera para permitir que você adicione fotos ao seu diário.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>ManusPsiqueia precisa acessar sua biblioteca de fotos para permitir que você adicione imagens ao seu diário.</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>ManusPsiqueia precisa acessar o microfone para gravações de áudio no diário.</string>
+	<key>NSHealthShareUsageDescription</key>
+	<string>ManusPsiqueia pode integrar com o app Saúde para fornecer insights mais completos sobre seu bem-estar.</string>
+	<key>NSHealthUpdateUsageDescription</key>
+	<string>ManusPsiqueia pode atualizar dados de saúde mental no app Saúde para acompanhar seu progresso.</string>
+	<key>UIApplicationSceneManifest</key>
+	<dict>
+		<key>UIApplicationSupportsMultipleScenes</key>
+		<true/>
+		<key>UISceneConfigurations</key>
+		<dict>
+			<key>UIWindowSceneSessionRoleApplication</key>
+			<array>
+				<dict>
+					<key>UISceneConfigurationName</key>
+					<string>Default Configuration</string>
+					<key>UISceneDelegateClassName</key>
+					<string>$(PRODUCT_MODULE_NAME).SceneDelegate</string>
+				</dict>
+			</array>
+		</dict>
+	</dict>
+	<key>UILaunchScreen</key>
+	<dict>
+		<key>UIColorName</key>
+		<string>AccentColor</string>
+		<key>UIImageName</key>
+		<string>LaunchImage</string>
+	</dict>
+	<key>UISupportedInterfaceOrientations</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+	</array>
+	<key>UISupportedInterfaceOrientations~ipad</key>
+	<array>
+		<string>UIInterfaceOrientationPortrait</string>
+		<string>UIInterfaceOrientationPortraitUpsideDown</string>
+		<string>UIInterfaceOrientationLandscapeLeft</string>
+		<string>UIInterfaceOrientationLandscapeRight</string>
+	</array>
+	<key>UIRequiredDeviceCapabilities</key>
+	<array>
+		<string>armv7</string>
+	</array>
+	<key>LSRequiresIPhoneOS</key>
+	<true/>
+	<key>UIStatusBarStyle</key>
+	<string>UIStatusBarStyleDefault</string>
+	<key>UIViewControllerBasedStatusBarAppearance</key>
+	<true/>
+	<!-- Configurações de Stripe -->
+	<key>StripePublishableKey</key>
+	<string>$(STRIPE_PUBLISHABLE_KEY)</string>
+	<!-- Configurações de Supabase -->
+	<key>SupabaseURL</key>
+	<string>$(SUPABASE_URL)</string>
+	<key>SupabaseAnonKey</key>
+	<string>$(SUPABASE_ANON_KEY)</string>
+	<!-- Configurações de OpenAI -->
+	<key>OpenAIAPIKey</key>
+	<string>$(OPENAI_API_KEY)</string>
+	<!-- Configurações de Build -->
+	<key>BuildEnvironment</key>
+	<string>$(BUILD_ENVIRONMENT)</string>
+	<key>IsDebugBuild</key>
+	<string>$(DEBUG_BUILD)</string>
+	<!-- Deep Link Configuration -->
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>com.ailun.manuspsiqueia.deeplink</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>manuspsiqueia</string>
+			</array>
+		</dict>
+	</array>
+</dict>
+</plist>
