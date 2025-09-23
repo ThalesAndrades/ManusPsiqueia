@@ -101,9 +101,21 @@ final class ManusPsiqueiaTests: XCTestCase {
 
 /// Validates email format using basic regex
 private func isValidEmail(_ email: String) -> Bool {
-    let emailRegEx = "[A-Z0-9a-z._%+-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,64}"
-    let emailPred = NSPredicate(format:"SELF MATCHES %@", emailRegEx)
-    return emailPred.evaluate(with: email)
+    // Simple email validation without NSPredicate for cross-platform compatibility
+    guard email.contains("@") && email.contains(".") else { return false }
+    let components = email.split(separator: "@")
+    guard components.count == 2 else { return false }
+    
+    let localPart = String(components[0])
+    let domainPart = String(components[1])
+    
+    // Basic validation
+    guard !localPart.isEmpty && !domainPart.isEmpty else { return false }
+    guard domainPart.contains(".") else { return false }
+    guard !email.hasPrefix(".") && !email.hasSuffix(".") else { return false }
+    guard !email.contains("..") else { return false }
+    
+    return true
 }
 
 /// Validates password strength
@@ -111,10 +123,18 @@ private func isValidPassword(_ password: String) -> Bool {
     // At least 8 characters, with uppercase, lowercase, number, and special character
     guard password.count >= 8 else { return false }
     
-    let hasUppercase = password.range(of: "[A-Z]", options: .regularExpression) != nil
-    let hasLowercase = password.range(of: "[a-z]", options: .regularExpression) != nil
-    let hasNumber = password.range(of: "[0-9]", options: .regularExpression) != nil
-    let hasSpecialChar = password.range(of: "[!@#$%^&*(),.?\":{}|<>]", options: .regularExpression) != nil
+    // Check for at least one uppercase letter
+    let hasUppercase = password.contains { $0.isUppercase }
+    
+    // Check for at least one lowercase letter  
+    let hasLowercase = password.contains { $0.isLowercase }
+    
+    // Check for at least one number
+    let hasNumber = password.contains { $0.isNumber }
+    
+    // Check for at least one special character
+    let specialChars = "!@#$%^&*(),.?\":{}|<>"
+    let hasSpecialChar = password.contains { specialChars.contains($0) }
     
     return hasUppercase && hasLowercase && hasNumber && hasSpecialChar
 }
