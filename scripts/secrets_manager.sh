@@ -34,16 +34,28 @@ show_help() {
     echo "  keychain    - Gerenciar segredos no Keychain"
     echo "  template    - Gerar templates de configuração"
     echo "  clean       - Limpar arquivos temporários"
+    echo "  list        - Listar segredos disponíveis"
+    echo "  rotate      - Rotacionar segredos"
+    echo "  backup      - Fazer backup dos segredos"
+    echo "  restore     - Restaurar backup dos segredos"
+    echo "  audit       - Auditar acesso aos segredos"
+    echo "  export      - Exportar segredos para CI/CD"
     echo ""
     echo "Opções:"
     echo "  -e, --env     Ambiente (development|staging|production)"
     echo "  -f, --file    Arquivo específico"
+    echo "  -k, --key     Chave específica"
+    echo "  -b, --backup  Arquivo de backup"
     echo "  -h, --help    Exibir esta ajuda"
     echo ""
     echo "Exemplos:"
     echo "  $0 setup"
     echo "  $0 validate --env production"
     echo "  $0 keychain --env staging"
+    echo "  $0 list --env development"
+    echo "  $0 rotate --env production --key STRIPE_SECRET_KEY"
+    echo "  $0 backup --env production"
+    echo "  $0 export --env staging"
 }
 
 # Função para criar estrutura de diretórios
@@ -355,6 +367,273 @@ clean_temp_files() {
     echo -e "${GREEN}✅ Limpeza concluída!${NC}"
 }
 
+# Função para listar segredos
+list_secrets() {
+    local env=${1:-"development"}
+    echo -e "${YELLOW}📋 Listando segredos para ambiente: $env${NC}"
+    
+    local secrets_file="$SECRETS_DIR/$env.secrets"
+    
+    if [ ! -f "$secrets_file" ]; then
+        echo -e "${RED}❌ Arquivo de segredos não encontrado: $secrets_file${NC}"
+        return 1
+    fi
+    
+    echo -e "${BLUE}Segredos disponíveis:${NC}"
+    
+    # Listar apenas as chaves, sem os valores
+    while IFS='=' read -r key value; do
+        # Ignorar comentários e linhas vazias
+        if [[ $key =~ ^[[:space:]]*# ]] || [[ -z $key ]]; then
+            continue
+        fi
+        
+        # Remover espaços em branco
+        key=$(echo "$key" | xargs)
+        
+        if [ ! -z "$key" ]; then
+            echo -e "${GREEN}  ✓ $key${NC}"
+        fi
+    done < "$secrets_file"
+}
+
+# Função para rotacionar segredos
+rotate_secret() {
+    local env=${1:-"development"}
+    local key_to_rotate=$2
+    
+    if [ -z "$key_to_rotate" ]; then
+        echo -e "${RED}❌ Chave não especificada para rotação${NC}"
+        return 1
+    fi
+    
+    echo -e "${YELLOW}🔄 Rotacionando segredo: $key_to_rotate (ambiente: $env)${NC}"
+    
+    local secrets_file="$SECRETS_DIR/$env.secrets"
+    
+    if [ ! -f "$secrets_file" ]; then
+        echo -e "${RED}❌ Arquivo de segredos não encontrado: $secrets_file${NC}"
+        return 1
+    fi
+    
+    # Fazer backup antes da rotação
+    cp "$secrets_file" "$secrets_file.backup.$(date +%Y%m%d_%H%M%S)"
+    
+    echo -e "${BLUE}Digite o novo valor para $key_to_rotate:${NC}"
+    read -s new_value
+    
+    if [ -z "$new_value" ]; then
+        echo -e "${RED}❌ Valor não pode estar vazio${NC}"
+        return 1
+    fi
+    
+    # Atualizar o arquivo
+    if grep -q "^$key_to_rotate=" "$secrets_file"; then
+        # Usar sed para substituir o valor
+        if [[ "$OSTYPE" == "darwin"* ]]; then
+            # macOS
+            sed -i '' "s/^$key_to_rotate=.*/$key_to_rotate=$new_value/" "$secrets_file"
+        else
+            # Linux
+            sed -i "s/^$key_to_rotate=.*/$key_to_rotate=$new_value/" "$secrets_file"
+        fi
+        
+        echo -e "${GREEN}✅ Segredo $key_to_rotate rotacionado com sucesso!${NC}"
+        
+        # Atualizar no Keychain também
+        security delete-generic-password \
+            -a "$key_to_rotate" \
+            -s "$KEYCHAIN_SERVICE.$env" 2>/dev/null || true
+        
+        security add-generic-password \
+            -a "$key_to_rotate" \
+            -s "$KEYCHAIN_SERVICE.$env" \
+            -w "$new_value" \
+            -U
+            
+        echo -e "${GREEN}✅ Keychain atualizado!${NC}"
+    else
+        echo -e "${RED}❌ Chave $key_to_rotate não encontrada no arquivo${NC}"
+        return 1
+    fi
+}
+
+# Função para backup de segredos
+backup_secrets() {
+    local env=${1:-"development"}
+    echo -e "${YELLOW}💾 Fazendo backup dos segredos para ambiente: $env${NC}"
+    
+    local secrets_file="$SECRETS_DIR/$env.secrets"
+    local backup_dir="$SECRETS_DIR/backups"
+    local backup_file="$backup_dir/$env.secrets.backup.$(date +%Y%m%d_%H%M%S)"
+    
+    if [ ! -f "$secrets_file" ]; then
+        echo -e "${RED}❌ Arquivo de segredos não encontrado: $secrets_file${NC}"
+        return 1
+    fi
+    
+    mkdir -p "$backup_dir"
+    
+    # Criar backup criptografado
+    echo -e "${BLUE}Criando backup criptografado...${NC}"
+    openssl enc -aes-256-cbc -salt -in "$secrets_file" -out "$backup_file.enc" -k "$(whoami)-$(date +%Y%m%d)"
+    
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✅ Backup criado: $backup_file.enc${NC}"
+        
+        # Criar hash para verificação
+        openssl dgst -sha256 "$backup_file.enc" > "$backup_file.enc.sha256"
+        echo -e "${GREEN}✅ Hash de verificação criado: $backup_file.enc.sha256${NC}"
+    else
+        echo -e "${RED}❌ Erro ao criar backup${NC}"
+        return 1
+    fi
+}
+
+# Função para restaurar backup
+restore_secrets() {
+    local env=${1:-"development"}
+    local backup_file=$2
+    
+    if [ -z "$backup_file" ]; then
+        echo -e "${RED}❌ Arquivo de backup não especificado${NC}"
+        return 1
+    fi
+    
+    if [ ! -f "$backup_file" ]; then
+        echo -e "${RED}❌ Arquivo de backup não encontrado: $backup_file${NC}"
+        return 1
+    fi
+    
+    echo -e "${YELLOW}📦 Restaurando backup para ambiente: $env${NC}"
+    
+    local secrets_file="$SECRETS_DIR/$env.secrets"
+    
+    # Verificar hash se existir
+    if [ -f "$backup_file.sha256" ]; then
+        echo -e "${BLUE}Verificando integridade do backup...${NC}"
+        if openssl dgst -sha256 -verify "$backup_file.sha256" "$backup_file" >/dev/null 2>&1; then
+            echo -e "${GREEN}✅ Integridade verificada${NC}"
+        else
+            echo -e "${YELLOW}⚠️ Não foi possível verificar integridade (continuando)${NC}"
+        fi
+    fi
+    
+    # Fazer backup do arquivo atual
+    if [ -f "$secrets_file" ]; then
+        cp "$secrets_file" "$secrets_file.pre-restore.$(date +%Y%m%d_%H%M%S)"
+        echo -e "${BLUE}Backup do arquivo atual criado${NC}"
+    fi
+    
+    # Restaurar
+    echo -e "${BLUE}Descriptografando backup...${NC}"
+    openssl enc -aes-256-cbc -d -in "$backup_file" -out "$secrets_file" -k "$(whoami)-$(date +%Y%m%d)"
+    
+    if [ $? -eq 0 ]; then
+        echo -e "${GREEN}✅ Backup restaurado: $secrets_file${NC}"
+        
+        # Atualizar Keychain
+        echo -e "${BLUE}Atualizando Keychain...${NC}"
+        manage_keychain "$env"
+    else
+        echo -e "${RED}❌ Erro ao restaurar backup${NC}"
+        return 1
+    fi
+}
+
+# Função para auditoria
+audit_secrets() {
+    local env=${1:-"development"}
+    echo -e "${YELLOW}🔍 Auditando segredos para ambiente: $env${NC}"
+    
+    local secrets_file="$SECRETS_DIR/$env.secrets"
+    
+    if [ ! -f "$secrets_file" ]; then
+        echo -e "${RED}❌ Arquivo de segredos não encontrado: $secrets_file${NC}"
+        return 1
+    fi
+    
+    echo -e "${BLUE}=== RELATÓRIO DE AUDITORIA ===${NC}"
+    echo "Ambiente: $env"
+    echo "Arquivo: $secrets_file"
+    echo "Data: $(date)"
+    echo "Usuário: $(whoami)"
+    echo ""
+    
+    # Verificar permissões do arquivo
+    echo -e "${BLUE}Permissões do arquivo:${NC}"
+    ls -la "$secrets_file"
+    
+    # Verificar se há valores de template
+    echo -e "\n${BLUE}Valores de template não substituídos:${NC}"
+    local template_values=$(grep -E "(your_|here|template)" "$secrets_file" || echo "Nenhum encontrado")
+    echo "$template_values"
+    
+    # Verificar chaves obrigatórias
+    echo -e "\n${BLUE}Verificação de chaves obrigatórias:${NC}"
+    local required_vars=("STRIPE_PUBLISHABLE_KEY" "SUPABASE_URL" "OPENAI_API_KEY")
+    for var in "${required_vars[@]}"; do
+        if grep -q "^$var=" "$secrets_file"; then
+            echo -e "${GREEN}✅ $var${NC}"
+        else
+            echo -e "${RED}❌ $var (não encontrada)${NC}"
+        fi
+    done
+    
+    # Verificar no Keychain
+    echo -e "\n${BLUE}Verificação no Keychain:${NC}"
+    for var in "${required_vars[@]}"; do
+        if security find-generic-password -a "$var" -s "$KEYCHAIN_SERVICE.$env" >/dev/null 2>&1; then
+            echo -e "${GREEN}✅ $var (Keychain)${NC}"
+        else
+            echo -e "${RED}❌ $var (não encontrada no Keychain)${NC}"
+        fi
+    done
+    
+    # Verificar últimas modificações
+    echo -e "\n${BLUE}Última modificação:${NC}"
+    stat -f "%Sm" "$secrets_file" 2>/dev/null || stat -c "%y" "$secrets_file" 2>/dev/null
+    
+    echo -e "\n${GREEN}=== FIM DO RELATÓRIO ===${NC}"
+}
+
+# Função para exportar segredos para CI/CD
+export_for_cicd() {
+    local env=${1:-"staging"}
+    echo -e "${YELLOW}📤 Exportando segredos para CI/CD (ambiente: $env)${NC}"
+    
+    local secrets_file="$SECRETS_DIR/$env.secrets"
+    
+    if [ ! -f "$secrets_file" ]; then
+        echo -e "${RED}❌ Arquivo de segredos não encontrado: $secrets_file${NC}"
+        return 1
+    fi
+    
+    echo -e "${BLUE}GitHub Actions Secrets para configurar:${NC}"
+    echo ""
+    
+    # Ler arquivo e gerar comandos para GitHub CLI
+    while IFS='=' read -r key value; do
+        # Ignorar comentários e linhas vazias
+        if [[ $key =~ ^[[:space:]]*# ]] || [[ -z $key ]]; then
+            continue
+        fi
+        
+        # Remover espaços em branco
+        key=$(echo "$key" | xargs)
+        value=$(echo "$value" | xargs)
+        
+        if [ ! -z "$key" ] && [ ! -z "$value" ]; then
+            # Gerar comando para GitHub CLI
+            echo "gh secret set ${key}_${env^^} --body \"$value\""
+        fi
+    done < "$secrets_file"
+    
+    echo ""
+    echo -e "${YELLOW}Para aplicar os segredos, execute os comandos acima com GitHub CLI${NC}"
+    echo -e "${YELLOW}Ou configure manualmente em: Settings > Secrets and variables > Actions${NC}"
+}
+
 # Função principal
 main() {
     local command=$1
@@ -430,6 +709,106 @@ main() {
             ;;
         "clean")
             clean_temp_files
+            ;;
+        "list")
+            local env="development"
+            while [[ $# -gt 0 ]]; do
+                case $1 in
+                    -e|--env)
+                        env="$2"
+                        shift 2
+                        ;;
+                    *)
+                        shift
+                        ;;
+                esac
+            done
+            list_secrets "$env"
+            ;;
+        "rotate")
+            local env="development"
+            local key=""
+            while [[ $# -gt 0 ]]; do
+                case $1 in
+                    -e|--env)
+                        env="$2"
+                        shift 2
+                        ;;
+                    -k|--key)
+                        key="$2"
+                        shift 2
+                        ;;
+                    *)
+                        shift
+                        ;;
+                esac
+            done
+            rotate_secret "$env" "$key"
+            ;;
+        "backup")
+            local env="development"
+            while [[ $# -gt 0 ]]; do
+                case $1 in
+                    -e|--env)
+                        env="$2"
+                        shift 2
+                        ;;
+                    *)
+                        shift
+                        ;;
+                esac
+            done
+            backup_secrets "$env"
+            ;;
+        "restore")
+            local env="development"
+            local backup_file=""
+            while [[ $# -gt 0 ]]; do
+                case $1 in
+                    -e|--env)
+                        env="$2"
+                        shift 2
+                        ;;
+                    -b|--backup)
+                        backup_file="$2"
+                        shift 2
+                        ;;
+                    *)
+                        shift
+                        ;;
+                esac
+            done
+            restore_secrets "$env" "$backup_file"
+            ;;
+        "audit")
+            local env="development"
+            while [[ $# -gt 0 ]]; do
+                case $1 in
+                    -e|--env)
+                        env="$2"
+                        shift 2
+                        ;;
+                    *)
+                        shift
+                        ;;
+                esac
+            done
+            audit_secrets "$env"
+            ;;
+        "export")
+            local env="staging"
+            while [[ $# -gt 0 ]]; do
+                case $1 in
+                    -e|--env)
+                        env="$2"
+                        shift 2
+                        ;;
+                    *)
+                        shift
+                        ;;
+                esac
+            done
+            export_for_cicd "$env"
             ;;
         "help"|"-h"|"--help"|"")
             show_help
