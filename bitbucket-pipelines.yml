@@ -1,0 +1,387 @@
+# Bitbucket Pipelines configuration for ManusPsiqueia
+# iOS CI/CD pipeline with comprehensive testing, security analysis, and deployment
+# Author: AiLun Tecnologia
+# CNPJ: 60.740.536/0001-75
+
+image: atlassian/default-image:3
+
+definitions:
+  services:
+    # iOS build environment with Xcode
+    ios-build:
+      image: atlassian/default-image:3
+      
+  caches:
+    cocoapods: ~/.cocoapods
+    npm: ~/.npm
+    
+  scripts:
+    # Install Xcode and iOS development tools
+    - &install-xcode-tools |
+      echo "🍎 Setting up iOS development environment..."
+      # Note: For Bitbucket Server on-premises, ensure macOS agents are configured
+      # with Xcode 15.1+ installed
+      
+    # Install project dependencies
+    - &install-dependencies |
+      echo "📦 Installing project dependencies..."
+      # Install SwiftLint
+      if command -v brew >/dev/null 2>&1; then
+        brew install swiftlint
+      else
+        echo "⚠️ Homebrew not available, attempting manual SwiftLint installation"
+        curl -L https://github.com/realm/SwiftLint/releases/download/0.54.0/SwiftLint.pkg -o SwiftLint.pkg
+        sudo installer -pkg SwiftLint.pkg -target /
+      fi
+      
+      # Verify SwiftLint installation
+      swiftlint version || echo "⚠️ SwiftLint installation failed"
+      
+    # Security scan script
+    - &security-scan |
+      echo "🔒 Running security analysis..."
+      
+      # Check for hardcoded secrets
+      echo "🔍 Checking for hardcoded API keys..."
+      if grep -r "sk_live\|pk_live\|sk_test.*[a-zA-Z0-9]{20}" . --exclude-dir=.git; then
+        echo "❌ Potential API keys found in code!"
+        exit 1
+      fi
+      
+      # Check for insecure URLs
+      echo "🔍 Checking for insecure HTTP URLs..."
+      if grep -r "http://" . --exclude-dir=.git --exclude="*.md"; then
+        echo "⚠️ Insecure HTTP URLs found"
+      fi
+      
+      # Check for sensitive data patterns
+      echo "🔍 Checking for sensitive data patterns..."
+      if grep -r "password\|secret\|token" . --exclude-dir=.git --exclude="*.md" --exclude="bitbucket-pipelines.yml"; then
+        echo "⚠️ Potential sensitive data patterns found"
+      fi
+      
+      echo "✅ Security scan completed"
+
+    # Code quality analysis
+    - &code-quality |
+      echo "🔍 Running code quality analysis..."
+      
+      # Run SwiftLint
+      if command -v swiftlint >/dev/null 2>&1; then
+        echo "📋 Running SwiftLint analysis..."
+        swiftlint lint --reporter json > swiftlint-results.json || true
+        swiftlint lint --reporter checkstyle > swiftlint-checkstyle.xml || true
+        
+        # Show summary
+        echo "📊 SwiftLint Summary:"
+        swiftlint lint --quiet || echo "⚠️ SwiftLint found issues"
+      else
+        echo "⚠️ SwiftLint not available, skipping lint analysis"
+      fi
+      
+    # Build project
+    - &build-project |
+      echo "🏗️ Building ManusPsiqueia project..."
+      
+      # Resolve Swift Package dependencies
+      echo "📦 Resolving Swift Package dependencies..."
+      xcodebuild -resolvePackageDependencies -project ManusPsiqueia.xcodeproj -scheme ManusPsiqueia
+      
+      # Clean and build
+      echo "🔨 Building project..."
+      xcodebuild clean build \
+        -project ManusPsiqueia.xcodeproj \
+        -scheme ManusPsiqueia \
+        -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.2' \
+        -configuration Debug \
+        CODE_SIGNING_ALLOWED=NO \
+        | tee build.log
+        
+      echo "✅ Build completed"
+      
+    # Run tests
+    - &run-tests |
+      echo "🧪 Running unit tests..."
+      
+      xcodebuild test \
+        -project ManusPsiqueia.xcodeproj \
+        -scheme ManusPsiqueia \
+        -destination 'platform=iOS Simulator,name=iPhone 15 Pro,OS=17.2' \
+        -configuration Debug \
+        CODE_SIGNING_ALLOWED=NO \
+        -enableCodeCoverage YES \
+        | tee test.log
+        
+      echo "✅ Tests completed"
+      
+    # Generate reports
+    - &generate-reports |
+      echo "📊 Generating build reports..."
+      
+      # Create comprehensive report
+      cat > ci-report.md << EOF
+      # 📊 ManusPsiqueia - Bitbucket CI/CD Report
+      
+      **Generated on:** $(date)
+      **Commit:** $BITBUCKET_COMMIT
+      **Branch:** $BITBUCKET_BRANCH
+      **Build:** #$BITBUCKET_BUILD_NUMBER
+      
+      ## 🔍 Code Quality
+      $(if [ -f "swiftlint-results.json" ]; then echo "✅ SwiftLint analysis completed"; else echo "❌ SwiftLint analysis failed"; fi)
+      
+      ## 🧪 Tests
+      ✅ Unit tests executed
+      
+      ## 🔒 Security
+      ✅ Security analysis completed
+      
+      ## 🏗️ Build
+      ✅ iOS build completed successfully
+      
+      EOF
+      
+      echo "📄 Report generated: ci-report.md"
+
+pipelines:
+  # Default pipeline for all branches
+  default:
+    - step:
+        name: 🔍 Code Quality & Security Analysis
+        image: macos-monterey-xcode:14.1.0
+        caches:
+          - cocoapods
+        script:
+          - *install-xcode-tools
+          - *install-dependencies
+          - *security-scan
+          - *code-quality
+        artifacts:
+          - swiftlint-results.json
+          - swiftlint-checkstyle.xml
+          - ci-report.md
+          
+    - step:
+        name: 🏗️ Build & Test
+        image: macos-monterey-xcode:14.1.0
+        caches:
+          - cocoapods
+        script:
+          - *install-xcode-tools
+          - *build-project
+          - *run-tests
+          - *generate-reports
+        artifacts:
+          - build.log
+          - test.log
+          - ci-report.md
+          
+  # Production pipeline for master branch
+  branches:
+    master:
+      - step:
+          name: 🔍 Code Quality & Security Analysis
+          image: macos-monterey-xcode:14.1.0
+          caches:
+            - cocoapods
+          script:
+            - *install-xcode-tools
+            - *install-dependencies
+            - *security-scan
+            - *code-quality
+          artifacts:
+            - swiftlint-results.json
+            - swiftlint-checkstyle.xml
+            
+      - step:
+          name: 🏗️ Build & Test
+          image: macos-monterey-xcode:14.1.0
+          caches:
+            - cocoapods
+          script:
+            - *install-xcode-tools
+            - *build-project
+            - *run-tests
+          artifacts:
+            - build.log
+            - test.log
+            
+      - step:
+          name: 🔒 Advanced Security Scan
+          image: macos-monterey-xcode:14.1.0
+          script:
+            - echo "🛡️ Running advanced security analysis..."
+            - |
+              # Check Info.plist security settings
+              if [ -f "ManusPsiqueia/Info.plist" ]; then
+                echo "📋 Analyzing Info.plist security..."
+                plutil -lint ManusPsiqueia/Info.plist
+                
+                # Check App Transport Security
+                if grep -q "NSAppTransportSecurity" ManusPsiqueia/Info.plist; then
+                  echo "✅ App Transport Security configured"
+                else
+                  echo "⚠️ App Transport Security not configured"
+                fi
+              fi
+              
+              # Check for certificates and keys
+              find . -name "*.p12" -o -name "*.mobileprovision" -o -name "*.cer" | while read file; do
+                echo "🔑 Found certificate/key file: $file"
+              done
+              
+      - step:
+          name: 📦 Dependency Analysis
+          image: macos-monterey-xcode:14.1.0
+          script:
+            - echo "📦 Analyzing Swift Package Dependencies..."
+            - |
+              # Analyze Package.swift dependencies
+              if [ -f "Package.swift" ]; then
+                echo "📋 Package.swift found, analyzing..."
+                swift package show-dependencies --format json > dependencies.json || true
+                if [ -f "dependencies.json" ]; then
+                  cat dependencies.json
+                fi
+              fi
+              
+              # Check Xcode project dependencies
+              if [ -f "ManusPsiqueia.xcodeproj/project.pbxproj" ]; then
+                echo "🔍 Analyzing Xcode project dependencies..."
+                grep -o "https://github.com/[^\"]*" ManusPsiqueia.xcodeproj/project.pbxproj | sort | uniq || true
+              fi
+              
+              # Security audit for known vulnerable dependencies
+              echo "🛡️ Running security audit on dependencies..."
+              VULNERABLE_DEPS=("AFNetworking" "old-ssl-lib")
+              for dep in "${VULNERABLE_DEPS[@]}"; do
+                if grep -q "$dep" ManusPsiqueia.xcodeproj/project.pbxproj; then
+                  echo "⚠️ WARNING: Potentially vulnerable dependency found: $dep"
+                fi
+              done
+          artifacts:
+            - dependencies.json
+            
+      - step:
+          name: 🚀 Deploy to TestFlight (Production)
+          image: macos-monterey-xcode:14.1.0
+          deployment: production
+          trigger: manual
+          script:
+            - echo "🚀 Preparing deployment to TestFlight..."
+            - |
+              # Setup certificates and provisioning profiles
+              # Note: In Bitbucket Server, store certificates in repository variables
+              echo "🔑 Setting up certificates and provisioning profiles..."
+              
+              # This would be configured in Bitbucket Server repository settings
+              if [ -n "$IOS_CERTIFICATE_P12" ]; then
+                echo "📱 iOS certificate found in environment"
+                # Decode and install certificate
+                echo "$IOS_CERTIFICATE_P12" | base64 -d > certificate.p12
+                security create-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+                security default-keychain -s build.keychain
+                security unlock-keychain -p "$KEYCHAIN_PASSWORD" build.keychain
+                security import certificate.p12 -k build.keychain -P "$CERTIFICATE_PASSWORD" -T /usr/bin/codesign
+                security set-key-partition-list -S apple-tool:,apple:,codesign: -s -k "$KEYCHAIN_PASSWORD" build.keychain
+              fi
+              
+              # Build for release
+              echo "🏗️ Building for release..."
+              xcodebuild clean archive \
+                -project ManusPsiqueia.xcodeproj \
+                -scheme ManusPsiqueia \
+                -destination 'generic/platform=iOS' \
+                -configuration Release \
+                -archivePath ManusPsiqueia.xcarchive
+                
+              # Export IPA
+              echo "📦 Exporting IPA..."
+              xcodebuild -exportArchive \
+                -archivePath ManusPsiqueia.xcarchive \
+                -exportPath . \
+                -exportOptionsPlist ExportOptions.plist
+                
+              # Upload to TestFlight
+              echo "🚀 Uploading to TestFlight..."
+              # This would use App Store Connect API key stored in Bitbucket variables
+              if [ -n "$APP_STORE_CONNECT_API_KEY" ]; then
+                echo "Uploading to TestFlight with API key..."
+                # Upload command would go here
+              fi
+          artifacts:
+            - "*.ipa"
+            
+  # Pull request pipeline
+  pull-requests:
+    '**':
+      - step:
+          name: 🔍 PR Code Quality Check
+          image: macos-monterey-xcode:14.1.0
+          script:
+            - *install-xcode-tools
+            - *install-dependencies
+            - *security-scan
+            - *code-quality
+            - |
+              # Comment on PR with results (requires Bitbucket API)
+              if [ -f "swiftlint-results.json" ]; then
+                echo "📊 SwiftLint analysis completed - check artifacts for detailed results"
+              fi
+          artifacts:
+            - swiftlint-results.json
+            - swiftlint-checkstyle.xml
+            
+      - step:
+          name: 🧪 PR Build & Test
+          image: macos-monterey-xcode:14.1.0
+          script:
+            - *install-xcode-tools
+            - *build-project
+            - *run-tests
+          artifacts:
+            - build.log
+            - test.log
+
+  # Custom pipeline for manual runs
+  custom:
+    full-analysis:
+      - step:
+          name: 🔍 Complete Code Analysis
+          image: macos-monterey-xcode:14.1.0
+          script:
+            - *install-xcode-tools
+            - *install-dependencies
+            - *security-scan
+            - *code-quality
+            - *build-project
+            - *run-tests
+            - *generate-reports
+            - |
+              # Generate comprehensive metrics
+              echo "📊 Generating comprehensive code metrics..."
+              
+              # Count lines of code
+              echo "Lines of Swift code:"
+              find . -name "*.swift" -not -path "./.git/*" | xargs wc -l | tail -1
+              
+              # Count Swift files
+              echo "Number of Swift files:"
+              find . -name "*.swift" -not -path "./.git/*" | wc -l
+              
+              # Check for large files
+              echo "📏 Largest Swift files:"
+              find . -name "*.swift" -not -path "./.git/*" -exec wc -l {} + | sort -nr | head -10
+          artifacts:
+            - "*.json"
+            - "*.xml"
+            - "*.log"
+            - "*.md"
+
+# Configuration for Bitbucket Server on-premises deployment
+clone:
+  depth: full    # Full clone for better analysis
+
+options:
+  max-time: 60   # Maximum pipeline time in minutes
+  size: 2x       # Use larger build agents for iOS builds

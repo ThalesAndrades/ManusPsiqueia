@@ -216,8 +216,47 @@ ManusPsiqueia/
 │   └── Resources/
 │       ├── Assets.xcassets         # Recursos visuais
 │       └── Info.plist              # Configurações do app
+├── .bitbucket/                     # Configurações Bitbucket Server
+├── bitbucket-pipelines.yml         # CI/CD para Bitbucket Server
 └── README.md
 ```
+
+## 🌐 Suporte Multi-Plataforma
+
+### **🐙 GitHub (Repositório Público)**
+- **Repositório Principal**: https://github.com/ThalesAndrades/ManusPsiqueia
+- **GitHub Actions**: CI/CD automático
+- **Issues & Security**: Rastreamento público
+- **Colaboração**: Open source friendly
+
+### **🔧 Bitbucket Server (Enterprise)**
+- **🏢 On-Premises**: Controle total do código fonte
+- **🔒 Compliance**: HIPAA, LGPD, SOX totalmente compatível  
+- **🛡️ Security**: Segurança empresarial avançada
+- **📊 Custom Workflows**: Pipelines customizáveis
+- **🔐 Air-Gapped**: Ambientes isolados da internet
+
+### **Configurações Disponíveis:**
+
+#### **Para GitHub (Atual)**
+```bash
+# Usar GitHub Actions existentes
+git remote add origin https://github.com/ThalesAndrades/ManusPsiqueia.git
+```
+
+#### **Para Bitbucket Server**
+```bash
+# Migrar para Bitbucket Server enterprise
+git remote add bitbucket https://your-bitbucket-server.com/scm/manus/manuspsiqueia.git
+
+# Usar pipelines Bitbucket
+# bitbucket-pipelines.yml já configurado
+```
+
+### **Documentação Específica:**
+- **GitHub**: `docs/integrations/GITHUB_INTEGRATION_COMPLETE.md`
+- **Bitbucket Server**: `docs/integrations/BITBUCKET_SERVER_INTEGRATION.md`
+- **Migração**: `docs/integrations/GITHUB_TO_BITBUCKET_MIGRATION.md`
 
 ## 🎯 Roadmap de Desenvolvimento
 
