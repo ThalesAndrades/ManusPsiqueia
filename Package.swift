@@ -10,9 +10,17 @@ let package = Package(
     ],
     products: [
         .library(
-            name: "ManusPsiqueia",
-            targets: ["ManusPsiqueia"]
+            name: "ManusPsiqueiaCore",
+            targets: ["ManusPsiqueiaCore"]
         ),
+        .library(
+            name: "ManusPsiqueiaUI",
+            targets: ["ManusPsiqueiaUI"]
+        ),
+        .library(
+            name: "ManusPsiqueiaServices",
+            targets: ["ManusPsiqueiaServices"]
+        )
     ],
     dependencies: [
         // Stripe iOS SDK
@@ -37,21 +45,42 @@ let package = Package(
         )
     ],
     targets: [
+        // Core business logic and models
         .target(
-            name: "ManusPsiqueia",
+            name: "ManusPsiqueiaCore",
             dependencies: [
+                .product(name: "SwiftKeychainWrapper", package: "SwiftKeychainWrapper")
+            ],
+            path: "Sources/ManusPsiqueiaCore"
+        ),
+        // UI Components and Views
+        .target(
+            name: "ManusPsiqueiaUI",
+            dependencies: ["ManusPsiqueiaCore"],
+            path: "Sources/ManusPsiqueiaUI"
+        ),
+        // External service integrations
+        .target(
+            name: "ManusPsiqueiaServices",
+            dependencies: [
+                "ManusPsiqueiaCore",
                 .product(name: "Stripe", package: "stripe-ios"),
                 .product(name: "StripePaymentSheet", package: "stripe-ios"),
                 .product(name: "StripePayments", package: "stripe-ios"),
                 .product(name: "StripePaymentsUI", package: "stripe-ios"),
                 .product(name: "Supabase", package: "supabase-swift"),
-                .product(name: "OpenAI", package: "OpenAI"),
-                .product(name: "SwiftKeychainWrapper", package: "SwiftKeychainWrapper")
-            ]
+                .product(name: "OpenAI", package: "OpenAI")
+            ],
+            path: "Sources/ManusPsiqueiaServices"
         ),
         .testTarget(
             name: "ManusPsiqueiaTests",
-            dependencies: ["ManusPsiqueia"]
+            dependencies: [
+                "ManusPsiqueiaCore",
+                "ManusPsiqueiaUI", 
+                "ManusPsiqueiaServices"
+            ],
+            path: "Tests/ManusPsiqueiaTests"
         ),
     ]
 )
