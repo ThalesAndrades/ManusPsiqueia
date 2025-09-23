@@ -8,7 +8,13 @@
 
 set -e
 
+# Obter o diretório do script e navegar para a raiz do projeto
+SCRIPT_DIR=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" &> /dev/null && pwd)
+PROJECT_ROOT="$SCRIPT_DIR/.."
+cd "$PROJECT_ROOT"
+
 echo "🚀 Iniciando configuração pós-clone para Xcode Cloud..."
+echo "📁 Diretório de trabalho: $(pwd)"
 
 # Definir variáveis de ambiente
 export CI_XCODE_CLOUD=true
@@ -27,7 +33,7 @@ fi
 
 # Configurar ambiente baseado no workflow
 case "$CI_WORKFLOW" in
-    "Development")
+    "Development" | "iOS CI/CD Pipeline - ManusPsiqueia")
         echo "🔧 Configurando ambiente de Development"
         export BUILD_ENVIRONMENT="Development"
         export CONFIG_FILE="Configuration/Development.xcconfig"
