@@ -39,20 +39,30 @@ class StripeManager: ObservableObject {
     private let auditLogger = AuditLogger.shared
     
     init() {
-        // Configuração segura das chaves
+        // Configuração segura das chaves usando o StripeSecurityManager
         self.publishableKey = getSecureStripeKey()
         setupStripe()
         configureSecurityMeasures()
     }
     
     private func getSecureStripeKey() -> String {
-        // Primeiro tenta buscar do Keychain (produção)
-        if let key = KeychainWrapper.standard.string(forKey: "stripe_publishable_key") {
-            return key
+        do {
+            // Usar o StripeSecurityManager para obter a chave de forma segura
+            return try StripeSecurityManager.shared.getStripeKey(type: .publishable)
+        } catch {
+            auditLogger.log(
+                event: .securityEvent,
+                severity: .critical,
+                details: "Falha ao obter chave publicável do Stripe: \(error.localizedDescription)"
+            )
+            
+            // Fallback para environment apenas em desenvolvimento
+            #if DEBUG
+            return ProcessInfo.processInfo.environment["STRIPE_PUBLISHABLE_KEY_DEV"] ?? "pk_test_..."
+            #else
+            fatalError("Chave publicável do Stripe não configurada para produção")
+            #endif
         }
-        
-        // Fallback para environment (desenvolvimento)
-        return ProcessInfo.processInfo.environment["STRIPE_PUBLISHABLE_KEY"] ?? "pk_test_..."
     }
     
     private func setupStripe() {
