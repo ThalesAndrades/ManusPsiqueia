@@ -34,10 +34,10 @@ let package = Package(
         .target(
             name: "ManusPsiqueia",
             dependencies: [
-                .product(name: "Stripe", package: "stripe-ios"),
+                .product(name: "Stripe", package: "stripe-ios", condition: .when(platforms: [.iOS])),
                 .product(name: "Supabase", package: "supabase-swift"),
                 .product(name: "OpenAI", package: "OpenAI"),
-                .product(name: "SwiftKeychainWrapper", package: "SwiftKeychainWrapper"),
+                .product(name: "SwiftKeychainWrapper", package: "SwiftKeychainWrapper", condition: .when(platforms: [.iOS])),
                 "ManusPsiqueiaUI",
                 "ManusPsiqueiaServices"
             ],
@@ -51,7 +51,7 @@ let package = Package(
         .target(
             name: "ManusPsiqueiaServices",
             dependencies: [
-                .product(name: "Stripe", package: "stripe-ios"),
+                .product(name: "Stripe", package: "stripe-ios", condition: .when(platforms: [.iOS])),
                 .product(name: "Supabase", package: "supabase-swift"),
                 .product(name: "OpenAI", package: "OpenAI")
             ],
@@ -59,7 +59,7 @@ let package = Package(
         ),
         .testTarget(
             name: "ManusPsiqueiaTests",
-            dependencies: ["ManusPsiqueia"],
+            dependencies: [],
             path: "ManusPsiqueiaTests"
         )
     ]

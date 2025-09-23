@@ -1,13 +1,7 @@
+#if canImport(ManusPsiqueiaUI) && canImport(SwiftUI)
 import ManusPsiqueiaUI
-//
-//  PatientDiaryView.swift
-//  ManusPsiqueia
-//
-//  Created by AiLun Team on 19/01/2024.
-//  Copyright © 2024 AiLun Tecnologia. All rights reserved.
-//
-
 import SwiftUI
+#endif
 
 /// Main diary interface for patients with privacy-first design
 struct PatientDiaryView: View {

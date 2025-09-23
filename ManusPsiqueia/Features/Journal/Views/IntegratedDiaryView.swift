@@ -1,13 +1,7 @@
+#if canImport(ManusPsiqueiaUI) && canImport(SwiftUI)
 import ManusPsiqueiaUI
-//
-//  IntegratedDiaryView.swift
-//  ManusPsiqueia
-//
-//  Created by AiLun Team on 19/01/2024.
-//  Copyright © 2024 AiLun Tecnologia. All rights reserved.
-//
-
 import SwiftUI
+#endif
 
 /// Integrated diary view with advanced usability and AI insights
 struct IntegratedDiaryView: View {

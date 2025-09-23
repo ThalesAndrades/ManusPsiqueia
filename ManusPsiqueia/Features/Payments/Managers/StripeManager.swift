@@ -10,11 +10,15 @@ import ManusPsiqueiaServices
 import Foundation
 import SwiftUI
 import Combine
+#if canImport(Stripe)
 import Stripe
 import StripePaymentSheet
 import StripePayments
 import StripePaymentsUI
+#endif
+#if canImport(SwiftKeychainWrapper)
 import SwiftKeychainWrapper
+#endif
 
 // MARK: - Stripe Manager
 @MainActor
