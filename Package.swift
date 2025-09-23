@@ -19,11 +19,6 @@ let package = Package(
             url: "https://github.com/supabase/supabase-swift",
             from: "2.0.0"
         ),
-        // OpenAI Swift SDK (for AI features)
-        .package(
-            url: "https://github.com/MacPaw/OpenAI",
-            from: "0.2.0"
-        ),
         // Keychain wrapper for secure storage
         .package(
             url: "https://github.com/jrendel/SwiftKeychainWrapper",
@@ -36,7 +31,6 @@ let package = Package(
             dependencies: [
                 .product(name: "Stripe", package: "stripe-ios"),
                 .product(name: "Supabase", package: "supabase-swift"),
-                .product(name: "OpenAI", package: "OpenAI"),
                 .product(name: "SwiftKeychainWrapper", package: "SwiftKeychainWrapper"),
                 "ManusPsiqueiaUI",
                 "ManusPsiqueiaServices"
@@ -52,15 +46,14 @@ let package = Package(
             name: "ManusPsiqueiaServices",
             dependencies: [
                 .product(name: "Stripe", package: "stripe-ios"),
-                .product(name: "Supabase", package: "supabase-swift"),
-                .product(name: "OpenAI", package: "OpenAI")
+                .product(name: "Supabase", package: "supabase-swift")
             ],
             path: "Modules/ManusPsiqueiaServices/Sources/ManusPsiqueiaServices"
         ),
         .testTarget(
             name: "ManusPsiqueiaTests",
             dependencies: ["ManusPsiqueia"],
-            path: "ManusPsiqueiaTests"
+            path: "Tests/ManusPsiqueiaTests"
         )
     ]
 )

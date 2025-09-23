@@ -25,11 +25,6 @@ let package = Package(
             url: "https://github.com/supabase/supabase-swift",
             from: "2.0.0"
         ),
-        // OpenAI Swift SDK
-        .package(
-            url: "https://github.com/MacPaw/OpenAI",
-            from: "0.2.0"
-        ),
         // Keychain wrapper
         .package(
             url: "https://github.com/jrendel/SwiftKeychainWrapper",
@@ -44,7 +39,6 @@ let package = Package(
                 .product(name: "StripePaymentSheet", package: "stripe-ios"),
                 .product(name: "StripePayments", package: "stripe-ios"),
                 .product(name: "Supabase", package: "supabase-swift"),
-                .product(name: "OpenAI", package: "OpenAI"),
                 .product(name: "SwiftKeychainWrapper", package: "SwiftKeychainWrapper")
             ],
             path: "Sources/ManusPsiqueiaServices"
