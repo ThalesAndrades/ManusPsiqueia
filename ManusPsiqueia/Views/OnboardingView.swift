@@ -10,45 +10,54 @@ import SwiftUI
 
 struct OnboardingView: View {
     @EnvironmentObject var authManager: AuthenticationManager
-    @State private var currentPage = 0
-    @State private var showUserTypeSelection = false
-    @State private var animateGradient = false
-    @State private var particleOffset: CGFloat = 0
+    @StateObject private var viewModel = OnboardingViewModel()
     
     private let pages = OnboardingPage.allPages
     
     var body: some View {
         ZStack {
             // Animated background
-            AnimatedBackgroundView(animateGradient: $animateGradient)
+            AnimatedBackgroundView(animateGradient: $viewModel.animateGradient)
             
             // Floating particles
-            FloatingParticlesView(offset: $particleOffset)
+            FloatingParticlesView(offset: $viewModel.particleOffset)
             
             VStack(spacing: 0) {
                 // Top section with logo
                 topSection
                 
                 // Main content
-                TabView(selection: $currentPage) {
+                TabView(selection: $viewModel.currentPage) {
                     ForEach(pages.indices, id: \.self) { index in
                         OnboardingPageView(page: pages[index])
                             .tag(index)
                     }
                 }
                 .tabViewStyle(PageTabViewStyle(indexDisplayMode: .never))
-                .animation(.easeInOut(duration: 0.6), value: currentPage)
+                .animation(.easeInOut(duration: 0.6), value: viewModel.currentPage)
                 
                 // Bottom section with controls
                 bottomSection
             }
         }
         .onAppear {
-            startAnimations()
+            viewModel.startAnimations()
         }
-        .sheet(isPresented: $showUserTypeSelection) {
+        .onDisappear {
+            viewModel.stopAnimations()
+        }
+        .sheet(isPresented: $viewModel.showUserTypeSelection) {
             UserTypeSelectionView()
                 .environmentObject(authManager)
+        }
+        .alert("Erro", isPresented: .constant(viewModel.error != nil)) {
+            Button("OK") {
+                viewModel.clearError()
+            }
+        } message: {
+            if let error = viewModel.error {
+                Text(error.localizedDescription)
+            }
         }
     }
     
@@ -69,10 +78,10 @@ struct OnboardingView: View {
                         )
                     )
                     .frame(width: 160, height: 160)
-                    .scaleEffect(animateGradient ? 1.1 : 1.0)
+                    .scaleEffect(viewModel.animateGradient ? 1.1 : 1.0)
                     .animation(
                         Animation.easeInOut(duration: 2.0).repeatForever(autoreverses: true),
-                        value: animateGradient
+                        value: viewModel.animateGradient
                     )
                 
                 Image(systemName: "brain.head.profile")
@@ -119,25 +128,23 @@ struct OnboardingView: View {
             HStack(spacing: 12) {
                 ForEach(pages.indices, id: \.self) { index in
                     Circle()
-                        .fill(currentPage == index ? 
+                        .fill(viewModel.currentPage == index ? 
                               Color(red: 0.4, green: 0.2, blue: 0.8) : 
                               Color.white.opacity(0.3))
-                        .frame(width: currentPage == index ? 12 : 8, 
-                               height: currentPage == index ? 12 : 8)
-                        .scaleEffect(currentPage == index ? 1.2 : 1.0)
-                        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: currentPage)
+                        .frame(width: viewModel.currentPage == index ? 12 : 8, 
+                               height: viewModel.currentPage == index ? 12 : 8)
+                        .scaleEffect(viewModel.currentPage == index ? 1.2 : 1.0)
+                        .animation(.spring(response: 0.3, dampingFraction: 0.7), value: viewModel.currentPage)
                 }
             }
             .padding(.bottom, 20)
             
             // Action buttons
             VStack(spacing: 16) {
-                if currentPage == pages.count - 1 {
+                if viewModel.isLastPage {
                     // Get started button
                     Button(action: {
-                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                            showUserTypeSelection = true
-                        }
+                        viewModel.showUserSelection()
                     }) {
                         HStack(spacing: 12) {
                             Text("Começar Jornada")
@@ -168,17 +175,15 @@ struct OnboardingView: View {
                             y: 10
                         )
                     }
-                    .scaleEffect(animateGradient ? 1.02 : 1.0)
+                    .scaleEffect(viewModel.animateGradient ? 1.02 : 1.0)
                     .animation(
                         Animation.easeInOut(duration: 1.5).repeatForever(autoreverses: true),
-                        value: animateGradient
+                        value: viewModel.animateGradient
                     )
                 } else {
                     // Next button
                     Button(action: {
-                        withAnimation(.spring(response: 0.5, dampingFraction: 0.8)) {
-                            currentPage += 1
-                        }
+                        viewModel.nextPage()
                     }) {
                         HStack(spacing: 12) {
                             Text("Continuar")
@@ -212,11 +217,9 @@ struct OnboardingView: View {
                 }
                 
                 // Skip button
-                if currentPage < pages.count - 1 {
+                if viewModel.shouldShowSkipButton {
                     Button(action: {
-                        withAnimation(.spring(response: 0.6, dampingFraction: 0.8)) {
-                            showUserTypeSelection = true
-                        }
+                        viewModel.showUserSelection()
                     }) {
                         Text("Pular Introdução")
                             .font(.system(size: 16, weight: .medium))
@@ -227,19 +230,6 @@ struct OnboardingView: View {
         }
         .padding(.horizontal, 32)
         .padding(.bottom, 50)
-    }
-    
-    private func startAnimations() {
-        withAnimation(.easeInOut(duration: 1.0)) {
-            animateGradient = true
-        }
-        
-        // Start particle animation
-        Timer.scheduledTimer(withTimeInterval: 0.1, repeats: true) { _ in
-            withAnimation(.linear(duration: 0.1)) {
-                particleOffset += 1
-            }
-        }
     }
 }
 
