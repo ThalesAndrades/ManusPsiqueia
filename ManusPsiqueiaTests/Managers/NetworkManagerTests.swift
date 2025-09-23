@@ -55,7 +55,7 @@ class NetworkManagerTests: XCTestCase {
             case .success(_):
                 XCTFail("Request should have failed")
             case .failure(let error):
-                XCTAssertEqual(error as? NetworkManager.NetworkError, NetworkManager.NetworkError.invalidResponse)
+                XCTAssertEqual(error as? NetworkError, NetworkError.invalidResponse)
                 expectation.fulfill()
             }
         }
@@ -76,7 +76,7 @@ class NetworkManagerTests: XCTestCase {
             case .success(_):
                 XCTFail("Request should have failed")
             case .failure(let error):
-                XCTAssertEqual(error as? NetworkManager.NetworkError, NetworkManager.NetworkError.networkError(mockError))
+                XCTAssertEqual(error as? NetworkError, NetworkError.unknown(mockError))
                 expectation.fulfill()
             }
         }

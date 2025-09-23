@@ -98,19 +98,5 @@ final class NetworkManager: NSObject, URLSessionDelegate {
     }
 }
 
-enum NetworkError: Error, LocalizedError {
-    case invalidResponse
-    case noData // This case might be less relevant with dataTaskPublisher, but kept for consistency
-    case httpError(statusCode: Int)
-    case unknown(Error)
-    
-    var errorDescription: String? {
-        switch self {
-        case .invalidResponse: return "Resposta inválida do servidor."
-        case .noData: return "Nenhum dado recebido do servidor."
-        case .httpError(let statusCode): return "Erro HTTP: Código \(statusCode)"
-        case .unknown(let error): return "Ocorreu um erro desconhecido: \(error.localizedDescription)"
-        }
-    }
-}
+
 

@@ -320,7 +320,7 @@ final class APIService: ObservableObject {
     // MARK: - Utility Methods
     
     private func mapError(_ error: Error) -> APIError {
-        if let networkError = error as? NetworkManager.NetworkError {
+        if let networkError = error as? NetworkError {
             switch networkError {
             case .noInternetConnection:
                 return .networkUnavailable
@@ -328,7 +328,7 @@ final class APIService: ObservableObject {
                 return .authenticationFailed
             case .rateLimited:
                 return .rateLimitExceeded
-            case .serverError(let code):
+            case .httpError(let code):
                 return .serverError(code)
             case .decodingError:
                 return .decodingError

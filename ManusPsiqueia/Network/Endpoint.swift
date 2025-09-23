@@ -134,7 +134,7 @@ struct SupabaseEndpoint: Endpoint {
     let method: HTTPMethod
     let parameters: [String: Any]?
     let headers: [String: String]?
-    let environment: ConfigurationEnvironment
+    let environment: ConfigurationManager.Environment
     
     var baseURL: String {
         switch environment {
@@ -147,7 +147,7 @@ struct SupabaseEndpoint: Endpoint {
         }
     }
     
-    static func table(_ tableName: String, environment: ConfigurationEnvironment, anonKey: String) -> SupabaseEndpoint {
+    static func table(_ tableName: String, environment: ConfigurationManager.Environment, anonKey: String) -> SupabaseEndpoint {
         SupabaseEndpoint(
             path: "/\(tableName)",
             method: .POST,
@@ -161,7 +161,7 @@ struct SupabaseEndpoint: Endpoint {
         )
     }
     
-    static func queryTable(_ tableName: String, userId: String, environment: ConfigurationEnvironment, anonKey: String) -> SupabaseEndpoint {
+    static func queryTable(_ tableName: String, userId: String, environment: ConfigurationManager.Environment, anonKey: String) -> SupabaseEndpoint {
         SupabaseEndpoint(
             path: "/\(tableName)?user_id=eq.\(userId)",
             method: .GET,
@@ -181,7 +181,7 @@ struct ManusAPIEndpoint: Endpoint {
     let method: HTTPMethod
     let parameters: [String: Any]?
     let headers: [String: String]?
-    let environment: ConfigurationEnvironment
+    let environment: ConfigurationManager.Environment
     
     var baseURL: String {
         switch environment {
@@ -194,7 +194,7 @@ struct ManusAPIEndpoint: Endpoint {
         }
     }
     
-    static func health(environment: ConfigurationEnvironment) -> ManusAPIEndpoint {
+    static func health(environment: ConfigurationManager.Environment) -> ManusAPIEndpoint {
         ManusAPIEndpoint(
             path: "/health",
             method: .GET,
@@ -204,7 +204,7 @@ struct ManusAPIEndpoint: Endpoint {
         )
     }
     
-    static func userProfile(environment: ConfigurationEnvironment) -> ManusAPIEndpoint {
+    static func userProfile(environment: ConfigurationManager.Environment) -> ManusAPIEndpoint {
         ManusAPIEndpoint(
             path: "/users/profile",
             method: .POST,
@@ -215,10 +215,3 @@ struct ManusAPIEndpoint: Endpoint {
     }
 }
 
-// MARK: - Configuration Environment
-
-enum ConfigurationEnvironment: String, CaseIterable {
-    case development = "development"
-    case staging = "staging"
-    case production = "production"
-}
