@@ -47,11 +47,18 @@ let package = Package(
                 .product(name: "Supabase", package: "supabase-swift"),
                 .product(name: "OpenAI", package: "OpenAI"),
                 .product(name: "SwiftKeychainWrapper", package: "SwiftKeychainWrapper")
+            ],
+            path: "Sources/ManusPsiqueia",
+            exclude: [
+                "Info.plist",
+                "Assets.xcassets",
+                "Preview Content"
             ]
         ),
         .testTarget(
             name: "ManusPsiqueiaTests",
-            dependencies: ["ManusPsiqueia"]
+            dependencies: ["ManusPsiqueia"],
+            path: "Tests/ManusPsiqueiaTests"
         ),
     ]
 )
