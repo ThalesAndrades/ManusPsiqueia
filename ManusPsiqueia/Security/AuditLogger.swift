@@ -102,6 +102,8 @@ enum SecurityEvent {
     case certificatePinRemoved
     case certificateUpdateStarted
     case certificateUpdateCompleted
+    case certificateUpdateAttempted
+    case certificateUpdateFailed
     case deviceCompromised
     case debuggingDetected
     case suspiciousNetwork
@@ -130,6 +132,8 @@ enum SecurityEvent {
     case networkRequest
     case networkRequestSuccess
     case networkRequestFailed
+    case securityValidationCompleted
+    case securityValidationFailed
 }
 
 enum SecuritySeverity {

@@ -9,6 +9,16 @@
 import Foundation
 import SwiftUI
 import Network
+
+#if !targetEnvironment(simulator)
+import Darwin.sys.sysctl
+import Darwin.sys.proc
+#endif
+
+// Importar para verificação de interfaces de rede
+#if canImport(Darwin)
+import Darwin
+#endif
 /// Detecta ameaças de segurança no dispositivo, como jailbreak, depuração e redes suspeitas.
 /// Utilizado pelo CertificatePinningManager para monitoramento proativo.
 final class SecurityThreatDetector {
@@ -105,52 +115,178 @@ final class SecurityThreatDetector {
     /// Esta é uma verificação heurística e pode gerar falsos positivos.
     /// - Returns: `true` se uma rede suspeita for detectada, `false` caso contrário.
     func isSuspiciousNetworkDetected() -> Bool {
-        // TODO: Implementar verificação de VPN/Proxy mais robusta
-        // Por enquanto, uma implementação básica pode ser a detecção de IPs incomuns ou configurações de proxy
+        #if targetEnvironment(simulator)
+        // Simuladores podem ter configurações de rede diferentes
+        return false
+        #else
         
-        // Exemplo heurístico: Verificar se há uma VPN ativa (simplificado)
-        // Network interface detection disabled
-//         // for interface in networkInterfaces {
-//             if interface.hasPrefix("10.") || interface.hasPrefix("172.16.") || interface.hasPrefix("192.168.") {
-//                 // Ignorar IPs locais
-//                 continue
-//             }
-//             if interface.contains("tun") || interface.contains("ppp") || interface.contains("vpn") {
-//                 auditLogger.log(event: .suspiciousNetwork, details: ["reason": "vpn_interface_found", "interface": interface], severity: .medium)
-//                 return true
-//             }
-//         }
-//         
-//         // TODO: Adicionar verificação de proxy HTTP/HTTPS
+        // Verificar configurações de proxy do sistema
+        if let proxySettings = CFNetworkCopySystemProxySettings()?.takeRetainedValue() as? [String: Any] {
+            if let httpProxy = proxySettings["HTTPProxy"] as? String, !httpProxy.isEmpty {
+                auditLogger.log(
+                    event: .suspiciousNetwork, 
+                    details: ["reason": "http_proxy_detected", "proxy": httpProxy], 
+                    severity: .medium
+                )
+                return true
+            }
+            
+            if let httpsProxy = proxySettings["HTTPSProxy"] as? String, !httpsProxy.isEmpty {
+                auditLogger.log(
+                    event: .suspiciousNetwork, 
+                    details: ["reason": "https_proxy_detected", "proxy": httpsProxy], 
+                    severity: .medium
+                )
+                return true
+            }
+        }
+        
+        // Verificar interfaces de rede suspeitas
+        if hasVPNInterface() {
+            auditLogger.log(
+                event: .suspiciousNetwork, 
+                details: ["reason": "vpn_interface_detected"], 
+                severity: .medium
+            )
+            return true
+        }
+        
+        return false
+        #endif
+    }
+    
+    /// Verifica se há interfaces VPN ativas
+    private func hasVPNInterface() -> Bool {
+        var addresses = [String]()
+        var ifaddr: UnsafeMutablePointer<ifaddrs>?
+        
+        guard getifaddrs(&ifaddr) == 0 else { return false }
+        guard let firstAddr = ifaddr else { return false }
+        
+        defer { freeifaddrs(ifaddr) }
+        
+        for ifptr in sequence(first: firstAddr, next: { $0.pointee.ifa_next }) {
+            let interface = ifptr.pointee
+            let addrFamily = interface.ifa_addr.pointee.sa_family
+            
+            if addrFamily == UInt8(AF_INET) || addrFamily == UInt8(AF_INET6) {
+                let name = String(cString: interface.ifa_name)
+                
+                // Verificar nomes de interfaces típicas de VPN
+                if name.contains("tun") || name.contains("tap") || 
+                   name.contains("ppp") || name.contains("ipsec") ||
+                   name.hasPrefix("utun") {
+                    return true
+                }
+            }
+        }
         
         return false
     }
     
     /// Executa um comando shell e verifica seu resultado.
     private func canExecuteCommand(_ command: String) -> Bool {
-        // Process detection disabled
-//         task.launchPath = "/bin/bash"
-//         task.arguments = ["-c", command]
-//         
-//         let pipe = Pipe()
-//         task.standardOutput = pipe
-//         task.standardError = pipe
-//         
-//         task.launch()
-//         task.waitUntilExit()
-//         
-//         let data = pipe.fileHandleForReading.readDataToEndOfFile()
-//         let output = String(data: data, encoding: .utf8) ?? ""
-//         
-//         return task.terminationStatus == 0 && !output.isEmpty
-                return false
+        // Em iOS, não podemos executar comandos shell arbitrários
+        // Esta é uma implementação simulada para compatibilidade
+        #if targetEnvironment(simulator)
+        return false
+        #else
+        // Em um ambiente real iOS, esta verificação seria diferente
+        // Por exemplo, verificar se o arquivo existe no sistema
+        return FileManager.default.fileExists(atPath: "/usr/bin/ssh")
+        #endif
+    }
+    
+    /// Realiza uma verificação completa de ameaças de segurança
+    /// - Returns: Relatório detalhado das ameaças encontradas
+    func performComprehensiveSecurityScan() -> SecurityThreatReport {
+        var report = SecurityThreatReport()
+        
+        report.deviceCompromised = isDeviceCompromised()
+        report.debuggingDetected = isBeingDebugged()
+        report.suspiciousNetworkDetected = isSuspiciousNetworkDetected()
+        report.timestamp = Date()
+        
+        // Calcular score de risco (0-100, onde 100 é mais perigoso)
+        var riskScore = 0
+        if report.deviceCompromised { riskScore += 40 }
+        if report.debuggingDetected { riskScore += 20 }
+        if report.suspiciousNetworkDetected { riskScore += 15 }
+        
+        report.riskScore = riskScore
+        report.riskLevel = SecurityRiskLevel.from(score: riskScore)
+        
+        // Log do resultado
+        auditLogger.log(
+            event: .securityValidationCompleted,
+            details: report.toDictionary(),
+            severity: report.riskLevel.severity
+        )
+        
+        return report
     }
 
-}// Adicionar novos eventos de segurança ao enum SecurityEvent no AuditLogger.swift
+}
+
+// MARK: - Estruturas de Suporte
+
+/// Relatório de ameaças de segurança
+struct SecurityThreatReport {
+    var deviceCompromised: Bool = false
+    var debuggingDetected: Bool = false
+    var suspiciousNetworkDetected: Bool = false
+    var timestamp: Date = Date()
+    var riskScore: Int = 0
+    var riskLevel: SecurityRiskLevel = .low
+    
+    func toDictionary() -> [String: Any] {
+        return [
+            "device_compromised": deviceCompromised,
+            "debugging_detected": debuggingDetected,
+            "suspicious_network_detected": suspiciousNetworkDetected,
+            "timestamp": ISO8601DateFormatter().string(from: timestamp),
+            "risk_score": riskScore,
+            "risk_level": riskLevel.rawValue
+        ]
+    }
+}
+
+/// Níveis de risco de segurança
+enum SecurityRiskLevel: String {
+    case low = "LOW"
+    case medium = "MEDIUM"
+    case high = "HIGH"
+    case critical = "CRITICAL"
+    
+    static func from(score: Int) -> SecurityRiskLevel {
+        switch score {
+        case 0...20:
+            return .low
+        case 21...40:
+            return .medium
+        case 41...70:
+            return .high
+        default:
+            return .critical
+        }
+    }
+    
+    var severity: SecuritySeverity {
+        switch self {
+        case .low:
+            return .info
+        case .medium:
+            return .medium
+        case .high:
+            return .high
+        case .critical:
+            return .critical
+        }
+    }
+}
 
 // Necessário para `kinfo_proc` e `P_TRACED`
 #if !targetEnvironment(simulator)
-import Darwin.sys.sysctl
-import Darwin.sys.proc
+// Já importado acima
 #endif
 

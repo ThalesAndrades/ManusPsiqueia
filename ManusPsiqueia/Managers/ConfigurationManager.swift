@@ -90,6 +90,13 @@ final class ConfigurationManager {
     // MARK: - Stripe Configuration
     
     var stripePublishableKey: String {
+        // Tentar obter chave obfuscada primeiro
+        if let obfuscatedKey = APIKeyObfuscator.shared.getAPIKey(for: .stripe),
+           !obfuscatedKey.isEmpty {
+            return obfuscatedKey
+        }
+        
+        // Fallback para configuração por ambiente
         switch currentEnvironment {
         case .development:
             return "pk_test_development_key_here"
@@ -118,6 +125,13 @@ final class ConfigurationManager {
     }
     
     var supabaseAnonKey: String {
+        // Tentar obter chave obfuscada primeiro
+        if let obfuscatedKey = APIKeyObfuscator.shared.getAPIKey(for: .supabase),
+           !obfuscatedKey.isEmpty {
+            return obfuscatedKey
+        }
+        
+        // Fallback para configuração por ambiente
         switch currentEnvironment {
         case .development:
             return "development_anon_key_here"
@@ -139,6 +153,13 @@ final class ConfigurationManager {
     }
     
     var openAIAPIKey: String {
+        // Tentar obter chave obfuscada primeiro
+        if let obfuscatedKey = APIKeyObfuscator.shared.getAPIKey(for: .openAI),
+           !obfuscatedKey.isEmpty {
+            return obfuscatedKey
+        }
+        
+        // Fallback para configuração de ambiente
         return getSecretValue(for: "OPENAI_API_KEY") ?? ""
     }
     
