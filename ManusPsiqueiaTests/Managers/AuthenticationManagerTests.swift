@@ -28,7 +28,13 @@ class AuthenticationManagerTests: XCTestCase {
 
     func testInitWithExistingUser() throws {
         // Simulate existing user data in UserDefaults
-        let testUser = User(id: UUID(), email: "test@example.com", name: "Test User", userType: .patient, isActive: true, createdAt: Date(), profileData: nil)
+        let testUser = User(
+            id: UUID(),
+            email: "test@example.com",
+            firstName: "Test",
+            lastName: "User",
+            userType: .patient
+        )
         let userData = try JSONEncoder().encode(testUser)
         UserDefaults.standard.set(userData, forKey: "currentUser")
         
@@ -42,7 +48,13 @@ class AuthenticationManagerTests: XCTestCase {
 
     func testLogout() {
         // Simulate a logged-in state
-        let testUser = User(id: UUID(), email: "test@example.com", name: "Test User", userType: .patient, isActive: true, createdAt: Date(), profileData: nil)
+        let testUser = User(
+            id: UUID(),
+            email: "test@example.com",
+            firstName: "Test",
+            lastName: "User",
+            userType: .patient
+        )
         authenticationManager.currentUser = testUser
         authenticationManager.isAuthenticated = true
 
@@ -55,17 +67,29 @@ class AuthenticationManagerTests: XCTestCase {
 
     func testUpdateProfile() throws {
         // Setup initial user
-        let initialUser = User(id: UUID(), email: "initial@example.com", name: "Initial User", userType: .patient, isActive: true, createdAt: Date(), profileData: nil)
+        let initialUser = User(
+            id: UUID(),
+            email: "initial@example.com",
+            firstName: "Initial",
+            lastName: "User",
+            userType: .patient
+        )
         authenticationManager.currentUser = initialUser
         authenticationManager.isAuthenticated = true
         
         // Update profile
-        let updatedUser = User(id: initialUser.id, email: "updated@example.com", name: "Updated User", userType: .psychologist, isActive: true, createdAt: initialUser.createdAt, profileData: nil)
+        let updatedUser = User(
+            id: initialUser.id,
+            email: "updated@example.com",
+            firstName: "Updated",
+            lastName: "User",
+            userType: .psychologist
+        )
         authenticationManager.updateProfile(user: updatedUser)
         
         // Verify update
         XCTAssertEqual(authenticationManager.currentUser?.email, "updated@example.com")
-        XCTAssertEqual(authenticationManager.currentUser?.name, "Updated User")
+        XCTAssertEqual(authenticationManager.currentUser?.firstName, "Updated")
         XCTAssertEqual(authenticationManager.currentUser?.userType, .psychologist)
         
         // Verify persistence
@@ -96,7 +120,13 @@ class AuthenticationManagerTests: XCTestCase {
 
     func testRegisterMethodExists() {
         // Test that register method exists and can be called without crashing
-        let testUser = User(id: UUID(), email: "test@example.com", name: "Test User", userType: .patient, isActive: true, createdAt: Date(), profileData: nil)
+        let testUser = User(
+            id: UUID(),
+            email: "test@example.com",
+            firstName: "Test",
+            lastName: "User",
+            userType: .patient
+        )
         authenticationManager.register(user: testUser, password: "password")
         
         // Should not crash and method should exist
@@ -105,7 +135,13 @@ class AuthenticationManagerTests: XCTestCase {
 
     func testUserPersistence() throws {
         // Test that user data is properly persisted and restored
-        let testUser = User(id: UUID(), email: "persistence@example.com", name: "Persistence User", userType: .psychologist, isActive: true, createdAt: Date(), profileData: nil)
+        let testUser = User(
+            id: UUID(),
+            email: "persistence@example.com",
+            firstName: "Persistence",
+            lastName: "User",
+            userType: .psychologist
+        )
         
         // Update profile to trigger persistence
         authenticationManager.updateProfile(user: testUser)
@@ -118,7 +154,7 @@ class AuthenticationManagerTests: XCTestCase {
         let decodedUser = try JSONDecoder().decode(User.self, from: savedData!)
         XCTAssertEqual(decodedUser.id, testUser.id)
         XCTAssertEqual(decodedUser.email, testUser.email)
-        XCTAssertEqual(decodedUser.name, testUser.name)
+        XCTAssertEqual(decodedUser.firstName, testUser.firstName)
         XCTAssertEqual(decodedUser.userType, testUser.userType)
     }
 }
