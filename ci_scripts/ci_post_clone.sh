@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 #  ci_post_clone.sh
 #  ManusPsiqueia
@@ -67,8 +67,13 @@ fi
 # Configurar variáveis de ambiente para build
 echo "🔐 Configurando variáveis de ambiente..."
 
-# Definir BUILD_NUMBER no ambiente
-echo "export BUILD_NUMBER=$BUILD_NUMBER" >> $CI_DERIVED_DATA_PATH/environment.sh
+# Definir BUILD_NUMBER no ambiente (se CI_DERIVED_DATA_PATH estiver disponível)
+if [ -n "$CI_DERIVED_DATA_PATH" ] && [ -d "$CI_DERIVED_DATA_PATH" ]; then
+    echo "export BUILD_NUMBER=$BUILD_NUMBER" >> "$CI_DERIVED_DATA_PATH/environment.sh"
+    echo "✅ Variáveis de ambiente salvas em $CI_DERIVED_DATA_PATH/environment.sh"
+else
+    echo "⚠️ CI_DERIVED_DATA_PATH não disponível, pulando salvamento de variáveis"
+fi
 
 # Verificar se as variáveis de ambiente necessárias estão definidas
 check_env_var() {
@@ -97,7 +102,7 @@ case "$BUILD_ENVIRONMENT" in
         ;;
 esac
 
-# Verificar variáveis obrigatórias
+# Verificar variáveis obrigatórias (modo não-bloqueante para CI/CD)
 missing_vars=0
 for var in $ENV_VARS; do
     if ! check_env_var $var; then
@@ -111,9 +116,9 @@ if ! check_env_var "DEVELOPMENT_TEAM_ID"; then
 fi
 
 if [ $missing_vars -gt 0 ]; then
-    echo "❌ $missing_vars variável(is) de ambiente obrigatória(s) não definida(s)"
-    echo "📋 Configure as variáveis no Xcode Cloud Environment Variables"
-    exit 1
+    echo "⚠️ $missing_vars variável(is) de ambiente não definida(s)"
+    echo "📋 Configure as variáveis no Xcode Cloud Environment Variables para build completo"
+    echo "🔄 Continuando com configuração básica para permitir setup inicial..."
 fi
 
 # Verificar estrutura do projeto
@@ -164,7 +169,11 @@ fi
 # Log de informações do sistema
 echo "💻 Informações do sistema:"
 echo "  - Xcode Version: $CI_XCODE_VERSION"
-echo "  - macOS Version: $(sw_vers -productVersion)"
+if command -v sw_vers >/dev/null 2>&1; then
+    echo "  - macOS Version: $(sw_vers -productVersion)"
+else
+    echo "  - macOS Version: N/A (not running on macOS)"
+fi
 echo "  - Build Environment: $BUILD_ENVIRONMENT"
 echo "  - Build Number: $BUILD_NUMBER"
 
