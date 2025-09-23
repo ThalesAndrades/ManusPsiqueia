@@ -29,6 +29,7 @@ show_help() {
     echo "Comandos:"
     echo "  setup       - Configurar estrutura inicial de segredos"
     echo "  validate    - Validar configuração de segredos"
+    echo "  scan        - Detectar tokens expostos no repositório"
     echo "  encrypt     - Criptografar arquivo de segredos"
     echo "  decrypt     - Descriptografar arquivo de segredos"
     echo "  keychain    - Gerenciar segredos no Keychain"
@@ -355,6 +356,69 @@ clean_temp_files() {
     echo -e "${GREEN}✅ Limpeza concluída!${NC}"
 }
 
+# Função para detectar tokens expostos
+detect_exposed_tokens() {
+    echo -e "${YELLOW}🔍 Verificando tokens expostos...${NC}"
+    
+    local found_tokens=0
+    local scan_paths=("." "!.git")
+    
+    # Padrões de tokens para detectar
+    local token_patterns=(
+        "github_pat_[a-zA-Z0-9_]+"  # GitHub Personal Access Tokens
+        "ghp_[a-zA-Z0-9]{36}"       # GitHub Personal Access Tokens (new format)
+        "gho_[a-zA-Z0-9]{36}"       # GitHub OAuth tokens
+        "ghu_[a-zA-Z0-9]{36}"       # GitHub User tokens
+        "ghs_[a-zA-Z0-9]{36}"       # GitHub Server-to-Server tokens
+        "sk_live_[a-zA-Z0-9]+"      # Stripe Live Secret Keys
+        "pk_live_[a-zA-Z0-9]+"      # Stripe Live Publishable Keys
+        "rk_live_[a-zA-Z0-9]+"      # Stripe Live Restricted Keys
+        "sk_test_[a-zA-Z0-9]+"      # Stripe Test Secret Keys (less critical but still sensitive)
+        "AKIA[0-9A-Z]{16}"          # AWS Access Key IDs
+        "-----BEGIN [A-Z ]+-----"   # Private keys
+    )
+    
+    echo -e "${BLUE}Escaneando arquivos por tokens sensíveis...${NC}"
+    
+    for pattern in "${token_patterns[@]}"; do
+        echo -e "${BLUE}Verificando padrão: $pattern${NC}"
+        
+        # Buscar em arquivos de texto, excluindo .git e diretórios seguros
+        local matches=$(find . -type f \( -name "*.swift" -o -name "*.txt" -o -name "*.md" -o -name "*.yml" -o -name "*.yaml" -o -name "*.json" -o -name "*.sh" -o -name "*.env*" -o -name "*.secrets*" \) \
+            -not -path "./.git/*" \
+            -not -path "./.build/*" \
+            -not -path "./Configuration/Templates/*" \
+            -not -path "*Test*" \
+            -not -path "*test*" \
+            -exec grep -l -E "$pattern" {} \; 2>/dev/null || true)
+        
+        if [ ! -z "$matches" ]; then
+            echo -e "${RED}❌ ALERTA: Possível token encontrado!${NC}"
+            echo -e "${RED}Padrão: $pattern${NC}"
+            echo -e "${RED}Arquivos:${NC}"
+            echo "$matches" | while read -r file; do
+                echo -e "${RED}  - $file${NC}"
+                # Mostrar linha com contexto (mascarando parte do token)
+                grep -n -E "$pattern" "$file" | sed 's/\([a-zA-Z0-9_]\{10\}\)[a-zA-Z0-9_]\+\([a-zA-Z0-9_]\{4\}\)/\1***MASKED***\2/g' | head -3
+            done
+            ((found_tokens++))
+        fi
+    done
+    
+    if [ $found_tokens -eq 0 ]; then
+        echo -e "${GREEN}✅ Nenhum token suspeito encontrado!${NC}"
+        return 0
+    else
+        echo -e "${RED}❌ $found_tokens tipo(s) de token(s) suspeito(s) encontrado(s)!${NC}"
+        echo -e "${YELLOW}⚠️  Recomendações:${NC}"
+        echo -e "${YELLOW}   1. Remova imediatamente os tokens dos arquivos${NC}"
+        echo -e "${YELLOW}   2. Revogue os tokens nos serviços correspondentes${NC}"
+        echo -e "${YELLOW}   3. Gere novos tokens e armazene-os de forma segura${NC}"
+        echo -e "${YELLOW}   4. Use variáveis de ambiente ou Keychain${NC}"
+        return 1
+    fi
+}
+
 # Função principal
 main() {
     local command=$1
@@ -379,6 +443,9 @@ main() {
                 esac
             done
             validate_secrets "$env"
+            ;;
+        "scan")
+            detect_exposed_tokens
             ;;
         "keychain")
             local env="development"

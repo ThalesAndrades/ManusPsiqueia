@@ -60,14 +60,22 @@ jobs:
     
     - name: 🔒 Run Security Analysis
       run: |
-        # Verificar chaves hardcoded
-        grep -r "sk_live\|pk_live\|sk_test\|pk_test" . --exclude-dir=.git || echo "✅ No hardcoded keys found"
+        # Executar verificação de tokens expostos
+        echo "🔍 Executando detecção de tokens expostos..."
+        chmod +x scripts/secrets_manager.sh
+        if ! ./scripts/secrets_manager.sh scan; then
+          echo "❌ Tokens suspeitos detectados! Verifique os logs acima."
+          exit 1
+        fi
         
         # Verificar URLs inseguras
-        grep -r "http://" . --exclude-dir=.git --exclude="*.md" || echo "✅ No insecure URLs found"
-        
-        # Verificar dados sensíveis
-        grep -r "password\|secret\|token" . --exclude-dir=.git --exclude="*.md" || echo "✅ No sensitive data patterns found"
+        echo "🔍 Verificando URLs inseguras..."
+        if grep -r "http://" . --exclude-dir=.git --exclude="*.md" --exclude-dir=".build" --exclude="*.yml" --exclude="*.yaml"; then
+          echo "❌ URLs inseguras encontradas!"
+          exit 1
+        else
+          echo "✅ Nenhuma URL insegura encontrada"
+        fi
 
   # ==========================================
   # 🧪 BUILD & TEST

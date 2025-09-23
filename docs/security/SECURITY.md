@@ -152,6 +152,48 @@ O **ManusPsiqueia** é uma plataforma de saúde mental que lida com dados extrem
 - **Dependabot** para vulnerabilidades
 - **SonarQube** para qualidade de código
 
+### **🔍 Detecção de Tokens e Secrets**
+
+#### **Sistema de Prevenção:**
+- **Pre-commit hooks** bloqueiam commits com tokens expostos
+- **CI/CD scanning** automatizado para detecção de secrets
+- **Patterns avançados** para GitHub PAT, Stripe, AWS, e outros tokens
+- **Alertas automáticos** quando tokens são detectados
+
+#### **Tipos de Tokens Detectados:**
+- ✅ **GitHub Personal Access Tokens** (github_pat_*, ghp_*, gho_*, ghu_*, ghs_*)
+- ✅ **Stripe Keys** (sk_live_*, pk_live_*, rk_live_*, sk_test_*)
+- ✅ **AWS Access Keys** (AKIA*)
+- ✅ **Private Keys** (-----BEGIN * KEY-----)
+- ✅ **Outros padrões** sensíveis personalizados
+
+#### **Ferramentas de Detecção:**
+- **Script personalizado** (`scripts/secrets_manager.sh scan`)
+- **Hook pre-commit** automático
+- **Verificação CI/CD** em todas as branches
+- **Mascaramento** de tokens em logs para segurança
+
+#### **Como Usar:**
+```bash
+# Verificar tokens manualmente
+./scripts/secrets_manager.sh scan
+
+# Configurar hooks de segurança
+./scripts/setup_security_hooks.sh
+
+# Ver ajuda completa
+./scripts/secrets_manager.sh --help
+```
+
+#### **Resposta a Incidentes de Token:**
+1. **Detecção** automática ou manual
+2. **Bloqueio** imediato do commit/deploy
+3. **Notificação** da equipe de segurança
+4. **Revogação** do token no serviço correspondente
+5. **Investigação** de possível exposição
+6. **Geração** de novo token seguro
+7. **Documentação** do incidente
+
 ## 📋 **Auditoria e Compliance**
 
 ### **Auditorias Regulares:**
