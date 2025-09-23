@@ -26,6 +26,8 @@ class StripeConnectManager: ObservableObject {
     
     private let networkManager = NetworkManager.shared
     private let auditLogger = AuditLogger.shared
+    private let securityManager = StripeSecurityManager.shared
+    private let backendService = StripeBackendService.shared
     private var cancellables = Set<AnyCancellable>()
     
     // MARK: - Configuration
@@ -49,39 +51,28 @@ class StripeConnectManager: ObservableObject {
             details: "Criando conta conectada para psicólogo: \(psychologist.id)"
         )
         
-        let parameters = [
-            "type": "express",
-            "country": "BR",
-            "email": psychologist.email,
-            "capabilities[card_payments][requested]": "true",
-            "capabilities[transfers][requested]": "true",
-            "business_type": "individual",
-            "metadata[user_id]": psychologist.id.uuidString,
-            "metadata[user_type]": "psychologist",
-            "metadata[platform]": "ManusPsiqueia_iOS"
+        let metadata = [
+            "user_id": psychologist.id.uuidString,
+            "user_type": "psychologist",
+            "platform": "ManusPsiqueia_iOS"
         ]
         
         do {
-            let response = try await networkManager.post(
-                endpoint: "\(baseURL)/accounts",
-                parameters: parameters,
-                requiresAuth: true
+            let account = try await backendService.createConnectAccount(
+                email: psychologist.email,
+                metadata: metadata
             )
             
-            guard let accountId = response["id"] as? String else {
-                throw StripeConnectError.invalidResponse
-            }
-            
             // Armazenar account ID de forma segura
-            KeychainWrapper.standard.set(accountId, forKey: "stripe_connect_\(psychologist.id)")
+            KeychainWrapper.standard.set(account.id, forKey: "stripe_connect_\(psychologist.id)")
             
             auditLogger.log(
                 event: .networkRequestSuccess,
                 severity: .info,
-                details: "Conta conectada criada: \(accountId)"
+                details: "Conta conectada criada: \(account.id)"
             )
             
-            return accountId
+            return account.id
         } catch {
             auditLogger.log(
                 event: .networkRequestFailed,
@@ -97,13 +88,6 @@ class StripeConnectManager: ObservableObject {
         isLoading = true
         defer { isLoading = false }
         
-        let parameters = [
-            "account": accountId,
-            "return_url": returnURL,
-            "refresh_url": refreshURL,
-            "type": "account_onboarding"
-        ]
-        
         auditLogger.log(
             event: .networkRequest,
             severity: .info,
@@ -111,15 +95,11 @@ class StripeConnectManager: ObservableObject {
         )
         
         do {
-            let response = try await networkManager.post(
-                endpoint: "\(baseURL)/account_links",
-                parameters: parameters,
-                requiresAuth: true
+            let url = try await backendService.createAccountLink(
+                accountId: accountId,
+                returnURL: returnURL,
+                refreshURL: refreshURL
             )
-            
-            guard let url = response["url"] as? String else {
-                throw StripeConnectError.invalidResponse
-            }
             
             currentAccountLink = url
             
