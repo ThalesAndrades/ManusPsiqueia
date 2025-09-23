@@ -417,6 +417,52 @@ jobs:
       with:
         xcode-version: ${{ env.XCODE_VERSION }}
     
+    - name: 🔐 Setup Production Secrets
+      env:
+        STRIPE_PUBLISHABLE_KEY_PRODUCTION: ${{ secrets.STRIPE_PUBLISHABLE_KEY_PRODUCTION }}
+        STRIPE_SECRET_KEY_PRODUCTION: ${{ secrets.STRIPE_SECRET_KEY_PRODUCTION }}
+        SUPABASE_URL_PRODUCTION: ${{ secrets.SUPABASE_URL_PRODUCTION }}
+        SUPABASE_ANON_KEY_PRODUCTION: ${{ secrets.SUPABASE_ANON_KEY_PRODUCTION }}
+        SUPABASE_SERVICE_ROLE_KEY_PRODUCTION: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY_PRODUCTION }}
+        OPENAI_API_KEY_PRODUCTION: ${{ secrets.OPENAI_API_KEY_PRODUCTION }}
+        DATABASE_URL_PRODUCTION: ${{ secrets.DATABASE_URL_PRODUCTION }}
+        SMTP_HOST_PRODUCTION: ${{ secrets.SMTP_HOST_PRODUCTION }}
+        SMTP_PORT_PRODUCTION: ${{ secrets.SMTP_PORT_PRODUCTION }}
+        SMTP_USER_PRODUCTION: ${{ secrets.SMTP_USER_PRODUCTION }}
+        SMTP_PASS_PRODUCTION: ${{ secrets.SMTP_PASS_PRODUCTION }}
+        APNS_KEY_ID_PRODUCTION: ${{ secrets.APNS_KEY_ID_PRODUCTION }}
+        APNS_TEAM_ID_PRODUCTION: ${{ secrets.APNS_TEAM_ID_PRODUCTION }}
+        MIXPANEL_TOKEN_PRODUCTION: ${{ secrets.MIXPANEL_TOKEN_PRODUCTION }}
+      run: |
+        echo "🔐 Setting up production secrets for deployment..."
+        
+        # Create production secrets file
+        mkdir -p Configuration/Secrets
+        ./scripts/secrets_manager.sh setup
+        
+        cat > Configuration/Secrets/production.secrets << EOF
+        # Production Secrets - Auto-generated for CI/CD
+        STRIPE_PUBLISHABLE_KEY=$STRIPE_PUBLISHABLE_KEY_PRODUCTION
+        STRIPE_SECRET_KEY=$STRIPE_SECRET_KEY_PRODUCTION
+        SUPABASE_URL=$SUPABASE_URL_PRODUCTION
+        SUPABASE_ANON_KEY=$SUPABASE_ANON_KEY_PRODUCTION
+        SUPABASE_SERVICE_ROLE_KEY=$SUPABASE_SERVICE_ROLE_KEY_PRODUCTION
+        OPENAI_API_KEY=$OPENAI_API_KEY_PRODUCTION
+        DATABASE_URL=$DATABASE_URL_PRODUCTION
+        SMTP_HOST=$SMTP_HOST_PRODUCTION
+        SMTP_PORT=$SMTP_PORT_PRODUCTION
+        SMTP_USER=$SMTP_USER_PRODUCTION
+        SMTP_PASS=$SMTP_PASS_PRODUCTION
+        APNS_KEY_ID=$APNS_KEY_ID_PRODUCTION
+        APNS_TEAM_ID=$APNS_TEAM_ID_PRODUCTION
+        APNS_BUNDLE_ID=com.ailun.manuspsiqueia
+        FIREBASE_CONFIG_FILE=GoogleService-Info.plist
+        MIXPANEL_TOKEN=$MIXPANEL_TOKEN_PRODUCTION
+        EOF
+        
+        # Validate secrets
+        ./scripts/secrets_manager.sh validate --env production
+    
     - name: 🔑 Setup Certificates
       env:
         CERTIFICATES_P12: ${{ secrets.CERTIFICATES_P12 }}
@@ -424,32 +470,132 @@ jobs:
         PROVISIONING_PROFILE: ${{ secrets.PROVISIONING_PROFILE }}
       run: |
         echo "🔑 Setting up certificates and provisioning profiles..."
-        # Configuração de certificados seria feita aqui
-        echo "Certificates setup completed"
+        
+        # Create certificate directory
+        mkdir -p ~/.certificates
+        
+        # Decode and install certificates
+        if [ ! -z "$CERTIFICATES_P12" ]; then
+          echo "$CERTIFICATES_P12" | base64 --decode > ~/.certificates/cert.p12
+          
+          # Create temporary keychain
+          security create-keychain -p "temp123" build.keychain
+          security default-keychain -s build.keychain
+          security unlock-keychain -p "temp123" build.keychain
+          security set-keychain-settings -t 3600 -u build.keychain
+          
+          # Import certificate
+          security import ~/.certificates/cert.p12 -k build.keychain -P "$CERTIFICATES_PASSWORD" -T /usr/bin/codesign
+          security set-key-partition-list -S apple-tool:,apple: -s -k "temp123" build.keychain
+          
+          echo "✅ Certificates installed"
+        else
+          echo "⚠️ No certificates provided, using automatic signing"
+        fi
+        
+        # Install provisioning profile
+        if [ ! -z "$PROVISIONING_PROFILE" ]; then
+          mkdir -p ~/Library/MobileDevice/Provisioning\ Profiles
+          echo "$PROVISIONING_PROFILE" | base64 --decode > ~/Library/MobileDevice/Provisioning\ Profiles/app.mobileprovision
+          echo "✅ Provisioning profile installed"
+        fi
     
     - name: 🏗️ Build for Release
       run: |
+        echo "🏗️ Building for release with production configuration..."
+        
         xcodebuild clean archive \
           -project ManusPsiqueia.xcodeproj \
           -scheme ManusPsiqueia \
           -destination 'generic/platform=iOS' \
-          -configuration Release \
-          -archivePath ManusPsiqueia.xcarchive
+          -configuration Production \
+          -archivePath ManusPsiqueia.xcarchive \
+          -allowProvisioningUpdates \
+          DEVELOPMENT_TEAM="${{ secrets.DEVELOPMENT_TEAM_ID }}" \
+          | xcpretty --color
     
     - name: 📦 Export IPA
       run: |
+        echo "📦 Exporting IPA for App Store distribution..."
+        
+        # Create export options plist
+        cat > ExportOptions.plist << EOF
+        <?xml version="1.0" encoding="UTF-8"?>
+        <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+        <plist version="1.0">
+        <dict>
+            <key>method</key>
+            <string>app-store</string>
+            <key>teamID</key>
+            <string>${{ secrets.DEVELOPMENT_TEAM_ID }}</string>
+            <key>uploadBitcode</key>
+            <false/>
+            <key>uploadSymbols</key>
+            <true/>
+            <key>compileBitcode</key>
+            <false/>
+        </dict>
+        </plist>
+        EOF
+        
         xcodebuild -exportArchive \
           -archivePath ManusPsiqueia.xcarchive \
           -exportPath . \
-          -exportOptionsPlist ExportOptions.plist
+          -exportOptionsPlist ExportOptions.plist \
+          | xcpretty --color
     
     - name: 🚀 Upload to TestFlight
       env:
+        APP_STORE_CONNECT_API_KEY_ID: ${{ secrets.APP_STORE_CONNECT_API_KEY_ID }}
+        APP_STORE_CONNECT_API_ISSUER_ID: ${{ secrets.APP_STORE_CONNECT_API_ISSUER_ID }}
         APP_STORE_CONNECT_API_KEY: ${{ secrets.APP_STORE_CONNECT_API_KEY }}
       run: |
         echo "🚀 Uploading to TestFlight..."
-        # Upload seria feito aqui usando altool ou xcrun
-        echo "Upload to TestFlight completed"
+        
+        if [ ! -z "$APP_STORE_CONNECT_API_KEY" ]; then
+          # Setup API key
+          mkdir -p ~/.appstoreconnect/private_keys/
+          echo "$APP_STORE_CONNECT_API_KEY" | base64 --decode > ~/.appstoreconnect/private_keys/AuthKey_$APP_STORE_CONNECT_API_KEY_ID.p8
+          
+          # Upload using altool (requires Xcode command line tools)
+          xcrun altool --upload-app \
+            --type ios \
+            --file "ManusPsiqueia.ipa" \
+            --apiKey "$APP_STORE_CONNECT_API_KEY_ID" \
+            --apiIssuer "$APP_STORE_CONNECT_API_ISSUER_ID"
+          
+          echo "✅ Upload to TestFlight completed"
+        else
+          echo "⚠️ App Store Connect API key not configured, skipping upload"
+          echo "IPA file created: ManusPsiqueia.ipa"
+        fi
+    
+    - name: 🧹 Cleanup
+      if: always()
+      run: |
+        echo "🧹 Cleaning up sensitive files..."
+        
+        # Remove secrets file
+        rm -f Configuration/Secrets/production.secrets
+        
+        # Remove certificates and keys
+        rm -rf ~/.certificates
+        rm -rf ~/.appstoreconnect
+        
+        # Delete temporary keychain
+        security delete-keychain build.keychain || true
+        
+        echo "✅ Cleanup completed"
+    
+    - name: 📤 Upload Build Artifacts
+      uses: actions/upload-artifact@v3
+      if: success()
+      with:
+        name: production-build-${{ github.run_number }}
+        path: |
+          ManusPsiqueia.ipa
+          ManusPsiqueia.xcarchive
+        retention-days: 7
 
 # ==========================================
 # 📧 NOTIFICATIONS
