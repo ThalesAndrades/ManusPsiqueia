@@ -177,6 +177,13 @@ fi
 # Preparar ambiente para build
 echo "🔧 Preparando ambiente para build..."
 
+# Verificar se CI_DERIVED_DATA_PATH está definido, caso contrário usar diretório temporário
+if [ -z "$CI_DERIVED_DATA_PATH" ]; then
+    CI_DERIVED_DATA_PATH="/tmp/xcode_cloud_fallback"
+    echo "⚠️ CI_DERIVED_DATA_PATH não definido, usando: $CI_DERIVED_DATA_PATH"
+    mkdir -p "$CI_DERIVED_DATA_PATH"
+fi
+
 # Criar diretório de logs se não existir
 mkdir -p "$CI_DERIVED_DATA_PATH/Logs" 2>/dev/null || true
 
