@@ -179,7 +179,7 @@ jobs:
         EOF
     
     - name: 📤 Upload Security Reports
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: security-analysis-reports
         path: reports/
@@ -277,7 +277,7 @@ jobs:
         EOF
     
     - name: 📤 Upload Update Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: dependency-update-report
         path: reports/update-report.md
@@ -331,7 +331,7 @@ jobs:
         EOF
     
     - name: 📤 Upload Supply Chain Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: supply-chain-security-report
         path: reports/supply-chain-report.md
@@ -347,7 +347,7 @@ jobs:
     
     steps:
     - name: 📥 Download All Reports
-      uses: actions/download-artifact@v3
+      uses: actions/download-artifact@v4
     
     - name: 📋 Create Master Security Report
       run: |
@@ -396,7 +396,7 @@ jobs:
         EOF
     
     - name: 📤 Upload Master Report
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: master-security-report
         path: master-security-report.md
