@@ -34,7 +34,10 @@ let package = Package(
         .package(
             url: "https://github.com/jrendel/SwiftKeychainWrapper",
             from: "4.0.0"
-        )
+        ),
+        // Local modules
+        .package(path: "./Modules/ManusPsiqueiaServices"),
+        .package(path: "./Modules/ManusPsiqueiaUI")
     ],
     targets: [
         .target(
@@ -46,12 +49,24 @@ let package = Package(
                 .product(name: "StripePaymentsUI", package: "stripe-ios"),
                 .product(name: "Supabase", package: "supabase-swift"),
                 .product(name: "OpenAI", package: "OpenAI"),
-                .product(name: "SwiftKeychainWrapper", package: "SwiftKeychainWrapper")
+                .product(name: "SwiftKeychainWrapper", package: "SwiftKeychainWrapper"),
+                .product(name: "ManusPsiqueiaServices", package: "ManusPsiqueiaServices"),
+                .product(name: "ManusPsiqueiaUI", package: "ManusPsiqueiaUI")
+            ],
+            path: "ManusPsiqueia",
+            exclude: [
+                "Info.plist",
+                "Assets.xcassets",
+                "Preview Content"
             ]
         ),
         .testTarget(
             name: "ManusPsiqueiaTests",
-            dependencies: ["ManusPsiqueia"]
+            dependencies: ["ManusPsiqueia"],
+            path: "ManusPsiqueiaTests",
+            exclude: [
+                "Info.plist"
+            ]
         ),
     ]
 )
