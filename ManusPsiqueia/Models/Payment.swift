@@ -9,6 +9,25 @@
 import Foundation
 import SwiftUI
 
+// MARK: - Simple Payment Model (for testing compatibility)
+struct Payment: Identifiable, Codable, Hashable {
+    let id: String
+    let userId: String
+    let amount: Double
+    let currency: String
+    let date: Date
+    var status: PaymentStatus
+    
+    init(id: String, userId: String, amount: Double, currency: String, date: Date, status: PaymentStatus) {
+        self.id = id
+        self.userId = userId
+        self.amount = amount
+        self.currency = currency
+        self.date = date
+        self.status = status
+    }
+}
+
 // MARK: - Payment Status
 enum PaymentStatus: String, CaseIterable, Codable {
     case pending = "pending"
